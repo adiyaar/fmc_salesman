@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translator/translator.dart';
 import 'package:share/share.dart';
 
-String selectedcustbranch;
+String? selectedcustbranch;
 getStringValues() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -24,7 +24,7 @@ class ListDetails extends StatefulWidget {
   // final todo, invoiceprice;
   final todo, invoiceprice;
 
-  ListDetails({Key key, @required this.todo, this.invoiceprice})
+  ListDetails({Key? key, @required this.todo, this.invoiceprice})
       : super(key: key);
 
   @override
@@ -34,26 +34,26 @@ class ListDetails extends StatefulWidget {
 class _ListDetailsState extends State<ListDetails> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   GoogleTranslator translator = GoogleTranslator();
-  String selectedvalue, selecteditemvalue, selectunit;
-  String units;
-  String enitemproductgrouptitle;
-  String description_;
-  String endescription;
-  String addinformation;
-  String enaddinformation;
-  String Description_ = "Description";
-  String shortdesc;
-  String enshortdesc;
+  String? selectedvalue, selecteditemvalue, selectunit;
+  String? units;
+  String? enitemproductgrouptitle;
+  String? description_;
+  String? endescription;
+  String? addinformation;
+  String? enaddinformation;
+  String? Description_ = "Description";
+  String? shortdesc;
+  String? enshortdesc;
   String addDescription_ = "Additional Description";
   double manufacture = 14;
   double itemproductgrouptitle = 19;
   double shortdescription = 13;
   double Description = 15;
   // CarouselController buttonCarouselController = CarouselController();
-  List dropdata = List();
-  List itemdropdata = List();
-  List unit = List();
-  String cart = null;
+  List dropdata = [];
+  List itemdropdata = [];
+  List unit = [];
+  String? cart ;
   TextEditingController efocController = TextEditingController(); // extra foc
   TextEditingController quantityController =
       TextEditingController(); // quantity
@@ -63,7 +63,7 @@ class _ListDetailsState extends State<ListDetails> {
       TextEditingController(); // alocated foc
   TextEditingController fixedController = TextEditingController(); // fixed foc
   final discController = TextEditingController(); // discount based on currency
-  String itemproductgrouptitle_;
+  String? itemproductgrouptitle_;
   Future getallvalue() async {
     var data = {'itemproductgroupid': widget.todo.itemproductgroupid};
     var response = await http.post(
@@ -139,20 +139,20 @@ class _ListDetailsState extends State<ListDetails> {
     return jsondataval;
   }
 
-  double finalapricedata;
+  double? finalapricedata;
   bool visible = false;
   getStringValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
 
-    String cust_id = prefs.getString('cust_id');
+    String? cust_id = prefs.getString('cust_id');
     return cust_id;
   }
 
   getvalues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
-    String invoiceprice;
+    String? invoiceprice;
     invoiceprice = prefs.getString('invoiceprice');
     selectedcustbranch = prefs.getString('selectedcustbranch');
     return selectedcustbranch;
@@ -255,23 +255,23 @@ class _ListDetailsState extends State<ListDetails> {
     }
   }
 
-  double dropprice;
-  int itemid;
-  int counter;
+  double? dropprice;
+  int? itemid;
+  int? counter;
   //final productprice;
-  double finalprice;
-  double prices;
+  double? finalprice;
+  double? prices;
 
   void increment() {
     if (selectedvalue == null) {
       setState(() {
         counter++;
-        finalprice = double.parse(widget.todo.maxretailprice) * counter;
+        finalprice = double.parse(widget.todo.maxretailprice) * counter!;
       });
     } else {
       setState(() {
         counter++;
-        dropprice = prices * counter;
+        dropprice = prices * counter!;
       });
     }
   }

@@ -49,7 +49,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
 
-    String user_id=prefs.getString('id');
+    String? user_id=prefs.getString('id');
     setState(() {
       id=user_id;
     });

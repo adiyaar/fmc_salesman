@@ -14,9 +14,9 @@ class intro extends StatefulWidget {
 
 class _introState extends State<intro> {
 
-  List<SliderModel> mySLides = new List<SliderModel>();
+  List<SliderModel> mySLides = <SliderModel>[];
   int slideIndex = 0;
-  PageController controller;
+  PageController? controller;
 
   Widget _buildPageIndicator(bool isCurrentPage){
     return Container(
@@ -81,7 +81,7 @@ class _introState extends State<intro> {
             children: <Widget>[
               FlatButton(
                 onPressed: (){
-                  controller.animateToPage(2, duration: Duration(milliseconds: 400), curve: Curves.linear);
+                  controller!.animateToPage(2, duration: Duration(milliseconds: 400), curve: Curves.linear);
                 },
                 splashColor: Colors.blue[50],
                 child: Text(
@@ -98,7 +98,7 @@ class _introState extends State<intro> {
               FlatButton(
                 onPressed: (){
                   print("this is slideIndex: $slideIndex");
-                  controller.animateToPage(slideIndex + 1, duration: Duration(milliseconds: 500), curve: Curves.linear);
+                  controller!.animateToPage(slideIndex + 1, duration: Duration(milliseconds: 500), curve: Curves.linear);
                 },
                 splashColor: LightColor.blueColor,
                 child: Text(
@@ -130,7 +130,7 @@ class _introState extends State<intro> {
 }
 
 class SlideTile extends StatelessWidget {
-  String imagePath, title, desc;
+  String? imagePath, title, desc;
 
   SlideTile({this.imagePath, this.title, this.desc});
 
@@ -142,18 +142,18 @@ class SlideTile extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Image.asset(imagePath),
+          Image.asset(imagePath!),
           SizedBox(
             height: 40,
           ),
-          Text(title, textAlign: TextAlign.center,style: TextStyle(
+          Text(title!, textAlign: TextAlign.center,style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 25
           ),),
           SizedBox(
             height: 20,
           ),
-          Text(desc, textAlign: TextAlign.center,style: TextStyle(
+          Text(desc!, textAlign: TextAlign.center,style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 14))
         ],

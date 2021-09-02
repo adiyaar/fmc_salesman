@@ -21,7 +21,7 @@ class _AppDrawerState extends State<AppDrawer> {
   var id;
   getStringValuesSF() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String useridValue = prefs.getString('userid');
+    String? useridValue = prefs.getString('userid');
     print(useridValue);
     //return useridValue;
     setState(() {
@@ -32,7 +32,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
   getStringValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String useridValue = prefs.getString('id');
+    String? useridValue = prefs.getString('id');
     print(useridValue);
     //return useridValue;
     setState(() {
@@ -78,7 +78,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
                 ),
 
-              ),
+              ), accountEmail: null,
 
             ),
             //  DrawerHeader(
@@ -171,14 +171,14 @@ class _AppDrawerState extends State<AppDrawer> {
               title: Text('Share App',
                   style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
               onTap: () {
-                final RenderBox box = context.findRenderObject();
+                final RenderObject? box = context.findRenderObject();
                 Share.share(
 
                     '\n\n Shop online on Qatar’s Most trusted pharmacy with a wide collection of items ranging from personal care, Baby care, Home care products, Medical equipment & supplements we are the healthcare with best priced deals we offer Home delivery across Qatar.'+
                         '\n\n https://www.onlinefamilypharmacy.com/'
                     ,
                     subject:"this is the subject",
-                    sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+                    sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
               },
             ),
             ListTile(

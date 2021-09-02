@@ -67,8 +67,8 @@ class SliderGrid extends StatelessWidget {
 }
 
 class SliderIndicator extends AnimatedWidget {
-  final PageController pageController;
-  final int indicatorCount;
+  final PageController? pageController;
+  final int? indicatorCount;
 
   SliderIndicator({this.pageController, this.indicatorCount})
       : super(listenable: pageController);
@@ -77,15 +77,15 @@ class SliderIndicator extends AnimatedWidget {
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: List<Widget>.generate(indicatorCount, buildIndicator));
+        children: List<Widget>.generate(indicatorCount!, buildIndicator));
   }
 
   Widget buildIndicator(int index) {
-    final page = pageController.position.minScrollExtent == null
-        ? pageController.initialPage
-        : pageController.page;
-    bool active = page.round() == index;
-    print("build $index ${pageController.page}");
+    final page = pageController!.position.minScrollExtent == null
+        ? pageController!.initialPage
+        : pageController!.page;
+    bool active = page!.round() == index;
+    print("build $index ${pageController!.page}");
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Container(
@@ -102,7 +102,7 @@ class SliderIndicator extends AnimatedWidget {
 }
 
 class Job {
-  final String url;
+  final String? url;
 
   Job({
     this.url,
@@ -122,7 +122,7 @@ class GalleryDemo extends StatelessWidget {
       future: _fetchJobs(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          List<Job> data = snapshot.data;
+          List<Job>? data = snapshot.data;
           return imageSlider(context, data);
         } else if (snapshot.hasError) {
           return Text("${snapshot.error}");

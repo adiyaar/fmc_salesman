@@ -6,18 +6,18 @@ import 'package:timeline_node/timeline_node.dart';
 class myorderdetail extends StatefulWidget {
   final todo;
 
-  myorderdetail({Key key, @required this.todo}) : super(key: key);
+  myorderdetail({Key? key, @required this.todo}) : super(key: key);
 
   @override
   _myorderdetailState createState() => _myorderdetailState();
 }
 
 class HomePageTimelineObject {
-  final TimelineNodeStyle style;
-  final String message;
-  final TextStyle textStyle;
-  final String submsg;
-  final Icon icon;
+  final TimelineNodeStyle? style;
+  final String? message;
+  final TextStyle? textStyle;
+  final String? submsg;
+  final Icon? icon;
 
   HomePageTimelineObject({this.style, this.message,this.textStyle,this.submsg,this.icon});
 }

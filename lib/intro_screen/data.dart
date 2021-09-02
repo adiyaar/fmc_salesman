@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class SliderModel{
 
-  String imageAssetPath;
-  String title;
-  String desc;
+  String? imageAssetPath;
+  String? title;
+  String? desc;
 
   SliderModel({this.imageAssetPath,this.title,this.desc});
 
@@ -21,15 +21,15 @@ class SliderModel{
     desc = getDesc;
   }
 
-  String getImageAssetPath(){
+  String? getImageAssetPath(){
     return imageAssetPath;
   }
 
-  String getTitle(){
+  String? getTitle(){
     return title;
   }
 
-  String getDesc(){
+  String? getDesc(){
     return desc;
   }
 
@@ -38,7 +38,7 @@ class SliderModel{
 
 List<SliderModel> getSlides(){
 
-  List<SliderModel> slides = new List<SliderModel>();
+  List<SliderModel> slides = <SliderModel>[];
   SliderModel sliderModel = new SliderModel();
 
   //1

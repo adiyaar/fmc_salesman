@@ -10,24 +10,22 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 var totalid;
-String invoiceprice, selectedcustbranch;
+String? invoiceprice, selectedcustbranch;
 
 class CartItem {
-  final String item_code;
-  final String itemid;
-  final String user_id;
-  final String selectedcustbranch;
-  final String img;
-  final String itemname_en;
-  final String qty;
-  final String cust_type;
-  final String foc;
-  final String ex_foc;
-  final String disc;
-  final String rs;
-  final String ws;
-
-
+  final String? item_code;
+  final String? itemid;
+  final String? user_id;
+  final String? selectedcustbranch;
+  final String? img;
+  final String? itemname_en;
+  final String? qty;
+  final String? cust_type;
+  final String? foc;
+  final String? ex_foc;
+  final String? disc;
+  final String? rs;
+  final String? ws;
 
   // final String email;
   CartItem(
@@ -64,7 +62,7 @@ class CartItem {
 }
 
 class TotalItem {
-  final String Total;
+  final String? Total;
 
   // final String email;
   TotalItem({
@@ -84,22 +82,22 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
-  CircularProgressIndicator pr;
+  CircularProgressIndicator? pr;
   double subtotal = 0.00;
-  String quantity, fixed_foc, allocated_foc, ex_foc, disc;
-  List<int> _counter_ = List();
-  List<int> finalprice = List();
-  double totalprice;
-  int sump;
-  int sum;
-  int price;
+  String? quantity, fixed_foc, allocated_foc, ex_foc, disc;
+  List<int> _counter_ = [];
+  List<int> finalprice = [];
+  double? totalprice;
+  int? sump;
+  int? sum;
+  int? price;
   var total;
 
   getStringValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
 
-    String cust_id = prefs.getString('cust_id');
+    String? cust_id = prefs.getString('cust_id');
 
     return cust_id;
   }
@@ -215,85 +213,83 @@ class _CartState extends State<Cart> {
       DeviceOrientation.landscapeLeft,
     ]); */
     return Scaffold(
-        appBar: AppBar(title: Text("Cart List")),
-        body: Column(children: <Widget>[
-          Expanded(
-            child: FutureBuilder<List<CartItem>>(
-              future: _fetchCartItem(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<CartItem> data = snapshot.data;
-                  if (snapshot.data.length == 0) {
-                    return Container(
-                      padding: EdgeInsets.only(left: 15, right: 15, top: 80),
-                      // child: Image.asset("assets/cart.png"));
-                      child: Icon(
-                        Icons.shopping_cart,
-                        color: Colors.black,
-                      ),
-                    );
-                  }
-
-                  return imageSlider(context, data);
-                } else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
+      appBar: AppBar(title: Text("Cart List")),
+      body: Column(children: <Widget>[
+        Expanded(
+          child: FutureBuilder<List<CartItem>>(
+            future: _fetchCartItem(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<CartItem>? data = snapshot.data;
+                if (snapshot.data!.length == 0) {
+                  return Container(
+                    padding: EdgeInsets.only(left: 15, right: 15, top: 80),
+                    // child: Image.asset("assets/cart.png"));
+                    child: Icon(
+                      Icons.shopping_cart,
+                      color: Colors.black,
+                    ),
+                  );
                 }
-                return Center(
-                    child: CircularProgressIndicator(
-                  valueColor:
-                      AlwaysStoppedAnimation<Color>(LightColor.blueColor),
-                ));
-              },
-            ),
+
+                return imageSlider(context, data);
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+              return Center(
+                  child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(LightColor.blueColor),
+              ));
+            },
           ),
-          Container(
-              height: 80,
-              child: Row(
-                children: [
-                  Text(
-                    "Subtotal: $subtotal",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  SizedBox(
-                    width: 650,
-                  ),
-                  ElevatedButton(
-                    child: Text("Proceed"),
-                    onPressed: (){},
-                  )
+        ),
+        Container(
+            height: 80,
+            child: Row(
+              children: [
+                Text(
+                  "Subtotal: $subtotal",
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(
+                  width: 650,
+                ),
+                ElevatedButton(
+                  child: Text("Proceed"),
+                  onPressed: () {},
+                )
+              ],
+            )),
+      ]),
 
-                ],
-              )),
-        ]),
-
-        // floatingActionButton: Container(
-        //     height: 50.0,
-        //     width: 150.0,
-        //     alignment: Alignment.center,
-        //     //child: FittedBox(
-        //     child: FloatingActionButton.extended(
-        //       //  icon: Icon(Icons.add_shopping_cart),
-        //       //  label: Text("Add to Cart"),
-        //
-        //       backgroundColor: LightColor.whiteColor,
-        //       onPressed: () {
-        //
-        //         Navigator.push(
-        //             context,
-        //             MaterialPageRoute(
-        //                 builder: (context) => Order_SummaryScreen()));
-        //       },
-        //       // icon: Icon(Icons.save),
-        //       label: Center(
-        //           child: Text(
-        //         "Proceed",
-        //         style: TextStyle(
-        //             fontSize: 18,
-        //             color: LightColor.blueColor,
-        //             fontWeight: FontWeight.bold),
-        //       )),
-        //     ))
-        );
+      // floatingActionButton: Container(
+      //     height: 50.0,
+      //     width: 150.0,
+      //     alignment: Alignment.center,
+      //     //child: FittedBox(
+      //     child: FloatingActionButton.extended(
+      //       //  icon: Icon(Icons.add_shopping_cart),
+      //       //  label: Text("Add to Cart"),
+      //
+      //       backgroundColor: LightColor.whiteColor,
+      //       onPressed: () {
+      //
+      //         Navigator.push(
+      //             context,
+      //             MaterialPageRoute(
+      //                 builder: (context) => Order_SummaryScreen()));
+      //       },
+      //       // icon: Icon(Icons.save),
+      //       label: Center(
+      //           child: Text(
+      //         "Proceed",
+      //         style: TextStyle(
+      //             fontSize: 18,
+      //             color: LightColor.blueColor,
+      //             fontWeight: FontWeight.bold),
+      //       )),
+      //     ))
+    );
   }
 
   Future<List<CartItem>> _fetchCartItem() async {
@@ -305,17 +301,17 @@ class _CartState extends State<Cart> {
     var url =
         'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesman_cart.php';
     var response = await http.post(url, body: json.encode(data));
-    
+
     List jsonResponse = json.decode(response.body.toString());
-    
 
     //  _finalprice_= jsonResponse["price"].map((item) => new Item.fromJson(item)).toList();
     List<CartItem> temp =
         jsonResponse.map((item) => new CartItem.fromJson(item)).toList();
     subtotal = temp.map((e) {
-      return double.parse(
-              invoiceprice == null || invoiceprice == 'Retail' ? e.rs : e.ws) *
-          double.parse(e.qty);
+      return double.parse(invoiceprice! == null || invoiceprice! == 'Retail'
+              ? e.rs!
+              : e.ws!) *
+          double.parse(e.qty!);
     }).reduce(
       (value, element) => value + element,
     );
@@ -356,9 +352,9 @@ class _CartState extends State<Cart> {
               decoration: BoxDecoration(
                   color: Colors.white12,
                   border: Border(
-                    bottom: BorderSide(color: Colors.grey[100], width: 1.0),
-                    top: BorderSide(color: Colors.grey[100], width: 1.0),
-                  )),
+                      // bottom: BorderSide(color: Colors.grey[100], width: 1.0),
+                      // top: BorderSide(color: Colors.grey[100], width: 1.0),
+                      )),
               height: 100.0,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -617,65 +613,66 @@ class _CartState extends State<Cart> {
   }
 }
 
-class Total_screen extends StatefulWidget {
-  @override
-  _TotalState createState() => _TotalState();
-}
+// class Total_screen extends StatefulWidget {
+//   @override
+//   _TotalState createState() => _TotalState();
+// }
 
-class _TotalState extends State<Total_screen> {
-  getStringValues() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    print("TOtal state");
-    String cust_id = prefs.getString('cust_id');
-    print(cust_id);
-    return cust_id;
-  }
+// class _TotalState extends State<Total_screen> {
+//   getStringValues() async {
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     //Return String
+//     print("TOtal state");
+//     String? cust_id = prefs.getString('cust_id');
+//     print(cust_id);
+//     return cust_id;
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    // final cart = Provider.of<Cart_>(context);
-    return Scaffold(
-      // appBar: AppBar(title: Text("Cart List")),
-      body: Column(children: <Widget>[
-        FutureBuilder<List<TotalItem>>(
-          future: _fetchTotal(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              List<TotalItem> data = snapshot.data;
-              if (snapshot.data.length == 0) {
-                return Container(
-                    padding: EdgeInsets.only(left: 15, right: 15, top: 80),
-                    child: Image.asset("assets/cart.png"));
-              }
-              return totalSlider(context, data);
-            } else if (snapshot.hasError) {
-              return Text("${snapshot.error}");
-            }
-            return Center(
-                child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(LightColor.blueColor),
-            ));
-          },
-        ),
-      ]),
-    );
-  }
+  // @override
+  // Widget build(BuildContext context) {
+  //   // final cart = Provider.of<Cart_>(context);
+  //   return Scaffold(
+  //     // appBar: AppBar(title: Text("Cart List")),
+  //     body: Column(children: <Widget>[
+  //       FutureBuilder<List<TotalItem>>(
+  //         future: _fetchTotal(),
+  //         builder: (context, snapshot) {
+  //           if (snapshot.hasData) {
+  //             List<TotalItem>? data = snapshot.data;
+  //             if (snapshot.data!.length == 0) {
+  //               return Container(
+  //                   padding: EdgeInsets.only(left: 15, right: 15, top: 80),
+  //                   child: Image.asset("assets/cart.png"));
+  //             }
+  //             return totalSlider(context, data);
+  //           } else if (snapshot.hasError) {
+  //             return Text("${snapshot.error}");
+  //           }
+  //           return Center(
+  //               child: CircularProgressIndicator(
+  //             valueColor: AlwaysStoppedAnimation<Color>(LightColor.blueColor),
+  //           ));
+  //         },
+  //       ),
+  //     ]),
+  //   );
+  // }
 
-  Future<List<TotalItem>> _fetchTotal() async {
-    print("I m 1");
-    // dynamic token = await getStringValues();
-    // dynamic branch = await getvalues();
-    // var data = {'cust_id': token,'selectedcustbranch': branch};
-    // var url = 'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesman_cart.php';
-    // var response = await http.post(url, body: json.encode(data));
-    // print("I am on total part ");
-    // List jsonResponse = json.decode(response.body.toString());
+  // Future<List<TotalItem>> _fetchTotal() async {
+    
+  //   // dynamic token = await getStringValues();
+  //   // dynamic branch = await getvalues();
+  //   // var data = {'cust_id': token,'selectedcustbranch': branch};
+  //   // var url = 'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesman_cart.php';
+  //   // var response = await http.post(url, body: json.encode(data));
+  //   // print("I am on total part ");
+  //   // List jsonResponse = json.decode(response.body.toString());
 
-    // _finalprice_= jsonResponse["price"].map((item) => new Item.fromJson(item)).toList();
+  //   // _finalprice_= jsonResponse["price"].map((item) => new Item.fromJson(item)).toList();
 
-    // return jsonResponse.map((item) => new TotalItem.fromJson(item)).toList();
-  }
+  //   // return jsonResponse.map((item) => new TotalItem.fromJson(item)).toList();
+    
+  // }
 
   getvalues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -712,7 +709,7 @@ class _TotalState extends State<Total_screen> {
       },
     );
   }
-}
+
 
 totalprice(int sum) {
   return sum;

@@ -8,8 +8,8 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashStateScreen extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-  Animation<double> opacity;
-  AnimationController controller;
+  Animation<double>? opacity;
+  AnimationController? controller;
 
   @override
   void initState() {
@@ -17,18 +17,18 @@ class _SplashStateScreen extends State<SplashScreen>
 
     controller = AnimationController(
         duration: Duration(milliseconds: 2500), vsync: this);
-    opacity = Tween<double>(begin: 1.0, end: 0.0).animate(controller)
+    opacity = Tween<double>(begin: 1.0, end: 0.0).animate(controller!)
       ..addListener(() {
         setState(() {});
       });
-    controller.forward().then((_) {
+    controller!.forward().then((_) {
       navigationPage();
     });
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    controller!.dispose();
     super.dispose();
   }
 

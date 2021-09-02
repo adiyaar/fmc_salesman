@@ -8,13 +8,13 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:titled_navigation_bar/titled_navigation_bar.dart';
 class SalesOrderData {
-  final String order_item_id;
-  final String order_id;
-  final String itemcode;
-  final String order_item_quantity;
-  final String foc;
-  final String extrabonus;
-  final String order_date;
+  final String? order_item_id;
+  final String? order_id;
+  final String? itemcode;
+  final String? order_item_quantity;
+  final String? foc;
+  final String? extrabonus;
+  final String? order_date;
   SalesOrderData({this.order_item_id, this.order_id, this.itemcode,this.order_item_quantity, this.foc, this.extrabonus,this.order_date});
 
   factory SalesOrderData.fromJson(Map<String, dynamic> json) {
@@ -32,7 +32,7 @@ class SalesOrderData {
 
 class Salesorder extends StatefulWidget {
   final itemid;
-  Salesorder({Key key, @required this.itemid}) : super(key: key);
+  Salesorder({Key? key, @required this.itemid}) : super(key: key);
   @override
   _SalesorderState createState() => _SalesorderState();
 }
@@ -42,7 +42,7 @@ class _SalesorderState extends State<Salesorder> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
 
-    String user_id = prefs.getString('id');
+    String? user_id = prefs.getString('id');
     return user_id;
   }
 
@@ -84,7 +84,7 @@ class _SalesorderState extends State<Salesorder> {
           future: _fetchSalesOrderData(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              List<SalesOrderData> data = snapshot.data;
+              List<SalesOrderData>? data = snapshot.data;
              // return tableview(context, data);
               return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -98,16 +98,16 @@ class _SalesorderState extends State<Salesorder> {
                     DataColumn(label: Text('Foc')),
                     DataColumn(label: Text('ExtraBonus')),
                   ],
-                  rows:data.map((data) =>
+                  rows:data!.map((data) =>
                     DataRow(
                         cells: [
-                      DataCell(Text(data.order_date)),
-                      DataCell(Text(data.order_item_id)),
-                      DataCell(Text(data.order_id)),
-                      DataCell(Text(data.itemcode)),
-                      DataCell(Text(data.order_item_quantity)),
-                      DataCell(Text(data.foc)),
-                      DataCell(Text(data.extrabonus)),
+                      DataCell(Text(data.order_date!)),
+                      DataCell(Text(data.order_item_id!)),
+                      DataCell(Text(data.order_id!)),
+                      DataCell(Text(data.itemcode!)),
+                      DataCell(Text(data.order_item_quantity!)),
+                      DataCell(Text(data.foc!)),
+                      DataCell(Text(data.extrabonus!)),
                     ]
                    )
                   ).toList(),

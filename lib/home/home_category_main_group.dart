@@ -20,9 +20,9 @@ class ItemPage extends StatelessWidget {
 }
 
 class Job {
-  final String url;
-  final String title;
-  final String id;
+  final String? url;
+  final String? title;
+  final String? id;
   Job({this.url,this.title,this.id});
 
   factory Job.fromJson(Map<String, dynamic> json) {
@@ -40,7 +40,7 @@ class ItemDemo extends StatelessWidget {
       future: _fetchJobs(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          List<Job> data = snapshot.data;
+          List<Job>? data = snapshot.data;
           return imageSlider(context, data);
 
         } else if (snapshot.hasError) {

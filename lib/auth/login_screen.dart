@@ -17,9 +17,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 //}
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({Key key, this.title}) : super(key: key);
+  LoginScreen({Key? key, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -294,7 +294,7 @@ class _LoginPageState extends State<LoginScreen> {
         ));
   }
   void showInSnackBar(String value) {
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(content: new Text(value),backgroundColor:LightColor.whiteColor ,));
+    _scaffoldKey.currentState!.showSnackBar(new SnackBar(content: new Text(value),backgroundColor:LightColor.whiteColor ,));
   }
 }
 
@@ -303,7 +303,7 @@ class ButtonWid extends StatelessWidget {
   var onClick;
 
 
-  ButtonWid({this.btnText, this.onClick});
+  ButtonWid({required this.btnText, this.onClick});
   Color blue = Colors.lightBlue;
   static const Color midnightBlue = const Color.fromRGBO(1, 4, 99,1);
   @override

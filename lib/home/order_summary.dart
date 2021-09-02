@@ -7,18 +7,18 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/services.dart';
 
-List<int> itemcode = List();
-List<int> quantity = List();
-List<double> price = List();
-List<String> itemname = List();
-List<int> foc = List();
-List<int> ex_foc = List();
-String cust_id;
-String credit_limit;
-String credit_days;
-String cust_type;
-String cust_email, cust_name, invoiceprice, selectedcustbranch;
-String useridValue;
+List<int> itemcode = [];
+List<int> quantity = [];
+List<double> price = [];
+List<String> itemname = [];
+List<int> foc = [];
+List<int> ex_foc = [];
+String? cust_id;
+String? credit_limit;
+String? credit_days;
+String? cust_type;
+String? cust_email, cust_name, invoiceprice, selectedcustbranch;
+String? useridValue;
 getStringValues() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -35,18 +35,18 @@ getStringValues() async {
 }
 
 class CartItem {
-  final String item_code;
-  final String user_id;
+  final String? item_code;
+  final String? user_id;
 
-  final String img;
-  final String itemname_en;
-  final String qty;
-  final String cust_type;
-  final String foc;
-  final String ex_foc;
-  final String disc;
-  final String rs;
-  final String ws;
+  final String? img;
+  final String? itemname_en;
+  final String? qty;
+  final String? cust_type;
+  final String? foc;
+  final String? ex_foc;
+  final String? disc;
+  final String? rs;
+  final String? ws;
 
   // final String email;
   CartItem(
@@ -501,7 +501,7 @@ class _Order_SummaryScreenState extends State<Order_SummaryScreen> {
   }
 
   void showInSnackBar(String value) {
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
+    _scaffoldKey.currentState!.showSnackBar(new SnackBar(
       content: new Text(value),
       backgroundColor: LightColor.blueColor,
     ));
@@ -525,7 +525,7 @@ class _Summary_CartState extends State<Summary_Cart> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
 
-    String cust_id = prefs.getString('cust_id');
+    String? cust_id = prefs.getString('cust_id');
     return cust_id;
   }
 
@@ -552,8 +552,8 @@ class _Summary_CartState extends State<Summary_Cart> {
         future: _fetchItem(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List<CartItem> data = snapshot.data;
-            if (snapshot.data.length == 0) {
+            List<CartItem>? data = snapshot.data;
+            if (snapshot.data!.length == 0) {
               return Image.asset("assets/empty-cart.png");
             }
 
@@ -590,7 +590,7 @@ class _Summary_CartState extends State<Summary_Cart> {
       scrollDirection: Axis.horizontal,
       itemCount: data.length,
       itemBuilder: (context, index) {
-        double finalprice;
+        double? finalprice;
         int id = int.parse(data[index].item_code);
         int qt = int.parse(data[index].qty);
         int foc_ = int.parse(data[index].foc);

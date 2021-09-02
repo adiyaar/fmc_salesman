@@ -9,11 +9,11 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-String cust_id;
-String credit_limit;
-String credit_days;
-String cust_type;
-String cust_email, cust_name, invoiceprice, selectedcustbranch;
+String? cust_id;
+String? credit_limit;
+String? credit_days;
+String? cust_type;
+String? cust_email, cust_name, invoiceprice, selectedcustbranch;
 getStringValues() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   //Return String
@@ -79,7 +79,7 @@ class _SliderPageState extends State<SliderPage> {
                           Chip(
                             backgroundColor: LightColor.blueColor,
                             label: Text(
-                              cust_id,
+                              cust_id!,
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -92,7 +92,7 @@ class _SliderPageState extends State<SliderPage> {
                           Chip(
                             backgroundColor: LightColor.blueColor,
                             label: Text(
-                              cust_name,
+                              cust_name!,
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -117,7 +117,7 @@ class _SliderPageState extends State<SliderPage> {
                             (Chip(
                               backgroundColor: LightColor.blueColor,
                               label: Text(
-                                selectedcustbranch,
+                                selectedcustbranch!,
                                 style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
@@ -140,7 +140,7 @@ class _SliderPageState extends State<SliderPage> {
                           Chip(
                             backgroundColor: LightColor.blueColor,
                             label: Text(
-                              invoiceprice,
+                              invoiceprice!,
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -196,7 +196,7 @@ class _SliderPageState extends State<SliderPage> {
 }
 
 class Job {
-  final String img;
+  final String? img;
 
   Job({
     this.img,
@@ -216,7 +216,7 @@ class SliderDemo extends StatelessWidget {
       future: _fetchJobs(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          List<Job> data = snapshot.data;
+          List<Job>? data = snapshot.data;
           return imageSlider(context, data);
         } else if (snapshot.hasError) {
           return Text("${snapshot.error}");

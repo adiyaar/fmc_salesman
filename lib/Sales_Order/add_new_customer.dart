@@ -24,7 +24,7 @@ class _Add_new_cust_State extends State<Add_new_cust> {
   final custmobileController = TextEditingController();
   final cust_typeController = TextEditingController();
   final remarksController = TextEditingController();
-  int selectedRadioTile, selectedRadio;
+  int? selectedRadioTile, selectedRadio;
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _Add_new_cust_State extends State<Add_new_cust> {
     String cust_type = cust_typeController.text;
     String remarks = remarksController.text;
 
-    Pattern pattern =
+    String? pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
     if (mobileno.length != 8) {
@@ -286,7 +286,7 @@ class _Add_new_cust_State extends State<Add_new_cust> {
   }
 
   void showInSnackBar(String value) {
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
+    _scaffoldKey.currentState!.showSnackBar(new SnackBar(
       content: new Text(value),
       backgroundColor: LightColor.blueColor,
     ));

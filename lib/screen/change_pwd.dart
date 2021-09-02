@@ -19,7 +19,7 @@ class _changepwdState extends State<changepwd> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
 
-    String user_id=prefs.getString('id');
+    String? user_id=prefs.getString('id');
     return user_id;
   }
   Future changepass() async {
@@ -103,7 +103,7 @@ class _changepwdState extends State<changepwd> {
                                           Color(0xfff3f3f4),
                                           filled: true),
                                       validator: (val){
-                                        if(val.isEmpty)
+                                        if(val!.isEmpty)
                                           return 'Empty';
                                         return null;
                                       }),
@@ -123,7 +123,7 @@ class _changepwdState extends State<changepwd> {
                                           Color(0xfff3f3f4),
                                           filled: true),
                                       validator: (val){
-                                        if(val.isEmpty)
+                                        if(val!.isEmpty)
                                           return 'Empty';
                                         return null;
                                       }),
@@ -142,7 +142,7 @@ class _changepwdState extends State<changepwd> {
                                           Color(0xfff3f3f4),
                                           filled: true),
                                       validator: (val){
-                                        if(val.isEmpty)
+                                        if(val!.isEmpty)
                                           return 'Empty';
                                         if(val != newpwdController.text)
                                           return 'Not Match';
@@ -180,6 +180,6 @@ class _changepwdState extends State<changepwd> {
     );
   }
   void showInSnackBar(String value) {
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(content: new Text(value),backgroundColor:Colors.blue ,));
+    _scaffoldKey.currentState!.showSnackBar(new SnackBar(content: new Text(value),backgroundColor:Colors.blue ,));
   }
 }

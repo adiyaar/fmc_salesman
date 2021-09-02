@@ -27,10 +27,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeStateScreen extends State<HomeScreen> {
 
-  String email;
+  String? email;
   getStringValuesSF() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String useridValue = prefs.getString('userid');
+    String? useridValue = prefs.getString('userid');
     print(useridValue);
     //return useridValue;
     setState(() {
