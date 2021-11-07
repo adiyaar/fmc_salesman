@@ -1,0 +1,2127 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/material.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:responsify/responsify.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:testing/models/GenerateBranch.dart';
+import 'package:http/http.dart' as http;
+import 'package:testing/models/GenerateCustomerList.dart';
+
+import 'HomeScreen.dart';
+
+class GenerateSalesOrder extends StatefulWidget {
+  GenerateSalesOrder({Key key}) : super(key: key);
+
+  @override
+  _GenerateSalesOrderState createState() => _GenerateSalesOrderState();
+}
+
+class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
+  String cust_email,
+      cust_type,
+      credit_days,
+      credit_limit,
+      selectedcustbranch,
+      staticValue,
+      invoiceprice,
+      invoicetype,
+      cust_name;
+
+  String customerSelected, branchSelected;
+  TextEditingController customerEmailId = TextEditingController();
+  TextEditingController customerType = TextEditingController();
+  TextEditingController creditLimit = TextEditingController();
+  TextEditingController creditDays = TextEditingController();
+
+  addCustomerData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(
+      'cemail',
+      cust_email,
+    );
+    prefs.setString(
+      'cust_type',
+      cust_type,
+    );
+    prefs.setString(
+      'credit_days',
+      credit_days,
+    );
+    prefs.setString(
+      'credit_limit',
+      credit_limit,
+    );
+    prefs.setString('customerName', cust_name);
+    if (branchSelected == null) {
+      prefs.setString('customerBranch', "null");
+    } else {
+      prefs.setString('customerBranch', branchSelected);
+    }
+    print("_____________");
+    print(prefs.getString('customerName'));
+    print("_____________");
+    print(prefs.getString('credit_limit'));
+    print("_____________");
+    print(prefs.getString('credit_days'));
+    print("_____________");
+    print(prefs.getString('cemail'));
+  }
+
+  Future getAllValue() async {
+    final String url =
+        'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesman_selected_dropdown.php';
+    var data = {
+      'custid': customerSelected,
+      'selectedcustbranch': branchSelected
+    };
+    print(data);
+    var response = await http.post(Uri.parse(url), body: json.encode(data));
+    var jsondataval = json.decode(response.body);
+    print(jsondataval);
+
+    return jsondataval;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Generate Sales Order"),
+        backgroundColor: Colors.black,
+      ),
+      body: ResponsiveUiWidget(
+        targetOlderComputers: false,
+        builder: (context, deviceInfo) {
+          if (deviceInfo.deviceTypeInformation ==
+              DeviceTypeInformation.MOBILE) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.only(left: 10.0),
+                          child: Text(
+                            "Select Customer *",
+                            style: TextStyle(fontSize: 17),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 2,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        fit: FlexFit.tight,
+                        child: Container(
+                          height: 50,
+                          width: MediaQuery.of(context).size.width / 2.32,
+                          margin: EdgeInsets.only(left: 10),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12.0)),
+                          child: DropdownSearch<CustomerList>(
+                            showClearButton: true,
+                            hint: "Select Customer",
+                            mode: Mode.BOTTOM_SHEET,
+                            dropdownSearchDecoration: InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent))),
+                            autoValidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            showSearchBox: true,
+                            emptyBuilder: (context, filter) {
+                              return Container(
+                                child: Center(
+                                  child: Text("Sorry ! No Customer Found"),
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, filter, dynamic) {
+                              return Scaffold(
+                                backgroundColor: Colors.white,
+                                body: Center(
+                                  child: Image.network(
+                                      "https://media.istockphoto.com/photos/pug-dog-with-yellow-constructor-safety-helmet-and-cone-and-404-error-picture-id687810238?b=1&k=20&m=687810238&s=170667a&w=0&h=duenBlKFTSG0Ne4DmI8cBg47YZ6LACuLRiDlFD5doRQ="),
+                                ),
+                              );
+                            },
+                            loadingBuilder: (context, filter) {
+                              return Center(
+                                child: CircularPercentIndicator(
+                                  radius: 100.0,
+                                  lineWidth: 5.0,
+                                  percent: 1.0,
+                                  animationDuration: 5000,
+                                  restartAnimation: true,
+                                  animation: true,
+                                  footer: Text("Fetching Data Securely!"),
+                                  center: new Icon(
+                                    Icons.lock,
+                                    size: 30.0,
+                                    color: Colors.black,
+                                  ),
+                                  backgroundColor: Colors.white,
+                                  circularStrokeCap: CircularStrokeCap.round,
+                                  progressColor: Colors.black,
+                                ),
+                              );
+                            },
+                            onFind: (String filter) async {
+                              var response = await Dio().get(
+                                "https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=customer",
+                                queryParameters: {"filter": filter},
+                              );
+                              print(response.data.length);
+                              var models =
+                                  CustomerList.fromJsonList(response.data);
+
+                              print(models);
+                              return models;
+                            },
+                            onChanged: (CustomerList data) {
+                              print(data);
+                              customerSelected = data.id;
+                              cust_name = data.customername;
+                              // addCustomerData();
+                            },
+                          ),
+                        ),
+                      ),
+                      // SizedBox(
+                      //   width: 30,
+                      // ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(left: 10.0),
+                      child: Text(
+                        "Select Branch ",
+                        style: TextStyle(fontSize: 15),
+                      )),
+                  SizedBox(height: 2),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 50,
+                        width: MediaQuery.of(context).size.width / 1.1,
+                        margin: EdgeInsets.only(left: 10),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12.0)),
+                        child: DropdownSearch<CustomerBranch>(
+                          showClearButton: true,
+                          mode: Mode.BOTTOM_SHEET,
+                          hint: "Select Branch",
+                          dropdownSearchDecoration: InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent))),
+                          autoValidateMode: AutovalidateMode.onUserInteraction,
+                          errorBuilder: (context, filter, dynamic) {
+                            return Scaffold(
+                              backgroundColor: Colors.white,
+                              body: Center(
+                                child: Image.network(
+                                    "https://media.istockphoto.com/photos/pug-dog-with-yellow-constructor-safety-helmet-and-cone-and-404-error-picture-id687810238?b=1&k=20&m=687810238&s=170667a&w=0&h=duenBlKFTSG0Ne4DmI8cBg47YZ6LACuLRiDlFD5doRQ="),
+                              ),
+                            );
+                          },
+                          loadingBuilder: (context, filter) {
+                            return Center(
+                              child: CircularPercentIndicator(
+                                radius: 100.0,
+                                lineWidth: 5.0,
+                                percent: 1.0,
+                                animationDuration: 5000,
+                                restartAnimation: true,
+                                animation: true,
+                                footer: Text("Fetching Data Securely!"),
+                                center: new Icon(
+                                  Icons.lock,
+                                  size: 30.0,
+                                  color: Colors.black,
+                                ),
+                                backgroundColor: Colors.white,
+                                circularStrokeCap: CircularStrokeCap.round,
+                                progressColor: Colors.black,
+                              ),
+                            );
+                          },
+                          showSearchBox: true,
+                          onFind: (String filter) async {
+                            var response = await Dio().get(
+                              "https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=customerbranch&custid=1459",
+                              queryParameters: {"filter": filter},
+                            );
+                            print(response.data.length);
+                            var models =
+                                CustomerBranch.fromJsonList(response.data);
+
+                            return models;
+                          },
+                          onChanged: (CustomerBranch data) {
+                            print(data);
+                            branchSelected = data.id;
+                            // selectedvalue = data.id;
+                            // addCustomerData();
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.only(left: 10.0),
+                          child: Text(
+                            "Customer Email *",
+                            style: TextStyle(fontSize: 17),
+                          )),
+                      SizedBox(
+                        width: 80,
+                      ),
+                      Container(
+                          child: Text(
+                        "Customer Type *",
+                        style: TextStyle(fontSize: 17),
+                      )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[500])),
+                          width: MediaQuery.of(context).size.width / 2.32,
+                          child: FutureBuilder(
+                            future: getAllValue(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data.length == 0) {
+                                  return Container(
+                                    child: Text(
+                                      "",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 20),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }
+                                return ListView.builder(
+                                    itemBuilder: (context, index) {
+                                  var list = snapshot.data[0];
+
+                                  cust_email = list['cemail'];
+
+                                  // addCustomerData();
+
+                                  return TextFormField(
+                                    enabled: true,
+                                    initialValue:
+                                        cust_email == null ? "" : cust_email,
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        fillColor: Color(0xfff3f3f4),
+                                        filled: true),
+                                    onChanged: (text) {
+                                      cust_email = text;
+                                      // addCustomerData();
+                                    },
+                                  );
+                                });
+                              }
+                              return Container(
+                                child: Text(
+                                  "",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 20),
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            },
+                          )),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          width: MediaQuery.of(context).size.width / 2.32,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[500])),
+                          child: FutureBuilder(
+                            future: getAllValue(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data.length == 0) {
+                                  return Container(
+                                    child: Text(
+                                      "",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 20),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }
+                                return ListView.builder(
+                                    itemCount: 1,
+                                    itemBuilder: (context, index) {
+                                      var list = snapshot.data[0];
+
+                                      cust_type = list['invoiceprice'];
+
+                                      // addCustomerData();
+
+                                      return TextFormField(
+                                        enabled: false,
+                                        initialValue: cust_type,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            fillColor: Color(0xfff3f3f4),
+                                            filled: true),
+                                      );
+                                    });
+                              }
+                              return Container(
+                                child: Text(
+                                  "",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 20),
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            },
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.only(left: 10.0),
+                          child: Text(
+                            "Credit Limit *",
+                            style: TextStyle(fontSize: 17),
+                          )),
+                      SizedBox(
+                        width: 110,
+                      ),
+                      Container(
+                          child: Text(
+                        "Credit Days *",
+                        style: TextStyle(fontSize: 17),
+                      )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[500])),
+                          width: MediaQuery.of(context).size.width / 2.32,
+                          child: FutureBuilder(
+                            future: getAllValue(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data.length == 0) {
+                                  return Container(
+                                    child: Text(
+                                      "",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 20),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }
+                                return ListView.builder(
+                                    itemCount: 1,
+                                    itemBuilder: (context, index) {
+                                      var list = snapshot.data[0];
+
+                                      credit_limit = list['creditlimits'];
+                                      // addCustomerData();
+                                      return TextFormField(
+                                        enabled: false,
+                                        initialValue: credit_limit,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            fillColor: Color(0xfff3f3f4),
+                                            filled: true),
+                                      );
+                                    });
+                              }
+                              return Container(
+                                child: Text(
+                                  "",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 20),
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            },
+                          )),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          width: MediaQuery.of(context).size.width / 2.32,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[500])),
+                          child: FutureBuilder(
+                            future: getAllValue(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data.length == 0) {
+                                  return Container(
+                                    child: Text(
+                                      "",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 20),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }
+                                return ListView.builder(
+                                    itemCount: 1,
+                                    itemBuilder: (context, index) {
+                                      var list = snapshot.data[0];
+
+                                      credit_days = list['creditdays'];
+
+                                      addCustomerData();
+
+                                      return TextFormField(
+                                        enabled: false,
+                                        initialValue: credit_days,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            fillColor: Color(0xfff3f3f4),
+                                            filled: true),
+                                      );
+                                    });
+                              }
+                              return Container(
+                                child: Text(
+                                  "",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 20),
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            },
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.only(left: 10.0),
+                          child: Text(
+                            "Attachment",
+                            style: TextStyle(fontSize: 17),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[500])),
+                          width: MediaQuery.of(context).size.width / 1.10,
+                          child: TextFormField(
+                            cursorColor: Colors.black,
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Colors.white, width: 2.0),
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                            ),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.only(left: 10.0),
+                          child: Text(
+                            "Remarks",
+                            style: TextStyle(fontSize: 17),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[500])),
+                          width: MediaQuery.of(context).size.width / 1.10,
+                          child: TextFormField(
+                            cursorColor: Colors.black,
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Colors.white, width: 2.0),
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                            ),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    child: InkWell(
+                      onTap: () {
+                        addCustomerData();
+                        Future.delayed(Duration(seconds: 1), () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomeScreen()),
+                          ).then((value) {
+                            setState(() {
+                              addCustomerData();
+                            });
+                          });
+                        });
+                      },
+                      child: Container(
+                          height: 50,
+                          width: 200,
+                          decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(12.0)),
+                          child: Container(
+                            margin: EdgeInsets.only(top: 15),
+                            child: Text(
+                              "Confirm",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                              textAlign: TextAlign.center,
+                            ),
+                          )),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  )
+                ],
+              ),
+            );
+          } else if (deviceInfo.deviceTypeInformation ==
+                  DeviceTypeInformation.TABLET &&
+              deviceInfo.orientation == Orientation.landscape) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        width: MediaQuery.of(context).size.width / 1.6,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                                margin: EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                  "Select Customer *",
+                                  style: TextStyle(fontSize: 17),
+                                )),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                margin: EdgeInsets.only(right: 220.0),
+                                child: Text(
+                                  "Select Branch ",
+                                  style: TextStyle(fontSize: 17),
+                                )),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width / 1.47,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              height: 50,
+                              width: MediaQuery.of(context).size.width / 3.32,
+                              decoration: BoxDecoration(
+                                  // color: Colors.black,
+                                  borderRadius: BorderRadius.circular(12.0)),
+                              margin: EdgeInsets.only(left: 10.0),
+                              child: DropdownSearch<CustomerList>(
+                                showClearButton: true,
+                                hint: "Select Customer",
+                                mode: Mode.BOTTOM_SHEET,
+                                dropdownSearchDecoration: InputDecoration(
+                                    enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent))),
+                                autoValidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                showSearchBox: true,
+                                emptyBuilder: (context, filter) {
+                                  return Container(
+                                    child: Center(
+                                      child: Text("Sorry ! No Customer Found"),
+                                    ),
+                                  );
+                                },
+                                errorBuilder: (context, filter, dynamic) {
+                                  return Scaffold(
+                                    backgroundColor: Colors.white,
+                                    body: Center(
+                                      child: Image.network(
+                                          "https://media.istockphoto.com/photos/pug-dog-with-yellow-constructor-safety-helmet-and-cone-and-404-error-picture-id687810238?b=1&k=20&m=687810238&s=170667a&w=0&h=duenBlKFTSG0Ne4DmI8cBg47YZ6LACuLRiDlFD5doRQ="),
+                                    ),
+                                  );
+                                },
+                                loadingBuilder: (context, filter) {
+                                  return Center(
+                                    child: CircularPercentIndicator(
+                                      radius: 100.0,
+                                      lineWidth: 10.0,
+                                      percent: 1.0,
+                                      animationDuration: 5000,
+                                      restartAnimation: true,
+                                      animation: true,
+                                      footer: Text("Fetching Data Securely!"),
+                                      center: new Icon(
+                                        Icons.lock,
+                                        size: 50.0,
+                                        color: Colors.black,
+                                      ),
+                                      backgroundColor: Colors.white,
+                                      circularStrokeCap:
+                                          CircularStrokeCap.round,
+                                      progressColor: Colors.black,
+                                    ),
+                                  );
+                                },
+                                onFind: (String filter) async {
+                                  var response = await Dio().get(
+                                    "https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=customer",
+                                    queryParameters: {"filter": filter},
+                                  );
+                                  print(response.data.length);
+                                  var models =
+                                      CustomerList.fromJsonList(response.data);
+
+                                  print(models);
+                                  return models;
+                                },
+                                onChanged: (CustomerList data) {
+                                  print(data);
+                                  customerSelected = data.id;
+                                  getAllValue();
+                                },
+                              ),
+                            ),
+                            Container(
+                              height: 50,
+                              width: MediaQuery.of(context).size.width / 3.32,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12.0)),
+                              margin: EdgeInsets.only(right: 20.0),
+                              child: DropdownSearch<CustomerBranch>(
+                                hint: "Select Branch",
+                                mode: Mode.BOTTOM_SHEET,
+                                dropdownSearchDecoration: InputDecoration(
+                                    enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent))),
+                                autoValidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                showSearchBox: true,
+                                emptyBuilder: (context, filter) {
+                                  return Container(
+                                    child: Center(
+                                      child: Text("Sorry ! No Customer Found"),
+                                    ),
+                                  );
+                                },
+                                errorBuilder: (context, filter, dynamic) {
+                                  return Scaffold(
+                                    backgroundColor: Colors.white,
+                                    body: Center(
+                                      child: Image.network(
+                                          "https://media.istockphoto.com/photos/pug-dog-with-yellow-constructor-safety-helmet-and-cone-and-404-error-picture-id687810238?b=1&k=20&m=687810238&s=170667a&w=0&h=duenBlKFTSG0Ne4DmI8cBg47YZ6LACuLRiDlFD5doRQ="),
+                                    ),
+                                  );
+                                },
+                                loadingBuilder: (context, filter) {
+                                  return Center(
+                                    child: CircularPercentIndicator(
+                                      radius: 100.0,
+                                      lineWidth: 10.0,
+                                      percent: 1.0,
+                                      animationDuration: 5000,
+                                      restartAnimation: true,
+                                      animation: true,
+                                      footer: Text("Fetching Data Securely!"),
+                                      center: new Icon(
+                                        Icons.lock,
+                                        size: 50.0,
+                                        color: Colors.black,
+                                      ),
+                                      backgroundColor: Colors.white,
+                                      circularStrokeCap:
+                                          CircularStrokeCap.round,
+                                      progressColor: Colors.black,
+                                    ),
+                                  );
+                                },
+                                onFind: (String filter) async {
+                                  var response = await Dio().get(
+                                    "https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=customerbranch",
+                                    queryParameters: {"filter": filter},
+                                  );
+                                  print(response.data.length);
+                                  var models = CustomerBranch.fromJsonList(
+                                      response.data);
+
+                                  print(models);
+                                  return models;
+                                },
+                                onChanged: (CustomerBranch data) {
+                                  print(data);
+                                  branchSelected = data.id;
+                                  getAllValue();
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        width: MediaQuery.of(context).size.width / 1.6,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                                margin: EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                  "Customer EmailId *",
+                                  style: TextStyle(fontSize: 17),
+                                )),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                margin: EdgeInsets.only(right: 200.0),
+                                child: Text(
+                                  "Customer Type *",
+                                  style: TextStyle(fontSize: 17),
+                                )),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          width: MediaQuery.of(context).size.width / 3.32,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black)),
+                          child: FutureBuilder(
+                            future: getAllValue(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data.length == 0) {
+                                  return Container(
+                                    margin: EdgeInsets.only(top: 3),
+                                    child: Text(
+                                      "",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 17),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }
+                                return ListView.builder(
+                                    itemBuilder: (context, index) {
+                                  var list = snapshot.data[index];
+
+                                  cust_email = list['cemail'];
+
+                                  return TextFormField(
+                                    enabled: true,
+                                    initialValue:
+                                        cust_email == null ? "" : cust_email,
+                                    keyboardType: TextInputType.emailAddress,
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        fillColor: Color(0xfff3f3f4),
+                                        filled: true),
+                                    onChanged: (text) {
+                                      cust_email = text;
+                                      // addCustomerData();
+                                    },
+                                  );
+                                });
+                              }
+                              return Container(
+                                child: Text(
+                                  "",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 20),
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            },
+                          )),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 20,
+                      ),
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          width: MediaQuery.of(context).size.width / 3.32,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black)),
+                          child: FutureBuilder(
+                            future: getAllValue(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data.length == 0) {
+                                  return Container(
+                                    child: Text(
+                                      "",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 20),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }
+                                return ListView.builder(
+                                    itemBuilder: (context, index) {
+                                  var list = snapshot.data[index];
+
+                                  cust_type = list['invoiceprice'];
+
+                                  return TextFormField(
+                                    initialValue: list['invoiceprice'],
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        fillColor: Color(0xfff3f3f4),
+                                        filled: true),
+                                  );
+                                });
+                              }
+                              return Container(
+                                child: Text(
+                                  "",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 20),
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            },
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        width: MediaQuery.of(context).size.width / 1.6,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                                margin: EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                  "Credit Days *",
+                                  style: TextStyle(fontSize: 17),
+                                )),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                margin: EdgeInsets.only(right: 200.0),
+                                child: Text(
+                                  "Customer Limit *",
+                                  style: TextStyle(fontSize: 17),
+                                )),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          width: MediaQuery.of(context).size.width / 3.32,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black)),
+                          child: FutureBuilder(
+                            future: getAllValue(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data.length == 0) {
+                                  return Container(
+                                    margin: EdgeInsets.only(top: 3),
+                                    child: Text(
+                                      "",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 17),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }
+                                return ListView.builder(
+                                    itemBuilder: (context, index) {
+                                  var list = snapshot.data[index];
+
+                                  cust_email = list['cemail'];
+
+                                  return TextFormField(
+                                    enabled: true,
+                                    initialValue:
+                                        cust_email == null ? "" : cust_email,
+                                    keyboardType: TextInputType.emailAddress,
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        fillColor: Color(0xfff3f3f4),
+                                        filled: true),
+                                  );
+                                });
+                              }
+                              return Container(
+                                child: Text(
+                                  "",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 20),
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            },
+                          )),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 20,
+                      ),
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          width: MediaQuery.of(context).size.width / 3.32,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black)),
+                          child: FutureBuilder(
+                            future: getAllValue(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data.length == 0) {
+                                  return Container(
+                                    child: Text(
+                                      "",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 20),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }
+                                return ListView.builder(
+                                    itemBuilder: (context, index) {
+                                  var list = snapshot.data[index];
+
+                                  cust_type = list['invoiceprice'];
+
+                                  return TextFormField(
+                                    initialValue: list['invoiceprice'],
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        fillColor: Color(0xfff3f3f4),
+                                        filled: true),
+                                  );
+                                });
+                              }
+                              return Container(
+                                child: Text(
+                                  "",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 20),
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            },
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // Row(
+                  //   children: [
+                  //     Container(
+                  //       alignment: Alignment.centerLeft,
+                  //       width: MediaQuery.of(context).size.width / 1.6,
+                  //       child: Row(
+                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //         children: [
+                  //           Container(
+                  //               margin: EdgeInsets.only(left: 10.0),
+                  //               child: Text(
+                  //                 "Credit Limit *",
+                  //                 style: TextStyle(fontSize: 17),
+                  //               )),
+                  //           Container(
+                  //               alignment: Alignment.centerLeft,
+                  //               margin: EdgeInsets.only(right: 170.0),
+                  //               child: Text(
+                  //                 "Credit Days *",
+                  //                 style: TextStyle(fontSize: 17),
+                  //               )),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // SizedBox(
+                  //   height: 20,
+                  // ),
+                  // Row(
+                  //   children: [
+                  //     Container(
+                  //         height: 50,
+                  //         margin: EdgeInsets.only(left: 10.0),
+                  //         decoration: BoxDecoration(
+                  //             border: Border.all(color: Colors.black)),
+                  //         width: MediaQuery.of(context).size.width / 4.5,
+                  //         child: FutureBuilder(
+                  //           future: getAllValue(),
+                  //           builder: (context, snapshot) {
+                  //             if (snapshot.hasData) {
+                  //               if (snapshot.data.length == 0) {
+                  //                 return Container(
+                  //                   child: Text(
+                  //                     "",
+                  //                     style: TextStyle(
+                  //                         color: Colors.black, fontSize: 20),
+                  //                     textAlign: TextAlign.center,
+                  //                   ),
+                  //                 );
+                  //               }
+                  //               return ListView.builder(
+                  //                   itemBuilder: (context, index) {
+                  //                 var list = snapshot.data[index];
+
+                  //                 credit_limit = list['creditlimits'];
+
+                  //                 return TextFormField(
+                  //                   enabled: false,
+                  //                   initialValue: list['creditlimits'],
+                  //                   keyboardType: TextInputType.number,
+                  //                   decoration: InputDecoration(
+                  //                       border: InputBorder.none,
+                  //                       fillColor: Color(0xfff3f3f4),
+                  //                       filled: true),
+                  //                 );
+                  //               });
+                  //             }
+                  //             return Container(
+                  //               child: Text(
+                  //                 "Fetching Info",
+                  //                 style: TextStyle(
+                  //                     color: Colors.black, fontSize: 20),
+                  //                 textAlign: TextAlign.center,
+                  //               ),
+                  //             );
+                  //           },
+                  //         )),
+                  //     SizedBox(
+                  //       width: MediaQuery.of(context).size.width / 6,
+                  //     ),
+                  //     Container(
+                  //         height: 50,
+                  //         margin: EdgeInsets.only(left: 10.0),
+                  //         width: MediaQuery.of(context).size.width / 4.5,
+                  //         decoration: BoxDecoration(
+                  //             border: Border.all(color: Colors.black)),
+                  //         child: FutureBuilder(
+                  //           future: getAllValue(),
+                  //           builder: (context, snapshot) {
+                  //             if (snapshot.hasData) {
+                  //               if (snapshot.data.length == 0) {
+                  //                 return Container(
+                  //                   child: Text(
+                  //                     "",
+                  //                     style: TextStyle(
+                  //                         color: Colors.black, fontSize: 20),
+                  //                     textAlign: TextAlign.center,
+                  //                   ),
+                  //                 );
+                  //               }
+                  //               return ListView.builder(
+                  //                   itemBuilder: (context, index) {
+                  //                 var list = snapshot.data[index];
+
+                  //                 credit_days = list['creditdays'];
+
+                  //                 addCustomerData();
+
+                  //                 return TextFormField(
+                  //                   enabled: false,
+                  //                   initialValue: list['creditdays'],
+                  //                   keyboardType: TextInputType.number,
+                  //                   decoration: InputDecoration(
+                  //                       border: InputBorder.none,
+                  //                       fillColor: Color(0xfff3f3f4),
+                  //                       filled: true),
+                  //                 );
+                  //               });
+                  //             }
+                  //             return Container(
+                  //               child: Text(
+                  //                 "Fetching Info",
+                  //                 style: TextStyle(
+                  //                     color: Colors.black, fontSize: 20),
+                  //                 textAlign: TextAlign.center,
+                  //               ),
+                  //             );
+                  //           },
+                  //         )),
+                  //   ],
+                  // ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.only(left: 10.0),
+                          child: Text(
+                            "Attachment",
+                            style: TextStyle(fontSize: 17),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black)),
+                          width: MediaQuery.of(context).size.width / 1.52,
+                          child: TextFormField(
+                            cursorColor: Colors.black,
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Colors.white, width: 2.0),
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                            ),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.only(left: 10.0),
+                          child: Text(
+                            "Remarks",
+                            style: TextStyle(fontSize: 17),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black)),
+                          width: MediaQuery.of(context).size.width / 1.52,
+                          child: TextFormField(
+                            cursorColor: Colors.black,
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Colors.white, width: 2.0),
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                            ),
+                            autofocus: true,
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(right: 380),
+                    child: InkWell(
+                      onTap: () {
+                        addCustomerData();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomeScreen()));
+                      },
+                      child: Container(
+                          height: 50,
+                          width: 350,
+                          decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(12.0)),
+                          child: Container(
+                            margin: EdgeInsets.only(top: 13),
+                            child: Text(
+                              "Confirm",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                              textAlign: TextAlign.center,
+                            ),
+                          )),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          } else if (deviceInfo.deviceTypeInformation ==
+                  DeviceTypeInformation.TABLET &&
+              deviceInfo.orientation == Orientation.portrait) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                                margin: EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                  "Select Customer *",
+                                  style: TextStyle(fontSize: 17),
+                                )),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                margin: EdgeInsets.only(right: 300.0),
+                                child: Text(
+                                  "Select Branch ",
+                                  style: TextStyle(fontSize: 17),
+                                )),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              height: 50,
+                              width: MediaQuery.of(context).size.width / 2.32,
+                              decoration: BoxDecoration(
+                                  // color: Colors.black,
+                                  borderRadius: BorderRadius.circular(12.0)),
+                              margin: EdgeInsets.only(left: 10.0),
+                              child: DropdownSearch<CustomerList>(
+                                showClearButton: true,
+                                hint: "Select Customer",
+                                mode: Mode.BOTTOM_SHEET,
+                                dropdownSearchDecoration: InputDecoration(
+                                    enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent))),
+                                autoValidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                showSearchBox: true,
+                                emptyBuilder: (context, filter) {
+                                  return Container(
+                                    child: Center(
+                                      child: Text("Sorry ! No Customer Found"),
+                                    ),
+                                  );
+                                },
+                                errorBuilder: (context, filter, dynamic) {
+                                  return Scaffold(
+                                    backgroundColor: Colors.white,
+                                    body: Center(
+                                      child: Image.network(
+                                          "https://media.istockphoto.com/photos/pug-dog-with-yellow-constructor-safety-helmet-and-cone-and-404-error-picture-id687810238?b=1&k=20&m=687810238&s=170667a&w=0&h=duenBlKFTSG0Ne4DmI8cBg47YZ6LACuLRiDlFD5doRQ="),
+                                    ),
+                                  );
+                                },
+                                loadingBuilder: (context, filter) {
+                                  return Center(
+                                    child: CircularPercentIndicator(
+                                      radius: 100.0,
+                                      lineWidth: 10.0,
+                                      percent: 1.0,
+                                      animationDuration: 5000,
+                                      restartAnimation: true,
+                                      animation: true,
+                                      footer: Text("Fetching Data Securely!"),
+                                      center: new Icon(
+                                        Icons.lock,
+                                        size: 50.0,
+                                        color: Colors.black,
+                                      ),
+                                      backgroundColor: Colors.white,
+                                      circularStrokeCap:
+                                          CircularStrokeCap.round,
+                                      progressColor: Colors.black,
+                                    ),
+                                  );
+                                },
+                                onFind: (String filter) async {
+                                  var response = await Dio().get(
+                                    "https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=customer",
+                                    queryParameters: {"filter": filter},
+                                  );
+                                  print(response.data.length);
+                                  var models =
+                                      CustomerList.fromJsonList(response.data);
+
+                                  print(models);
+                                  return models;
+                                },
+                                onChanged: (CustomerList data) {
+                                  print(data);
+                                  customerSelected = data.id;
+                                  getAllValue();
+                                },
+                              ),
+                            ),
+                            Container(
+                              height: 50,
+                              width: MediaQuery.of(context).size.width / 2.32,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12.0)),
+                              margin: EdgeInsets.only(right: 20.0),
+                              child: DropdownSearch<CustomerBranch>(
+                                hint: "Select Branch",
+                                mode: Mode.BOTTOM_SHEET,
+                                dropdownSearchDecoration: InputDecoration(
+                                    enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent))),
+                                autoValidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                showSearchBox: true,
+                                emptyBuilder: (context, filter) {
+                                  return Container(
+                                    child: Center(
+                                      child: Text("Sorry ! No Customer Found"),
+                                    ),
+                                  );
+                                },
+                                errorBuilder: (context, filter, dynamic) {
+                                  return Scaffold(
+                                    backgroundColor: Colors.white,
+                                    body: Center(
+                                      child: Image.network(
+                                          "https://media.istockphoto.com/photos/pug-dog-with-yellow-constructor-safety-helmet-and-cone-and-404-error-picture-id687810238?b=1&k=20&m=687810238&s=170667a&w=0&h=duenBlKFTSG0Ne4DmI8cBg47YZ6LACuLRiDlFD5doRQ="),
+                                    ),
+                                  );
+                                },
+                                loadingBuilder: (context, filter) {
+                                  return Center(
+                                    child: CircularPercentIndicator(
+                                      radius: 100.0,
+                                      lineWidth: 10.0,
+                                      percent: 1.0,
+                                      animationDuration: 5000,
+                                      restartAnimation: true,
+                                      animation: true,
+                                      footer: Text("Fetching Data Securely!"),
+                                      center: new Icon(
+                                        Icons.lock,
+                                        size: 50.0,
+                                        color: Colors.black,
+                                      ),
+                                      backgroundColor: Colors.white,
+                                      circularStrokeCap:
+                                          CircularStrokeCap.round,
+                                      progressColor: Colors.black,
+                                    ),
+                                  );
+                                },
+                                onFind: (String filter) async {
+                                  var response = await Dio().get(
+                                    "https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=customerbranch",
+                                    queryParameters: {"filter": filter},
+                                  );
+                                  print(response.data.length);
+                                  var models = CustomerBranch.fromJsonList(
+                                      response.data);
+
+                                  print(models);
+                                  return models;
+                                },
+                                onChanged: (CustomerBranch data) {
+                                  print(data);
+                                  branchSelected = data.id;
+                                  getAllValue();
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                                margin: EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                  "Customer EmailId *",
+                                  style: TextStyle(fontSize: 17),
+                                )),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                margin: EdgeInsets.only(right: 280.0),
+                                child: Text(
+                                  "Customer Type *",
+                                  style: TextStyle(fontSize: 17),
+                                )),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          width: MediaQuery.of(context).size.width / 2.32,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[300])),
+                          child: FutureBuilder(
+                            future: getAllValue(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data.length == 0) {
+                                  return Container(
+                                    margin: EdgeInsets.only(top: 3),
+                                    child: Text(
+                                      "",
+                                      style: TextStyle(
+                                          color: Colors.grey[300],
+                                          fontSize: 17),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }
+                                return ListView.builder(
+                                    itemBuilder: (context, index) {
+                                  var list = snapshot.data[index];
+
+                                  cust_email = list['cemail'];
+
+                                  return TextFormField(
+                                    enabled: true,
+                                    initialValue:
+                                        cust_email == null ? "" : cust_email,
+                                    keyboardType: TextInputType.emailAddress,
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        fillColor: Color(0xfff3f3f4),
+                                        filled: true),
+                                    onChanged: (text) {
+                                      cust_email = text;
+                                      // addCustomerData();
+                                    },
+                                  );
+                                });
+                              }
+                              return Container(
+                                child: Text(
+                                  "",
+                                  style: TextStyle(
+                                      color: Colors.grey[300], fontSize: 20),
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            },
+                          )),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 18,
+                      ),
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 30.0),
+                          width: MediaQuery.of(context).size.width / 2.32,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[300])),
+                          child: FutureBuilder(
+                            future: getAllValue(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data.length == 0) {
+                                  return Container(
+                                    child: Text(
+                                      "",
+                                      style: TextStyle(
+                                          color: Colors.grey[300],
+                                          fontSize: 20),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }
+                                return ListView.builder(
+                                    itemBuilder: (context, index) {
+                                  var list = snapshot.data[index];
+
+                                  cust_type = list['invoiceprice'];
+
+                                  return TextFormField(
+                                    initialValue: list['invoiceprice'],
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        fillColor: Color(0xfff3f3f4),
+                                        filled: true),
+                                  );
+                                });
+                              }
+                              return Container(
+                                child: Text(
+                                  "",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 20),
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            },
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                                margin: EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                  "Credit Days *",
+                                  style: TextStyle(fontSize: 17),
+                                )),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                margin: EdgeInsets.only(right: 280.0),
+                                child: Text(
+                                  "Customer Limit *",
+                                  style: TextStyle(fontSize: 17),
+                                )),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          width: MediaQuery.of(context).size.width / 2.32,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[300])),
+                          child: FutureBuilder(
+                            future: getAllValue(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data.length == 0) {
+                                  return Container(
+                                    margin: EdgeInsets.only(top: 3),
+                                    child: Text(
+                                      "",
+                                      style: TextStyle(
+                                          color: Colors.grey[300],
+                                          fontSize: 17),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }
+                                return ListView.builder(
+                                    itemBuilder: (context, index) {
+                                  var list = snapshot.data[index];
+
+                                  creditDays = list['credit_days'];
+
+                                  return TextFormField(
+                                    enabled: true,
+                                    initialValue:
+                                        creditDays == null ? "" : creditDays,
+                                    keyboardType: TextInputType.emailAddress,
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        fillColor: Color(0xfff3f3f4),
+                                        filled: true),
+                                  );
+                                });
+                              }
+                              return Container(
+                                child: Text(
+                                  "",
+                                  style: TextStyle(
+                                      color: Colors.grey[300], fontSize: 20),
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            },
+                          )),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 20,
+                      ),
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 30.0),
+                          width: MediaQuery.of(context).size.width / 2.32,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[300])),
+                          child: FutureBuilder(
+                            future: getAllValue(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data.length == 0) {
+                                  return Container(
+                                    child: Text(
+                                      "",
+                                      style: TextStyle(
+                                          color: Colors.grey[300],
+                                          fontSize: 20),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }
+                                return ListView.builder(
+                                    itemBuilder: (context, index) {
+                                  var list = snapshot.data[index];
+
+                                  cust_type = list['invoiceprice'];
+
+                                  return TextFormField(
+                                    initialValue: list['invoiceprice'],
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        fillColor: Color(0xfff3f3f4),
+                                        filled: true),
+                                  );
+                                });
+                              }
+                              return Container(
+                                child: Text(
+                                  "",
+                                  style: TextStyle(
+                                      color: Colors.grey[300], fontSize: 20),
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            },
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // Row(
+                  //   children: [
+                  //     Container(
+                  //       alignment: Alignment.centerLeft,
+                  //       width: MediaQuery.of(context).size.width / 1.6,
+                  //       child: Row(
+                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //         children: [
+                  //           Container(
+                  //               margin: EdgeInsets.only(left: 10.0),
+                  //               child: Text(
+                  //                 "Credit Limit *",
+                  //                 style: TextStyle(fontSize: 17),
+                  //               )),
+                  //           Container(
+                  //               alignment: Alignment.centerLeft,
+                  //               margin: EdgeInsets.only(right: 170.0),
+                  //               child: Text(
+                  //                 "Credit Days *",
+                  //                 style: TextStyle(fontSize: 17),
+                  //               )),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // SizedBox(
+                  //   height: 20,
+                  // ),
+                  // Row(
+                  //   children: [
+                  //     Container(
+                  //         height: 50,
+                  //         margin: EdgeInsets.only(left: 10.0),
+                  //         decoration: BoxDecoration(
+                  //             border: Border.all(color: Colors.black)),
+                  //         width: MediaQuery.of(context).size.width / 4.5,
+                  //         child: FutureBuilder(
+                  //           future: getAllValue(),
+                  //           builder: (context, snapshot) {
+                  //             if (snapshot.hasData) {
+                  //               if (snapshot.data.length == 0) {
+                  //                 return Container(
+                  //                   child: Text(
+                  //                     "",
+                  //                     style: TextStyle(
+                  //                         color: Colors.black, fontSize: 20),
+                  //                     textAlign: TextAlign.center,
+                  //                   ),
+                  //                 );
+                  //               }
+                  //               return ListView.builder(
+                  //                   itemBuilder: (context, index) {
+                  //                 var list = snapshot.data[index];
+
+                  //                 credit_limit = list['creditlimits'];
+
+                  //                 return TextFormField(
+                  //                   enabled: false,
+                  //                   initialValue: list['creditlimits'],
+                  //                   keyboardType: TextInputType.number,
+                  //                   decoration: InputDecoration(
+                  //                       border: InputBorder.none,
+                  //                       fillColor: Color(0xfff3f3f4),
+                  //                       filled: true),
+                  //                 );
+                  //               });
+                  //             }
+                  //             return Container(
+                  //               child: Text(
+                  //                 "Fetching Info",
+                  //                 style: TextStyle(
+                  //                     color: Colors.black, fontSize: 20),
+                  //                 textAlign: TextAlign.center,
+                  //               ),
+                  //             );
+                  //           },
+                  //         )),
+                  //     SizedBox(
+                  //       width: MediaQuery.of(context).size.width / 6,
+                  //     ),
+                  //     Container(
+                  //         height: 50,
+                  //         margin: EdgeInsets.only(left: 10.0),
+                  //         width: MediaQuery.of(context).size.width / 4.5,
+                  //         decoration: BoxDecoration(
+                  //             border: Border.all(color: Colors.black)),
+                  //         child: FutureBuilder(
+                  //           future: getAllValue(),
+                  //           builder: (context, snapshot) {
+                  //             if (snapshot.hasData) {
+                  //               if (snapshot.data.length == 0) {
+                  //                 return Container(
+                  //                   child: Text(
+                  //                     "",
+                  //                     style: TextStyle(
+                  //                         color: Colors.black, fontSize: 20),
+                  //                     textAlign: TextAlign.center,
+                  //                   ),
+                  //                 );
+                  //               }
+                  //               return ListView.builder(
+                  //                   itemBuilder: (context, index) {
+                  //                 var list = snapshot.data[index];
+
+                  //                 credit_days = list['creditdays'];
+
+                  //                 addCustomerData();
+
+                  //                 return TextFormField(
+                  //                   enabled: false,
+                  //                   initialValue: list['creditdays'],
+                  //                   keyboardType: TextInputType.number,
+                  //                   decoration: InputDecoration(
+                  //                       border: InputBorder.none,
+                  //                       fillColor: Color(0xfff3f3f4),
+                  //                       filled: true),
+                  //                 );
+                  //               });
+                  //             }
+                  //             return Container(
+                  //               child: Text(
+                  //                 "Fetching Info",
+                  //                 style: TextStyle(
+                  //                     color: Colors.black, fontSize: 20),
+                  //                 textAlign: TextAlign.center,
+                  //               ),
+                  //             );
+                  //           },
+                  //         )),
+                  //   ],
+                  // ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.only(left: 10.0),
+                          child: Text(
+                            "Attachment",
+                            style: TextStyle(fontSize: 17),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[300])),
+                          width: MediaQuery.of(context).size.width / 1.1,
+                          child: TextFormField(
+                            cursorColor: Colors.black,
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey[300])),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Colors.white, width: 2.0),
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                            ),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.only(left: 10.0),
+                          child: Text(
+                            "Remarks",
+                            style: TextStyle(fontSize: 17),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[300])),
+                          width: MediaQuery.of(context).size.width / 1.1,
+                          child: TextFormField(
+                            cursorColor: Colors.grey[300],
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey[300])),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Colors.white, width: 2.0),
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                            ),
+                            autofocus: true,
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    // margin: EdgeInsets.only(right: 380),
+                    alignment: Alignment.center,
+                    child: InkWell(
+                      onTap: () {
+                        addCustomerData();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomeScreen()));
+                      },
+                      child: Container(
+                          height: 50,
+                          width: 350,
+                          decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(12.0)),
+                          child: Container(
+                            margin: EdgeInsets.only(top: 13),
+                            child: Text(
+                              "Confirm",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                              textAlign: TextAlign.center,
+                            ),
+                          )),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return Center(
+            child: Text("Not Compatible"),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// Future<List<CustomerListModel>> getData(filter) async {
+//   var response = await Dio().get(
+//     "https://5d85ccfb1e61af001471bf60.mockapi.io/user",
+//     queryParameters: {"filter": filter},
+//   );
+
+//   final data = response.data;
+//   if (data != null) {
+//     return CustomerListModel.fromJsonList(data);
+//   }
+
+//   return [];
+// }
