@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:responsify/responsify.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,7 +21,9 @@ class GenerateSalesOrder extends StatefulWidget {
 }
 
 class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
+  // ignore: non_constant_identifier_names
   String cust_email,
+      branch_name,
       cust_type,
       credit_days,
       credit_limit,
@@ -29,15 +32,20 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
       invoiceprice,
       invoicetype,
       cust_name;
-
   String customerSelected, branchSelected;
   TextEditingController customerEmailId = TextEditingController();
-  TextEditingController customerType = TextEditingController();
-  TextEditingController creditLimit = TextEditingController();
-  TextEditingController creditDays = TextEditingController();
 
   addCustomerData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setString('customerId', customerSelected);
+
+    if (branchSelected == null) {
+      prefs.setString('branchId', "null");
+    } else {
+      prefs.setString('branchId', branchSelected);
+    }
+
     prefs.setString(
       'cemail',
       cust_email,
@@ -55,19 +63,11 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
       credit_limit,
     );
     prefs.setString('customerName', cust_name);
-    if (branchSelected == null) {
-      prefs.setString('customerBranch', "null");
+    if (branch_name == null) {
+      prefs.setString('customerBranch', "No Branch");
     } else {
-      prefs.setString('customerBranch', branchSelected);
+      prefs.setString('customerBranch', branch_name);
     }
-    print("_____________");
-    print(prefs.getString('customerName'));
-    print("_____________");
-    print(prefs.getString('credit_limit'));
-    print("_____________");
-    print(prefs.getString('credit_days'));
-    print("_____________");
-    print(prefs.getString('cemail'));
   }
 
   Future getAllValue() async {
@@ -77,10 +77,9 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
       'custid': customerSelected,
       'selectedcustbranch': branchSelected
     };
-    print(data);
+
     var response = await http.post(Uri.parse(url), body: json.encode(data));
     var jsondataval = json.decode(response.body);
-    print(jsondataval);
 
     return jsondataval;
   }
@@ -88,6 +87,11 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -187,17 +191,17 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                 "https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=customer",
                                 queryParameters: {"filter": filter},
                               );
-                              print(response.data.length);
+
                               var models =
                                   CustomerList.fromJsonList(response.data);
 
-                              print(models);
                               return models;
                             },
                             onChanged: (CustomerList data) {
-                              print(data);
+                              // printdata);
                               customerSelected = data.id;
                               cust_name = data.customername;
+                              // printcustomerSelected);
                               // addCustomerData();
                             },
                           ),
@@ -222,70 +226,76 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Container(
-                        height: 50,
-                        width: MediaQuery.of(context).size.width / 1.1,
-                        margin: EdgeInsets.only(left: 10),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12.0)),
-                        child: DropdownSearch<CustomerBranch>(
-                          showClearButton: true,
-                          mode: Mode.BOTTOM_SHEET,
-                          hint: "Select Branch",
-                          dropdownSearchDecoration: InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent))),
-                          autoValidateMode: AutovalidateMode.onUserInteraction,
-                          errorBuilder: (context, filter, dynamic) {
-                            return Scaffold(
-                              backgroundColor: Colors.white,
-                              body: Center(
-                                child: Image.network(
-                                    "https://media.istockphoto.com/photos/pug-dog-with-yellow-constructor-safety-helmet-and-cone-and-404-error-picture-id687810238?b=1&k=20&m=687810238&s=170667a&w=0&h=duenBlKFTSG0Ne4DmI8cBg47YZ6LACuLRiDlFD5doRQ="),
-                              ),
-                            );
-                          },
-                          loadingBuilder: (context, filter) {
-                            return Center(
-                              child: CircularPercentIndicator(
-                                radius: 100.0,
-                                lineWidth: 5.0,
-                                percent: 1.0,
-                                animationDuration: 5000,
-                                restartAnimation: true,
-                                animation: true,
-                                footer: Text("Fetching Data Securely!"),
-                                center: new Icon(
-                                  Icons.lock,
-                                  size: 30.0,
-                                  color: Colors.black,
-                                ),
+                      Flexible(
+                        flex: 1,
+                        fit: FlexFit.tight,
+                        child: Container(
+                          height: 50,
+                          width: MediaQuery.of(context).size.width / 2.32,
+                          margin: EdgeInsets.only(left: 10),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12.0)),
+                          child: DropdownSearch<CustomerBranch>(
+                            showClearButton: true,
+                            mode: Mode.BOTTOM_SHEET,
+                            hint: "Select Branch",
+                            dropdownSearchDecoration: InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent))),
+                            autoValidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            errorBuilder: (context, filter, dynamic) {
+                              return Scaffold(
                                 backgroundColor: Colors.white,
-                                circularStrokeCap: CircularStrokeCap.round,
-                                progressColor: Colors.black,
-                              ),
-                            );
-                          },
-                          showSearchBox: true,
-                          onFind: (String filter) async {
-                            var response = await Dio().get(
-                              "https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=customerbranch&custid=1459",
-                              queryParameters: {"filter": filter},
-                            );
-                            print(response.data.length);
-                            var models =
-                                CustomerBranch.fromJsonList(response.data);
+                                body: Center(
+                                  child: Image.network(
+                                      "https://media.istockphoto.com/photos/pug-dog-with-yellow-constructor-safety-helmet-and-cone-and-404-error-picture-id687810238?b=1&k=20&m=687810238&s=170667a&w=0&h=duenBlKFTSG0Ne4DmI8cBg47YZ6LACuLRiDlFD5doRQ="),
+                                ),
+                              );
+                            },
+                            loadingBuilder: (context, filter) {
+                              return Center(
+                                child: CircularPercentIndicator(
+                                  radius: 100.0,
+                                  lineWidth: 5.0,
+                                  percent: 1.0,
+                                  animationDuration: 5000,
+                                  restartAnimation: true,
+                                  animation: true,
+                                  footer: Text("Fetching Data Securely!"),
+                                  center: new Icon(
+                                    Icons.lock,
+                                    size: 30.0,
+                                    color: Colors.black,
+                                  ),
+                                  backgroundColor: Colors.white,
+                                  circularStrokeCap: CircularStrokeCap.round,
+                                  progressColor: Colors.black,
+                                ),
+                              );
+                            },
+                            showSearchBox: true,
+                            onFind: (String filter) async {
+                              var response = await Dio().get(
+                                "https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=customerbranch&custid=1459",
+                                queryParameters: {"filter": filter},
+                              );
+                              // printresponse.data.length);
+                              var models =
+                                  CustomerBranch.fromJsonList(response.data);
 
-                            return models;
-                          },
-                          onChanged: (CustomerBranch data) {
-                            print(data);
-                            branchSelected = data.id;
-                            // selectedvalue = data.id;
-                            // addCustomerData();
-                          },
+                              return models;
+                            },
+                            onChanged: (CustomerBranch data) {
+                              // printdata);
+                              branchSelected = data.id;
+                              branch_name = data.branchname;
+                              // selectedvalue = data.id;
+                              // addCustomerData();
+                            },
+                          ),
                         ),
                       ),
                     ],
@@ -353,6 +363,8 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                         filled: true),
                                     onChanged: (text) {
                                       cust_email = text;
+                                      setState(() {});
+                                      // printcust_email);
                                       // addCustomerData();
                                     },
                                   );
@@ -630,18 +642,23 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                   Container(
                     child: InkWell(
                       onTap: () {
-                        addCustomerData();
-                        Future.delayed(Duration(seconds: 1), () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeScreen()),
-                          ).then((value) {
-                            setState(() {
-                              addCustomerData();
+                        if (customerSelected == null) {
+                          Fluttertoast.showToast(
+                              msg: 'Please Select a customer first');
+                        } else {
+                          addCustomerData();
+                          Future.delayed(Duration(seconds: 1), () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeScreen()),
+                            ).then((value) {
+                              setState(() {
+                                addCustomerData();
+                              });
                             });
                           });
-                        });
+                        }
                       },
                       child: Container(
                           height: 50,
@@ -773,16 +790,19 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                     "https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=customer",
                                     queryParameters: {"filter": filter},
                                   );
-                                  print(response.data.length);
+                                  // printresponse.data.length);
                                   var models =
                                       CustomerList.fromJsonList(response.data);
 
-                                  print(models);
+                                  // printmodels);
                                   return models;
                                 },
                                 onChanged: (CustomerList data) {
-                                  print(data);
                                   customerSelected = data.id;
+                                  cust_name = data.customername;
+                                  // printcust_name);
+
+                                  // printcustomerSelected);
                                   getAllValue();
                                 },
                               ),
@@ -846,16 +866,18 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                     "https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=customerbranch",
                                     queryParameters: {"filter": filter},
                                   );
-                                  print(response.data.length);
+                                  // printresponse.data.length);
                                   var models = CustomerBranch.fromJsonList(
                                       response.data);
 
-                                  print(models);
+                                  // printmodels);
                                   return models;
                                 },
                                 onChanged: (CustomerBranch data) {
-                                  print(data);
                                   branchSelected = data.id;
+                                  branch_name = data.branchname;
+                                  // printbranch_name);
+                                  // printbranchSelected);
                                   getAllValue();
                                 },
                               ),
@@ -921,26 +943,33 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                   );
                                 }
                                 return ListView.builder(
+                                    itemCount: 1,
                                     itemBuilder: (context, index) {
-                                  var list = snapshot.data[index];
+                                      var list = snapshot.data[0];
 
-                                  cust_email = list['cemail'];
+                                      cust_email = list['cemail'];
 
-                                  return TextFormField(
-                                    enabled: true,
-                                    initialValue:
-                                        cust_email == null ? "" : cust_email,
-                                    keyboardType: TextInputType.emailAddress,
-                                    decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        fillColor: Color(0xfff3f3f4),
-                                        filled: true),
-                                    onChanged: (text) {
-                                      cust_email = text;
-                                      // addCustomerData();
-                                    },
-                                  );
-                                });
+                                      // printcust_email);
+                                      return TextFormField(
+                                        enabled: true,
+                                        initialValue: cust_email == null
+                                            ? ""
+                                            : cust_email,
+                                        keyboardType:
+                                            TextInputType.emailAddress,
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            fillColor: Color(0xfff3f3f4),
+                                            filled: true),
+                                        onChanged: (text) {
+                                          setState(() {
+                                            cust_email = text;
+                                          });
+
+                                          // addCustomerData();
+                                        },
+                                      );
+                                    });
                               }
                               return Container(
                                 child: Text(
@@ -976,20 +1005,23 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                   );
                                 }
                                 return ListView.builder(
+                                    itemCount: 1,
                                     itemBuilder: (context, index) {
-                                  var list = snapshot.data[index];
+                                      var list = snapshot.data[0];
 
-                                  cust_type = list['invoiceprice'];
+                                      cust_type = list['invoiceprice'];
+                                      // printcust_type);
 
-                                  return TextFormField(
-                                    initialValue: list['invoiceprice'],
-                                    keyboardType: TextInputType.number,
-                                    decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        fillColor: Color(0xfff3f3f4),
-                                        filled: true),
-                                  );
-                                });
+                                      return TextFormField(
+                                        enabled: false,
+                                        initialValue: cust_type,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            fillColor: Color(0xfff3f3f4),
+                                            filled: true),
+                                      );
+                                    });
                               }
                               return Container(
                                 child: Text(
@@ -1059,22 +1091,27 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                   );
                                 }
                                 return ListView.builder(
+                                    itemCount: 1,
                                     itemBuilder: (context, index) {
-                                  var list = snapshot.data[index];
+                                      var list = snapshot.data[0];
 
-                                  cust_email = list['cemail'];
+                                      credit_days = list['creditdays'];
 
-                                  return TextFormField(
-                                    enabled: true,
-                                    initialValue:
-                                        cust_email == null ? "" : cust_email,
-                                    keyboardType: TextInputType.emailAddress,
-                                    decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        fillColor: Color(0xfff3f3f4),
-                                        filled: true),
-                                  );
-                                });
+                                      // printcredit_days);
+
+                                      return TextFormField(
+                                        enabled: true,
+                                        initialValue: credit_days == null
+                                            ? ""
+                                            : credit_days,
+                                        keyboardType:
+                                            TextInputType.emailAddress,
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            fillColor: Color(0xfff3f3f4),
+                                            filled: true),
+                                      );
+                                    });
                               }
                               return Container(
                                 child: Text(
@@ -1110,20 +1147,25 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                   );
                                 }
                                 return ListView.builder(
+                                    itemCount: 1,
                                     itemBuilder: (context, index) {
-                                  var list = snapshot.data[index];
+                                      var list = snapshot.data[0];
 
-                                  cust_type = list['invoiceprice'];
+                                      credit_limit = list['creditlimits'];
 
-                                  return TextFormField(
-                                    initialValue: list['invoiceprice'],
-                                    keyboardType: TextInputType.number,
-                                    decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        fillColor: Color(0xfff3f3f4),
-                                        filled: true),
-                                  );
-                                });
+                                      // printcredit_limit);
+
+                                      return TextFormField(
+                                        initialValue: credit_limit == null
+                                            ? ""
+                                            : credit_limit,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            fillColor: Color(0xfff3f3f4),
+                                            filled: true),
+                                      );
+                                    });
                               }
                               return Container(
                                 child: Text(
@@ -1352,11 +1394,23 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                     margin: EdgeInsets.only(right: 380),
                     child: InkWell(
                       onTap: () {
-                        addCustomerData();
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeScreen()));
+                        if (customerSelected == null) {
+                          Fluttertoast.showToast(
+                              msg: 'Please Select a customer first');
+                        } else {
+                          addCustomerData();
+                          Future.delayed(Duration(seconds: 1), () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeScreen()),
+                            ).then((value) {
+                              setState(() {
+                                addCustomerData();
+                              });
+                            });
+                          });
+                        }
                       },
                       child: Container(
                           height: 50,
@@ -1485,15 +1539,15 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                     "https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=customer",
                                     queryParameters: {"filter": filter},
                                   );
-                                  print(response.data.length);
+                                  // printresponse.data.length);
                                   var models =
                                       CustomerList.fromJsonList(response.data);
 
-                                  print(models);
+                                  // printmodels);
                                   return models;
                                 },
                                 onChanged: (CustomerList data) {
-                                  print(data);
+                                  // printdata);
                                   customerSelected = data.id;
                                   getAllValue();
                                 },
@@ -1558,15 +1612,15 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                     "https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=customerbranch",
                                     queryParameters: {"filter": filter},
                                   );
-                                  print(response.data.length);
+                                  // printresponse.data.length);
                                   var models = CustomerBranch.fromJsonList(
                                       response.data);
 
-                                  print(models);
+                                  // printmodels);
                                   return models;
                                 },
                                 onChanged: (CustomerBranch data) {
-                                  print(data);
+                                  // printdata);
                                   branchSelected = data.id;
                                   getAllValue();
                                 },
@@ -1777,12 +1831,12 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                     itemBuilder: (context, index) {
                                   var list = snapshot.data[index];
 
-                                  creditDays = list['credit_days'];
+                                  credit_days = list['credit_days'];
 
                                   return TextFormField(
                                     enabled: true,
                                     initialValue:
-                                        creditDays == null ? "" : creditDays,
+                                        credit_days == null ? "" : credit_days,
                                     keyboardType: TextInputType.emailAddress,
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
@@ -2075,11 +2129,23 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                     alignment: Alignment.center,
                     child: InkWell(
                       onTap: () {
-                        addCustomerData();
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeScreen()));
+                        if (customerSelected == null) {
+                          Fluttertoast.showToast(
+                              msg: 'Please Select a customer first');
+                        } else {
+                          addCustomerData();
+                          Future.delayed(Duration(seconds: 1), () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeScreen()),
+                            ).then((value) {
+                              setState(() {
+                                addCustomerData();
+                              });
+                            });
+                          });
+                        }
                       },
                       child: Container(
                           height: 50,

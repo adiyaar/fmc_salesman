@@ -30,7 +30,9 @@ class _HomeScreenState extends State<HomeScreen> {
       customerType;
   void fetchAllCustomerData() async {
     SharedPreferences pf = await SharedPreferences.getInstance();
+    pf.reload();
     setState(() {
+      branchname = pf.getString('customerBranch');
       customerName = pf.getString('customerName');
       creditLimit = pf.getString('credit_limit');
       creditDays = pf.getString('credit_days');
@@ -42,7 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
     fetchAllCustomerData();
   }
 
@@ -712,7 +713,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               onTap: () async {
                                 SharedPreferences pf =
                                     await SharedPreferences.getInstance();
-                                // pf.clear();
+
+                                pf.remove('customerName');
+                                pf.remove('credit_limit');
+                                pf.remove('credit_days');
+                                pf.remove('customerBranch');
+                                pf.remove('cust_type');
+
                                 print("Clearred");
                                 Navigator.push(
                                   context,
@@ -748,12 +755,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                         Visibility(
-                          visible: customerEmail != null,
+                          visible: branchname != null,
                           child: Container(
                             margin: EdgeInsets.only(left: 8),
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "Customer Email id - $customerEmail",
+                              "Customer Branch - $branchname",
                               style: TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.w500),
                             ),
@@ -783,18 +790,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        // Visibility(
-                        //   visible: customerType != null,
-                        //   child: Container(
-                        //     margin: EdgeInsets.only(left: 8),
-                        //     alignment: Alignment.centerLeft,
-                        //     child: Text(
-                        //       "Invoice Price - $customerType",
-                        //       style: TextStyle(
-                        //           fontSize: 15, fontWeight: FontWeight.w500),
-                        //     ),
-                        //   ),
-                        // ),
+                        Visibility(
+                          visible: customerType != null,
+                          child: Container(
+                            margin: EdgeInsets.only(left: 8),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Invoice Price - $customerType",
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ),
                         SizedBox(
                           height: 20,
                         ),

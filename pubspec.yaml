@@ -29,7 +29,7 @@ dependencies:
 
   responsify: 
   data_connection_checker:
-  
+  flutter_speed_dial: ^3.0.5
   dropdown_search: 
   flutter_swiper:
   shared_preferences:
@@ -43,12 +43,15 @@ dependencies:
   # syncfusion_flutter_calendar:
   intl:
   date_format:
+  shimmer_animation: 
   connectivity:
   dio:
   webview_flutter: 
   unicorndial:
   flutter_range_slider:
   modal_bottom_sheet:
+  cached_network_image:
+  lottie: 
   signature: 
   snapshot_carousel: ^0.0.3
   # The following adds the Cupertino Icons font to your application.

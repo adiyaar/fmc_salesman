@@ -1,20 +1,19 @@
 import 'dart:convert';
-
-import 'package:dio/dio.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:responsify/responsify.dart';
-import 'package:responsify/responsify_files/responsify_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snapshot_carousel/snapshot_carousel.dart';
 import 'package:testing/Apis/AddToCart.dart';
-import 'package:testing/Apis/CartPage.dart';
 import 'package:testing/Common/ErrorPage.dart';
 import 'package:testing/models/DetailPageModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:testing/screens/ViewPastOrder.dart';
+
+import 'CartPage.dart';
 
 class DetailPageScreen extends StatefulWidget {
   final itemDetails;
@@ -25,10 +24,24 @@ class DetailPageScreen extends StatefulWidget {
 }
 
 class _DetailPageScreenState extends State<DetailPageScreen> {
+  String customerType, customerBranchId, branchId;
+  void customerInfo() async {
+    SharedPreferences pf = await SharedPreferences.getInstance();
+    customerBranchId = pf.getString('customerId');
+    branchId = pf.getString('branchId');
+    customerType = pf.getString('cust_type');
+  }
+
   List variants = [];
   List units = [];
   String selectedVariant;
   String selectedUnit;
+  TextEditingController quantityController =
+      TextEditingController(); // quantity
+  TextEditingController focController = TextEditingController(); // foc
+  TextEditingController extraFocController =
+      TextEditingController(); // extra foc
+
   Future<List<salesmandetailpage>> fetchProductInfo() async {
     final baseUrl =
         'https://onlinefamilypharmacy.com/mobileapplication/salesmandetailpage.php';
@@ -60,15 +73,14 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     });
   }
 
-  Future getUnits() async {
+  Future getUnitsandPrice() async {
     String baseUrl =
         'https://onlinefamilypharmacy.com/mobileapplication/pages/dropdown.php';
-    print("*****************");
-    print(widget.itemDetails.itemid);
+
     var data = {'id': widget.itemDetails.itemid};
     var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
     var jsondataval = json.decode(response.body);
-    print(jsondataval);
+
     setState(() {
       units = jsondataval;
     });
@@ -77,9 +89,10 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
   @override
   void initState() {
     super.initState();
-    fetchProductInfo();
+    // fetchProductInfo();
     getVariant();
-    getUnits();
+    getUnitsandPrice();
+    customerInfo();
   }
 
   @override
@@ -106,7 +119,10 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
               Icons.shopping_cart_outlined,
               color: Colors.yellow,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => CartPage()));
+            },
           ),
         ],
       ),
@@ -136,24 +152,30 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                 Container(
                                   width:
                                       MediaQuery.of(context).size.width / 2.5,
-                                  child: SnapShotCarousel.snapShotCarousel(
-                                    [
-                                      'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}' ==
-                                              'https://onlinefamilypharmacy.com/images/item/null'
-                                          ? Image.network(
-                                              'https://onlinefamilypharmacy.com/images/noimage.jpg')
-                                          : Image.network(
-                                              'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}'),
-                                      'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}' ==
-                                              'https://onlinefamilypharmacy.com/images/item/null'
-                                          ? Image.network(
-                                              'https://onlinefamilypharmacy.com/images/noimage.jpg')
-                                          : Image.network(
-                                              'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}'),
-                                      // Image.network(
-                                      //     "https://d2f9uwgpmber13.cloudfront.net/public/uploads/mobile/87e5d8fda7b970c4fe5ffd23ad400436"),
-                                    ],
-                                  ),
+                                  child: 'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}' ==
+                                          'https://onlinefamilypharmacy.com/images/item/null'
+                                      ? Image.network(
+                                          'https://onlinefamilypharmacy.com/images/noimage.jpg')
+                                      : Image.network(
+                                          'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}'),
+                                  // child: SnapShotCarousel.snapShotCarousel(
+                                  //   [
+                                  //     'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}' ==
+                                  //             'https://onlinefamilypharmacy.com/images/item/null'
+                                  //         ? Image.network(
+                                  //             'https://onlinefamilypharmacy.com/images/noimage.jpg')
+                                  //         : Image.network(
+                                  //             'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}'),
+                                  //     'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}' ==
+                                  //             'https://onlinefamilypharmacy.com/images/item/null'
+                                  //         ? Image.network(
+                                  //             'https://onlinefamilypharmacy.com/images/noimage.jpg')
+                                  //         : Image.network(
+                                  //             'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}'),
+                                  //     // Image.network(
+                                  //     //     "https://d2f9uwgpmber13.cloudfront.net/public/uploads/mobile/87e5d8fda7b970c4fe5ffd23ad400436"),
+                                  //   ],
+                                  // ),
                                 ),
                               ],
                             ),
@@ -212,6 +234,49 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                     style: TextStyle(fontSize: 17),
                                   ),
                                 ),
+                                //  Container(
+                                //     height: 30,
+                                //     child: FutureBuilder(
+                                //       future: getUnitsandPrice(),
+                                //       builder: (ctx, snapshot) {
+                                //         if (snapshot.hasData) {
+                                //           if (snapshot.data.length == 0) {
+                                //             return Text(
+                                //                 "No Data on this ItemPack");
+                                //           }
+                                //           return ListView.builder(
+                                //               itemCount: 1,
+                                //               // ignore: missing_return
+                                //               itemBuilder: (ctx, index) {
+                                //                 var list = snapshot.data[index];
+                                //                 if (customerType == null ||
+                                //                     customerType == 'Retail') {
+                                //                   return ListTile(
+                                //                     title: Text(
+                                //                       "\QR ${list['rs'].toString()}",
+                                //                       style: TextStyle(
+                                //                           fontSize: 18,
+                                //                           fontWeight:
+                                //                               FontWeight.bold),
+                                //                     ),
+                                //                   );
+                                //                 } else if (customerType ==
+                                //                     'Wholesale') {
+                                //                   return ListTile(
+                                //                     title: Text(
+                                //                       "\QR ${list['ws'].toString()}",
+                                //                       style: TextStyle(
+                                //                           fontSize: 18,
+                                //                           fontWeight:
+                                //                               FontWeight.bold),
+                                //                     ),
+                                //                   );
+                                //                 }
+                                //               });
+                                //         }
+                                //         return Text("");
+                                //       },
+                                //     )),
                                 SizedBox(
                                   height: 2,
                                 ),
@@ -229,7 +294,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                 ),
                                 SizedBox(
                                   height:
-                                      MediaQuery.of(context).size.height / 14,
+                                      MediaQuery.of(context).size.height / 18,
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -429,12 +494,20 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                         child: Container(
                                           margin: EdgeInsets.only(top: 5),
                                           padding: EdgeInsets.all(10),
-                                          child: Text(
-                                            "10",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w800),
-                                            textAlign: TextAlign.left,
+                                          // child: Text(
+                                          //   "10",
+                                          //   style: TextStyle(
+                                          //       fontSize: 16,
+                                          //       fontWeight: FontWeight.w800),
+                                          //   textAlign: TextAlign.left,
+                                          // ),
+                                          child: TextFormField(
+                                            controller: quantityController,
+                                            keyboardType: TextInputType
+                                                .numberWithOptions(),
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -450,12 +523,21 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                         child: Container(
                                           margin: EdgeInsets.only(top: 5),
                                           padding: EdgeInsets.all(10),
-                                          child: Text(
-                                            "10",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w800),
-                                            textAlign: TextAlign.left,
+                                          // child: Text(
+                                          //   "10",
+                                          //   style: TextStyle(
+                                          //       fontSize: 16,
+                                          //       fontWeight: FontWeight.w800),
+                                          //   textAlign: TextAlign.left,
+                                          // ),
+                                          child: TextFormField(
+                                            controller: focController,
+                                            keyboardType: TextInputType
+                                                .numberWithOptions(),
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              // fillColor: Color(0xfff3f3f4),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -471,12 +553,20 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                         child: Container(
                                           margin: EdgeInsets.only(top: 5),
                                           padding: EdgeInsets.all(10),
-                                          child: Text(
-                                            "10",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w800),
-                                            textAlign: TextAlign.left,
+                                          // child: Text(
+                                          //   "10",
+                                          //   style: TextStyle(
+                                          //       fontSize: 16,
+                                          //       fontWeight: FontWeight.w800),
+                                          //   textAlign: TextAlign.left,
+                                          // ),
+                                          child: TextFormField(
+                                            controller: extraFocController,
+                                            keyboardType: TextInputType
+                                                .numberWithOptions(),
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                            ),
                                           ),
                                         ),
                                       )
@@ -492,7 +582,36 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   children: [
                                     InkWell(
                                       onTap: () {
-                                        addToCart();
+                                        if (quantityController.text == '' ||
+                                            quantityController.text == null) {
+                                          Fluttertoast.showToast(
+                                              msg: 'Please Enter quantity');
+                                        } else if (focController.text == '' ||
+                                            focController.text == null) {
+                                          Fluttertoast.showToast(
+                                              msg: 'Please Enter foc');
+                                        } else if (extraFocController.text ==
+                                                '' ||
+                                            extraFocController.text == null) {
+                                          Fluttertoast.showToast(
+                                              msg: 'Please Enter Extra FOC');
+                                        } else {
+                                          addToCart(
+                                              customerBranchId,
+                                              widget.itemDetails.itemid,
+                                              iteminfo[0].minretailprice,
+                                              quantityController.text,
+                                              focController.text,
+                                              extraFocController.text,
+                                              "0",
+                                              branchId);
+                                        }
+
+                                        // Navigator.push(
+                                        //     context,
+                                        //     MaterialPageRoute(
+                                        //         builder: (context) =>
+                                        //             CartPage()));
                                       },
                                       child: Container(
                                         width:
@@ -697,24 +816,12 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                 Container(
                                   width:
                                       MediaQuery.of(context).size.width / 2.5,
-                                  child: SnapShotCarousel.snapShotCarousel(
-                                    [
-                                      'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}' ==
-                                              'https://onlinefamilypharmacy.com/images/item/null'
-                                          ? Image.network(
-                                              'https://onlinefamilypharmacy.com/images/noimage.jpg')
-                                          : Image.network(
-                                              'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}'),
-                                      'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}' ==
-                                              'https://onlinefamilypharmacy.com/images/item/null'
-                                          ? Image.network(
-                                              'https://onlinefamilypharmacy.com/images/noimage.jpg')
-                                          : Image.network(
-                                              'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}'),
-                                      // Image.network(
-                                      //     "https://d2f9uwgpmber13.cloudfront.net/public/uploads/mobile/87e5d8fda7b970c4fe5ffd23ad400436"),
-                                    ],
-                                  ),
+                                  child: 'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}' ==
+                                          'https://onlinefamilypharmacy.com/images/item/null'
+                                      ? Image.network(
+                                          'https://onlinefamilypharmacy.com/images/noimage.jpg')
+                                      : Image.network(
+                                          'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}'),
                                 ),
                               ],
                             ),
@@ -907,7 +1014,9 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                                                   .width /
                                                               4.7,
                                                       child: Text(
-                                                        list['unit'],
+                                                        list['unit'] == null
+                                                            ? 'No Unit'
+                                                            : list['unit'],
                                                         style: TextStyle(
                                                             fontSize: 16,
                                                             fontWeight:
@@ -988,12 +1097,20 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                         child: Container(
                                           margin: EdgeInsets.only(top: 5),
                                           padding: EdgeInsets.all(10),
-                                          child: Text(
-                                            "10",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w800),
-                                            textAlign: TextAlign.left,
+                                          // child: Text(
+                                          //   "10",
+                                          //   style: TextStyle(
+                                          //       fontSize: 16,
+                                          //       fontWeight: FontWeight.w800),
+                                          //   textAlign: TextAlign.left,
+                                          // ),
+                                          child: TextFormField(
+                                            controller: quantityController,
+                                            keyboardType: TextInputType
+                                                .numberWithOptions(),
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -1009,12 +1126,20 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                         child: Container(
                                           margin: EdgeInsets.only(top: 5),
                                           padding: EdgeInsets.all(10),
-                                          child: Text(
-                                            "10",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w800),
-                                            textAlign: TextAlign.left,
+                                          // child: Text(
+                                          //   "10",
+                                          //   style: TextStyle(
+                                          //       fontSize: 16,
+                                          //       fontWeight: FontWeight.w800),
+                                          //   textAlign: TextAlign.left,
+                                          // ),
+                                          child: TextFormField(
+                                            controller: focController,
+                                            keyboardType: TextInputType
+                                                .numberWithOptions(),
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -1030,13 +1155,20 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                         child: Container(
                                           margin: EdgeInsets.only(top: 5),
                                           padding: EdgeInsets.all(10),
-                                          child: Text(
-                                            "10",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w800),
-                                            textAlign: TextAlign.left,
-                                          ),
+                                          // child: Text(
+                                          //   "10",
+                                          //   style: TextStyle(
+                                          //       fontSize: 16,
+                                          //       fontWeight: FontWeight.w800),
+                                          //   textAlign: TextAlign.left,
+                                          // ),
+                                          child: TextFormField(
+                                              controller: extraFocController,
+                                              keyboardType: TextInputType
+                                                  .numberWithOptions(),
+                                              decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                              )),
                                         ),
                                       )
                                     ],
@@ -1049,41 +1181,85 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Container(
-                                      width:
-                                          MediaQuery.of(context).size.width / 5,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                          color: Colors.yellow,
-                                          borderRadius:
-                                              BorderRadius.circular(12.0)),
+                                    InkWell(
+                                      onTap: () {
+                                        if (quantityController.text == '' ||
+                                            quantityController.text == null) {
+                                          Fluttertoast.showToast(
+                                              msg: 'Please Enter quantity');
+                                        } else if (focController.text == '' ||
+                                            focController.text == null) {
+                                          Fluttertoast.showToast(
+                                              msg: 'Please Enter foc');
+                                        } else if (extraFocController.text ==
+                                                '' ||
+                                            extraFocController.text == null) {
+                                          Fluttertoast.showToast(
+                                              msg: 'Please Enter Extra FOC');
+                                        } else {
+                                          addToCart(
+                                              customerBranchId,
+                                              widget.itemDetails.itemid,
+                                              iteminfo[0].minretailprice,
+                                              quantityController.text,
+                                              focController.text,
+                                              extraFocController.text,
+                                              "0",
+                                              branchId);
+                                        }
+                                        // Navigator.push(
+                                        //     context,
+                                        //     MaterialPageRoute(
+                                        //         builder: (context) =>
+                                        //             CartPage()));
+                                      },
                                       child: Container(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "Add to Cart",
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w700),
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                5,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                            color: Colors.yellow,
+                                            borderRadius:
+                                                BorderRadius.circular(12.0)),
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "Add to Cart",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w700),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                    Container(
-                                      width:
-                                          MediaQuery.of(context).size.width / 5,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius:
-                                              BorderRadius.circular(12.0)),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ViewPastOrder()));
+                                      },
                                       child: Container(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "View Order History",
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w700),
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                5,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius:
+                                                BorderRadius.circular(12.0)),
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "View Order History",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w700),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -1228,28 +1404,16 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        height: MediaQuery.of(context).size.height / 20,
+                        height: MediaQuery.of(context).size.height / 40,
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width / 1.1,
-                        child: SnapShotCarousel.snapShotCarousel(
-                          [
-                            'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}' ==
-                                    'https://onlinefamilypharmacy.com/images/item/null'
-                                ? Image.network(
-                                    'https://onlinefamilypharmacy.com/images/noimage.jpg')
-                                : Image.network(
-                                    'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}'),
-                            'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}' ==
-                                    'https://onlinefamilypharmacy.com/images/item/null'
-                                ? Image.network(
-                                    'https://onlinefamilypharmacy.com/images/noimage.jpg')
-                                : Image.network(
-                                    'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}'),
-                            // Image.network(
-                            //     "https://d2f9uwgpmber13.cloudfront.net/public/uploads/mobile/87e5d8fda7b970c4fe5ffd23ad400436"),
-                          ],
-                        ),
+                        child: 'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}' ==
+                                'https://onlinefamilypharmacy.com/images/item/null'
+                            ? Image.network(
+                                'https://onlinefamilypharmacy.com/images/noimage.jpg')
+                            : Image.network(
+                                'https://onlinefamilypharmacy.com/images/item/${widget.itemDetails.img}'),
                       ),
                       SizedBox(
                         height: 10,
@@ -1432,7 +1596,9 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                                         12 +
                                                     18,
                                                 child: Text(
-                                                  list['unit'],
+                                                  list['unit'] == null
+                                                      ? 'No Unit'
+                                                      : list['unit'],
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       fontWeight:
@@ -1480,7 +1646,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   ),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.only(right: 30),
+                                  margin: EdgeInsets.only(right: 40),
                                   child: Text(
                                     "Extra FOC",
                                     style: TextStyle(
@@ -1507,12 +1673,20 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   child: Container(
                                     margin: EdgeInsets.only(top: 5),
                                     padding: EdgeInsets.all(10),
-                                    child: Text(
-                                      "10",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w800),
-                                      textAlign: TextAlign.left,
+                                    // child: Text(
+                                    //   "10",
+                                    //   style: TextStyle(
+                                    //       fontSize: 16,
+                                    //       fontWeight: FontWeight.w800),
+                                    //   textAlign: TextAlign.left,
+                                    // ),
+                                    child: TextFormField(
+                                      controller: quantityController,
+                                      keyboardType:
+                                          TextInputType.numberWithOptions(),
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -1526,18 +1700,27 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   child: Container(
                                     margin: EdgeInsets.only(top: 5),
                                     padding: EdgeInsets.all(10),
-                                    child: Text(
-                                      "10",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w800),
-                                      textAlign: TextAlign.left,
+                                    // child: Text(
+                                    //   "10",
+                                    //   style: TextStyle(
+                                    //       fontSize: 16,
+                                    //       fontWeight: FontWeight.w800),
+                                    //   textAlign: TextAlign.left,
+                                    // ),
+                                    child: TextFormField(
+                                      controller: focController,
+                                      keyboardType:
+                                          TextInputType.numberWithOptions(),
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                      ),
                                     ),
                                   ),
                                 ),
                                 Container(
                                   height: 50,
                                   width: MediaQuery.of(context).size.width / 4,
+                                  margin: EdgeInsets.only(right: 10),
                                   decoration: BoxDecoration(
                                       color: Colors.grey[300],
                                       borderRadius:
@@ -1545,64 +1728,111 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   child: Container(
                                     margin: EdgeInsets.only(top: 5),
                                     padding: EdgeInsets.all(10),
-                                    child: Text(
-                                      "10",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w800),
-                                      textAlign: TextAlign.left,
-                                    ),
+                                    // child: Text(
+                                    //   "10",
+                                    //   style: TextStyle(
+                                    //       fontSize: 16,
+                                    //       fontWeight: FontWeight.w800),
+                                    //   textAlign: TextAlign.left,
+                                    // ),
+                                    child: TextFormField(
+                                        controller: extraFocController,
+                                        keyboardType:
+                                            TextInputType.numberWithOptions(),
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                        )),
                                   ),
                                 )
                               ],
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 20,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                Container(
-                                  width: MediaQuery.of(context).size.width / 3,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      color: Colors.yellow,
-                                      borderRadius:
-                                          BorderRadius.circular(12.0)),
+                                InkWell(
+                                  onTap: () {
+                                    if (quantityController.text == '' ||
+                                        quantityController.text == null) {
+                                      Fluttertoast.showToast(
+                                          msg: 'Please Enter quantity');
+                                    } else if (focController.text == '' ||
+                                        focController.text == null) {
+                                      Fluttertoast.showToast(
+                                          msg: 'Please Enter foc');
+                                    } else if (extraFocController.text == '' ||
+                                        extraFocController.text == null) {
+                                      Fluttertoast.showToast(
+                                          msg: 'Please Enter Extra FOC');
+                                    } else {
+                                      addToCart(
+                                          customerBranchId,
+                                          widget.itemDetails.itemid,
+                                          iteminfo[0].minretailprice,
+                                          quantityController.text,
+                                          focController.text,
+                                          extraFocController.text,
+                                          "0",
+                                          branchId);
+                                    }
+
+                                    // Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //         builder: (context) => CartPage()));
+                                  },
                                   child: Container(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      "Add to Cart",
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w700),
+                                    width: 150,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        color: Colors.yellow,
+                                        borderRadius:
+                                            BorderRadius.circular(12.0)),
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "Add to Cart",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w700),
+                                      ),
                                     ),
                                   ),
                                 ),
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width / 2.7,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius:
-                                          BorderRadius.circular(10.0)),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ViewPastOrder()));
+                                  },
                                   child: Container(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      "View Order History",
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700),
+                                    width: 150,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius:
+                                            BorderRadius.circular(10.0)),
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "View Order History",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ],
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 20,
                             ),
                             Container(
                                 alignment: Alignment.centerLeft,
@@ -1616,7 +1846,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                         ),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 20,
                       ),
                       Container(
                           margin: EdgeInsets.only(left: 10),
@@ -1663,32 +1893,6 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             // iteminfo[0].description,
-                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries",
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w400),
-                          )),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Container(
-                          margin: EdgeInsets.only(left: 10),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Content Description",
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          )),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                          margin: EdgeInsets.only(left: 10),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
                             "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries",
                             style: TextStyle(
                                 fontSize: 14,

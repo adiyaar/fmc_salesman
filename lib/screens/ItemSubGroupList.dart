@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -198,9 +199,13 @@ Grid(context, data) {
                             topRight: Radius.circular(10.0),
                             bottomRight: Radius.circular(10.0)),
                         image: DecorationImage(
-                            image: NetworkImage(
+                            image: CachedNetworkImageProvider(
                                 'https://onlinefamilypharmacy.com/images/item/' +
                                     data[index].img),
+                            // image: NetworkImage(
+
+                            //
+                            // ),
                             fit: BoxFit.fill)),
                   ),
                   Expanded(

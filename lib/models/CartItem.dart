@@ -1,28 +1,32 @@
 class CartItem {
-  final String img;
-  final String title;
-
-  final String price;
-  final String id;
-  final String finalprice;
-  final String quantity;
+  final String itemName;
+  final String image;
+  final String itemCode;
+  final String finalprice; // ws || rs
+  String quantity;
+  final String foc;
+  final String exFoc;
+  final String discount;
   CartItem({
-    this.img,
-    this.title,
-    this.price,
-    this.id,
+    this.itemName,
+    this.image,
+    this.itemCode,
+    this.foc,
+    this.exFoc,
+    this.discount,
     this.finalprice,
     this.quantity,
   });
 //List data;
   factory CartItem.fromJson(Map<String, dynamic> json) {
     return CartItem(
-      id: json['id'],
-      img: json['img'],
-      title: json['itemname_en'],
-      price: json['price'],
-      finalprice: json['finalprice'],
-      quantity: json['quantity'],
-    );
+        itemName: json['itemname_en'],
+        image: json['img'],
+        itemCode: json['item_code'],
+        finalprice: json['ws'],
+        quantity: json['qty'],
+        foc: json['foc'],
+        exFoc: json['ex_foc'],
+        discount: json['disc']);
   }
 }

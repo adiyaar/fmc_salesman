@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -20,7 +21,8 @@ class ItemGroup extends StatefulWidget {
   _ItemGroupState createState() => _ItemGroupState();
 }
 
-class _ItemGroupState extends State<ItemGroup> {
+class _ItemGroupState extends State<ItemGroup> with TickerProviderStateMixin {
+  AnimationController animationController;
   List<ItemGroupModel> data;
   String pharmacyname = "";
 
@@ -41,6 +43,15 @@ class _ItemGroupState extends State<ItemGroup> {
   void initState() {
     super.initState();
     _fetchdata();
+    animationController =
+        AnimationController(duration: new Duration(seconds: 2), vsync: this);
+    animationController.repeat();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    animationController.dispose();
   }
 
   @override
@@ -87,7 +98,7 @@ class _ItemGroupState extends State<ItemGroup> {
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () {
-                                  print(data[index].id);
+                                  // printdata[index].id);
                                   Navigator.push(
                                       context,
                                       new MaterialPageRoute(
@@ -112,22 +123,16 @@ class _ItemGroupState extends State<ItemGroup> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        // Image.network(
-                                        //   'https://onlinefamilypharmacy.com/images/itemmaingroupimages/' +
-                                        //       data[index].imageurl,
-                                        //   height: MediaQuery.of(context)
-                                        //           .size
-                                        //           .height /
-                                        //       5.6,
-                                        //   width: MediaQuery.of(context)
-                                        //           .size
-                                        //           .width /
-                                        //       2,
-                                        // ),
-                                        FadeInImage.assetNetwork(
-                                          placeholder:
-                                              "https://i.ibb.co/tYGHbNk/Eclipse-1s-200px.gif",
-                                          image:
+                                        CachedNetworkImage(
+                                          progressIndicatorBuilder:
+                                              (context, url, progress) =>
+                                                  Center(
+                                            child: CircularProgressIndicator(
+                                              value: progress.progress,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          imageUrl:
                                               'https://onlinefamilypharmacy.com/images/itemgroupimages/' +
                                                   data[index].imageurl,
                                           height: MediaQuery.of(context)
@@ -229,9 +234,19 @@ class _ItemGroupState extends State<ItemGroup> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Image.network(
-                                        'https://onlinefamilypharmacy.com/images/itemgroupimages/' +
-                                            data[index].imageurl,
+                                      CachedNetworkImage(
+                                        progressIndicatorBuilder:
+                                            (context, url, progress) => Center(
+                                          child: CircularProgressIndicator(
+                                            valueColor: animationController
+                                                .drive(ColorTween(
+                                                    begin: Colors.blueAccent,
+                                                    end: Colors.red)),
+                                          ),
+                                        ),
+                                        imageUrl:
+                                            'https://onlinefamilypharmacy.com/images/itemgroupimages/' +
+                                                data[index].imageurl,
                                         height:
                                             MediaQuery.of(context).size.height /
                                                 5.5,
@@ -309,7 +324,7 @@ class _ItemGroupState extends State<ItemGroup> {
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () {
-                                  print(data[index].id);
+                                  // printdata[index].id);
                                   Navigator.push(
                                       context,
                                       new MaterialPageRoute(
@@ -336,9 +351,18 @@ class _ItemGroupState extends State<ItemGroup> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Image.network(
-                                            'https://onlinefamilypharmacy.com/images/itemgroupimages/' +
-                                                data[index].imageurl,
+                                          CachedNetworkImage(
+                                            progressIndicatorBuilder:
+                                                (context, url, progress) =>
+                                                    Center(
+                                              child: CircularProgressIndicator(
+                                                value: progress.progress,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            imageUrl:
+                                                'https://onlinefamilypharmacy.com/images/itemgroupimages/' +
+                                                    data[index].imageurl,
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .height /
@@ -428,7 +452,7 @@ Grid(context, data) {
   final height = MediaQuery.of(context).size.height;
   final containerh = height / 2;
   if (height > 450 && width > 450 && width < 835) {
-    print('samsung tab vertical |');
+    // print'samsung tab vertical |');
     return GridView.builder(
         itemCount: data.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -438,7 +462,7 @@ Grid(context, data) {
         itemBuilder: (context, index) {
           return InkWell(
             onTap: () {
-              // print(data[index].id);
+              // // printdata[index].id);
               Navigator.push(
                   context,
                   new MaterialPageRoute(
@@ -488,7 +512,7 @@ Grid(context, data) {
           );
         });
   } else if (width > 450 && width < 835) {
-    print('samsung A51 horizontal _____');
+    // print'samsung A51 horizontal _____');
     return GridView.builder(
         itemCount: data.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -498,7 +522,7 @@ Grid(context, data) {
         itemBuilder: (context, index) {
           return InkWell(
             onTap: () {
-              // print(data[index].id);
+              // // printdata[index].id);
               Navigator.push(
                   context,
                   new MaterialPageRoute(
@@ -558,7 +582,7 @@ Grid(context, data) {
         itemBuilder: (context, index) {
           return InkWell(
             onTap: () {
-              // print(data[index].id);
+              // // printdata[index].id);
               Navigator.push(
                   context,
                   new MaterialPageRoute(
@@ -618,7 +642,7 @@ Grid(context, data) {
         itemBuilder: (context, index) {
           return InkWell(
             onTap: () {
-              // print(data[index].id);
+              // // printdata[index].id);
               Navigator.push(
                   context,
                   new MaterialPageRoute(

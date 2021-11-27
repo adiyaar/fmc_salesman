@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -122,15 +123,23 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Image.network(
-                                        'https://onlinefamilypharmacy.com/images/itemmaingroupimages/' +
-                                            data[index].imageUrl,
+                                      CachedNetworkImage(
+                                        imageUrl:
+                                            'https://onlinefamilypharmacy.com/images/itemmaingroupimages/' +
+                                                data[index].imageUrl,
                                         height:
                                             MediaQuery.of(context).size.height /
                                                 5.6,
                                         width:
                                             MediaQuery.of(context).size.width /
                                                 2,
+                                        progressIndicatorBuilder:
+                                            (context, url, progress) => Center(
+                                          child: CircularProgressIndicator(
+                                            value: progress.progress,
+                                            color: Colors.black,
+                                          ),
+                                        ),
                                       ),
                                       Container(
                                         height:
@@ -218,14 +227,22 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Image.network(
-                                      'https://onlinefamilypharmacy.com/images/itemmaingroupimages/' +
-                                          data[index].imageUrl,
+                                    CachedNetworkImage(
+                                      imageUrl:
+                                          'https://onlinefamilypharmacy.com/images/itemmaingroupimages/' +
+                                              data[index].imageUrl,
                                       height:
                                           MediaQuery.of(context).size.height /
                                               5.5,
                                       width:
                                           MediaQuery.of(context).size.width / 2,
+                                      progressIndicatorBuilder:
+                                          (context, url, progress) => Center(
+                                        child: CircularProgressIndicator(
+                                          value: progress.progress,
+                                          color: Colors.black,
+                                        ),
+                                      ),
                                     ),
                                     Container(
                                       height:
@@ -321,9 +338,10 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Image.network(
-                                          'https://onlinefamilypharmacy.com/images/itemmaingroupimages/' +
-                                              data[index].imageUrl,
+                                        CachedNetworkImage(
+                                          imageUrl:
+                                              'https://onlinefamilypharmacy.com/images/itemmaingroupimages/' +
+                                                  data[index].imageUrl,
                                           height: MediaQuery.of(context)
                                                   .size
                                                   .height /
@@ -332,6 +350,14 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
                                                   .size
                                                   .width /
                                               2,
+                                          progressIndicatorBuilder:
+                                              (context, url, progress) =>
+                                                  Center(
+                                            child: CircularProgressIndicator(
+                                              value: progress.progress,
+                                              color: Colors.black,
+                                            ),
+                                          ),
                                         ),
                                         Container(
                                           height: MediaQuery.of(context)

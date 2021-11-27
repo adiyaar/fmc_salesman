@@ -32,8 +32,9 @@ class _ViewPastOrderState extends State<ViewPastOrder> {
         targetOlderComputers: true,
         builder: (context, deviceInfo) {
           if (deviceInfo.deviceTypeInformation ==
-                  DeviceTypeInformation.TABLET &&
-              deviceInfo.orientation == Orientation.landscape) {
+                  DeviceTypeInformation.TABLET ||
+              deviceInfo.deviceTypeInformation ==
+                  DeviceTypeInformation.MOBILE) {
             return FutureBuilder<List<PastOrder>>(
                 future: fetchPastOrder(),
                 builder: (context, snapshot) {
@@ -49,6 +50,7 @@ class _ViewPastOrderState extends State<ViewPastOrder> {
                       );
                     } else if (snapshot.data.length > 0) {
                       return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
                         child: Container(
                           margin: EdgeInsets.only(top: 30, left: 30, right: 30),
                           width: double.infinity,

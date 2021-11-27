@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:testing/Apis/LoginPageApi.dart';
 import 'package:http/http.dart' as http;
+import 'package:testing/models/UserInfo.dart';
 import 'HomeScreen.dart';
 import 'package:responsify/responsify.dart';
 
@@ -151,8 +152,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                 if (formFilled == true) {
                                   SharedPreferences pf =
                                       await SharedPreferences.getInstance();
-                                  // futureGroup.add(
-                                  //   salesmanLogin(
+                                  // futureGroup.add(salesmanLogin(
                                   //     emailcontroller.text,
                                   //     passwordcontroller.text));
                                   // futureGroup
@@ -173,7 +173,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                   String message = jsonDecode(response.body);
                                   if (message == "Login Matched") {
                                     final String baseUrl1 =
-                                        'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/getsalesmanid.php';
+                                        'https://onlinefamilypharmacy.com/mobileapplication/salesmanprofile.php';
 
                                     var data1 = {
                                       'qatarid': emailcontroller.text
@@ -183,14 +183,16 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                         Uri.parse(baseUrl1),
                                         body: json.encode(data1));
                                     print(response1.body);
-                                    String message1 =
-                                        jsonDecode(response1.body);
-                                    print(message1);
-
-                                    pf.setString("qatarid", message1);
-                                    pf.setString("email", emailcontroller.text);
-
-                                    print(pf.getString("qatarid"));
+                                    // List<UserInfoModel> message1 =
+                                    //     response1.body as List<UserInfoModel>;
+                                    //
+                                    // pf.setString("workingin",
+                                    //     message1[0].workingin.toString());
+                                    //
+                                    // pf.setString("employeeName",
+                                    //     message1[0].employeename);
+                                    // pf.setString(
+                                    //     "ecode", message1[2].employeecode);
 
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {
@@ -218,16 +220,6 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(snackBar);
                                   }
-                                  // futureGroup.add(salesmanLogin(
-                                  //     emailcontroller.text,
-                                  //     passwordcontroller.text));
-                                  // futureGroup
-                                  //     .add(salesmanId(emailcontroller.text));
-
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => HomeScreen()));
                                 }
                               },
                               child: Container(
@@ -368,6 +360,12 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                 if (formFilled == true) {
                                   SharedPreferences pf =
                                       await SharedPreferences.getInstance();
+                                  // futureGroup.add(salesmanLogin(
+                                  //     emailcontroller.text,
+                                  //     passwordcontroller.text));
+                                  // futureGroup
+                                  //     .add(salesmanId(emailcontroller.text));
+
                                   final String baseUrl =
                                       'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/login_salesman.php';
 
@@ -383,7 +381,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                   String message = jsonDecode(response.body);
                                   if (message == "Login Matched") {
                                     final String baseUrl1 =
-                                        'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/getsalesmanid.php';
+                                        'https://onlinefamilypharmacy.com/mobileapplication/salesmanprofile.php';
 
                                     var data1 = {
                                       'qatarid': emailcontroller.text
@@ -393,14 +391,16 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                         Uri.parse(baseUrl1),
                                         body: json.encode(data1));
                                     print(response1.body);
-                                    String message1 =
-                                        jsonDecode(response1.body);
-                                    print(message1);
-
-                                    pf.setString("qatarid", message1);
-                                    pf.setString("email", emailcontroller.text);
-
-                                    print(pf.getString("qatarid"));
+                                    // List<UserInfoModel> message1 =
+                                    //     response1.body as List<UserInfoModel>;
+                                    //
+                                    // pf.setString("workingin",
+                                    //     message1[0].workingin.toString());
+                                    //
+                                    // pf.setString("employeeName",
+                                    //     message1[0].employeename);
+                                    // pf.setString(
+                                    //     "ecode", message1[2].employeecode);
 
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {
@@ -428,16 +428,6 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(snackBar);
                                   }
-                                  // futureGroup.add(salesmanLogin(
-                                  //     emailcontroller.text,
-                                  //     passwordcontroller.text));
-                                  // futureGroup
-                                  //     .add(salesmanId(emailcontroller.text));
-
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => HomeScreen()));
                                 }
                               },
                               child: Container(
@@ -619,7 +609,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                   String message = jsonDecode(response.body);
                                   if (message == "Login Matched") {
                                     final String baseUrl1 =
-                                        'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/getsalesmanid.php';
+                                        'https://onlinefamilypharmacy.com/mobileapplication/salesmanprofile.php';
 
                                     var data1 = {
                                       'qatarid': emailcontroller.text
@@ -629,14 +619,16 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                         Uri.parse(baseUrl1),
                                         body: json.encode(data1));
                                     print(response1.body);
-                                    String message1 =
-                                        jsonDecode(response1.body);
-                                    print(message1);
-
-                                    pf.setString("qatarid", message1);
-                                    pf.setString("email", emailcontroller.text);
-
-                                    print(pf.getString("qatarid"));
+                                    // List<UserInfoModel> message1 =
+                                    //     response1.body as List<UserInfoModel>;
+                                    //
+                                    // pf.setString("workingin",
+                                    //     message1[0].workingin.toString());
+                                    //
+                                    // pf.setString("employeeName",
+                                    //     message1[0].employeename);
+                                    // pf.setString(
+                                    //     "ecode", message1[2].employeecode);
 
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {

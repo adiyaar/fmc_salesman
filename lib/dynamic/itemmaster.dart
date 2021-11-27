@@ -626,7 +626,7 @@ class ItemmasterState extends State<Itemmaster> {
 
   Future<List<ItemData>> _fetchItemData() async {
     final jobsListAPIUrl = 'http://sharegiants.in/ruchi/search_api.php';
-    print(itemmaingroup);
+    
     var data = {
       'itemname': itemname,
       '_lowerValue': _lowerValue,

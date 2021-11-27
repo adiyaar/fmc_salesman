@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:responsify/responsify.dart';
+import 'package:testing/Apis/CartPage.dart';
+import 'package:testing/models/CartItem.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:testing/screens/CheckoutScreen.dart';
 
 class CartPage extends StatefulWidget {
   CartPage({Key key}) : super(key: key);
@@ -8,6 +14,16 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  int itemCount = 0;
+  int quantityCount = 0;
+  int foc = 0;
+  int exFoc = 0;
+  @override
+  void initState() {
+    super.initState();
+    // fetchCartItem();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,545 +52,217 @@ class _CartPageState extends State<CartPage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: 40,
-              width: double.infinity,
-              color: Colors.grey[200],
-              child: ListView(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                scrollDirection: Axis.horizontal,
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Product",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 7.5,
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Price",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 18,
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Units",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 18,
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Qty",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 18,
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Fixed Foc",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 18,
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Alloc FOC",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 18,
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Ex FOC",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 18,
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Discount",
-                      textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 18,
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Discount %",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 18,
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Total",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 13,
-                  ),
-                  Text(
-                    "",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              height: 100,
-              width: double.infinity,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.network(
-                            "https://d2f9uwgpmber13.cloudfront.net/public/uploads/mobile/7c902eb8a6f1f3453fc9e0e99f34838c",
-                            height: 90,
-                            width: 90,
+      body: ResponsiveUiWidget(
+        targetOlderComputers: true,
+        builder: (context, deviceInfo) {
+          if (deviceInfo.deviceTypeInformation ==
+                  DeviceTypeInformation.TABLET ||
+              deviceInfo.deviceTypeInformation ==
+                  DeviceTypeInformation.MOBILE) {
+            return FutureBuilder<List<CartItem>>(
+                future: fetchCartItem(),
+                builder: (context, snapshot) {
+                  List<CartItem> cartItems = snapshot.data;
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.data.length == 0) {
+                      return Center(
+                        child: Text("No Items in Cart"),
+                      );
+                    } else if (snapshot.data.length > 0) {
+                      return SingleChildScrollView(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 05, right: 05),
+                          width: double.infinity,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: DataTable(
+                              headingRowHeight: 50,
+                              dataRowHeight: 100,
+
+                              columnSpacing: 110,
+                              headingRowColor:
+                                  MaterialStateProperty.all(Colors.white),
+                              headingTextStyle: TextStyle(color: Colors.black),
+                              // dataRowColor:
+                              //     MaterialStateProperty.all(Colors.grey),
+                              columns: [
+                                DataColumn(
+                                    label: Text(
+                                        'Product Info')), // image , name of product , itemcode
+                                DataColumn(label: Text('Quantity')),
+                                DataColumn(label: Text('Price')),
+                                DataColumn(label: Text('FOC')),
+                                DataColumn(label: Text('Ex FOC')),
+                                DataColumn(label: Text('Discount')),
+                                DataColumn(label: Text('')),
+                              ],
+                              rows: cartItems
+                                  .map((data) => DataRow(cells: [
+                                        DataCell(ListTile(
+                                          leading: Container(
+                                            height: 50,
+                                            width: 50,
+                                            child: Image.network(
+                                                'https://onlinefamilypharmacy.com/images/noimage.jpg'),
+                                          ),
+                                          title: Text(data.itemName),
+                                          subtitle: Text(data.itemCode),
+                                        )),
+                                        DataCell(Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  quantityCount--;
+                                                });
+                                              },
+                                              icon: Icon(Icons.remove),
+                                            ),
+                                            Text(
+                                              '${int.parse(data.quantity) + quantityCount}',
+                                              style: TextStyle(fontSize: 13),
+                                            ),
+                                            IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  quantityCount++;
+                                                });
+                                              },
+                                              icon: Icon(Icons.add),
+                                            ),
+                                          ],
+                                        )),
+                                        DataCell(Text(
+                                          data.finalprice,
+                                          style: TextStyle(fontSize: 13),
+                                        )),
+                                        DataCell(Row(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  foc--;
+                                                });
+                                              },
+                                              icon: Icon(Icons.remove),
+                                            ),
+                                            Text(
+                                              '${int.parse(data.foc) + foc}',
+                                              style: TextStyle(fontSize: 13),
+                                            ),
+                                            IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  foc++;
+                                                });
+                                              },
+                                              icon: Icon(Icons.add),
+                                            ),
+                                          ],
+                                        )),
+                                        DataCell(Row(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  exFoc--;
+                                                });
+                                              },
+                                              icon: Icon(Icons.remove),
+                                            ),
+                                            Text(
+                                              '${int.parse(data.exFoc) + exFoc}',
+                                              style: TextStyle(fontSize: 13),
+                                            ),
+                                            IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  exFoc++;
+                                                });
+                                              },
+                                              icon: Icon(Icons.add),
+                                            ),
+                                          ],
+                                        )),
+                                        DataCell(Text(
+                                          data.discount,
+                                          style: TextStyle(fontSize: 13),
+                                        )),
+                                        DataCell(Row(
+                                          children: [
+                                            InkWell(
+                                              child: Icon(
+                                                Icons.delete_sharp,
+                                                color: Colors.red,
+                                              ),
+                                              onTap: () {
+                                                removeCart(data.itemCode);
+                                                setState(() {});
+
+                                                // Navigator.pushAndRemoveUntil(
+                                                //     context,
+                                                //     MaterialPageRoute(
+                                                //         builder: (context) =>
+                                                //             CartPage()));
+                                              },
+                                            ),
+                                            SizedBox(
+                                              width: 15,
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                updateCart(
+                                                    data.itemCode,
+                                                    '${int.parse(data.quantity) + quantityCount}',
+                                                    data.finalprice,
+                                                    '${int.parse(data.foc) + foc}',
+                                                    '${int.parse(data.exFoc) + exFoc}',
+                                                    data.discount);
+                                                setState(() {});
+                                              },
+                                              child: Icon(
+                                                Icons.done_outline_outlined,
+                                                color: Colors.green,
+                                              ),
+                                            ),
+                                          ],
+                                        )),
+                                      ]))
+                                  .toList(),
+                            ),
                           ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "RegisterBook",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 15),
-                              ),
-                              Text(
-                                "Item Code - 10015",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 15),
-                              ),
-                              Text(
-                                "Item name - Loreum",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 15),
-                              ),
-                              Text(
-                                "Variant - Expiry",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 15),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("130.00")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 18,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("Box")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 14.5,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("10")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 12,
-                  ),
-                  Container(margin: EdgeInsets.only(top: 30), child: Text("1")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 8,
-                  ),
-                  Container(margin: EdgeInsets.only(top: 30), child: Text("1")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 11,
-                  ),
-                  Container(margin: EdgeInsets.only(top: 30), child: Text("0")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 10,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("5.00")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 10,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("0.00")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 13,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("125.00")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 14,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 27),
-                      alignment: Alignment.topCenter,
-                      child: Icon(
-                        Icons.delete_rounded,
-                        color: Colors.red,
-                      ))
-                ],
-              ),
-            ),
-            Container(
-              height: 100,
-              width: double.infinity,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.network(
-                            "https://d2f9uwgpmber13.cloudfront.net/public/uploads/mobile/7c902eb8a6f1f3453fc9e0e99f34838c",
-                            height: 90,
-                            width: 90,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "RegisterBook",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 15),
-                              ),
-                              Text(
-                                "Item Code - 10015",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 15),
-                              ),
-                              Text(
-                                "Item name - Loreum",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 15),
-                              ),
-                              Text(
-                                "Variant - Expiry",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 15),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("130.00")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 18,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("Box")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 14.5,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("10")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 12,
-                  ),
-                  Container(margin: EdgeInsets.only(top: 30), child: Text("1")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 8,
-                  ),
-                  Container(margin: EdgeInsets.only(top: 30), child: Text("1")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 11,
-                  ),
-                  Container(margin: EdgeInsets.only(top: 30), child: Text("0")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 10,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("5.00")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 10,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("0.00")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 13,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("125.00")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 14,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 27),
-                      alignment: Alignment.topCenter,
-                      child: Icon(
-                        Icons.delete_rounded,
-                        color: Colors.red,
-                      ))
-                ],
-              ),
-            ),
-            Container(
-              height: 100,
-              width: double.infinity,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.network(
-                            "https://d2f9uwgpmber13.cloudfront.net/public/uploads/mobile/7c902eb8a6f1f3453fc9e0e99f34838c",
-                            height: 90,
-                            width: 90,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "RegisterBook",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 15),
-                              ),
-                              Text(
-                                "Item Code - 10015",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 15),
-                              ),
-                              Text(
-                                "Item name - Loreum",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 15),
-                              ),
-                              Text(
-                                "Variant - Expiry",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 15),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("130.00")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 18,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("Box")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 14.5,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("10")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 12,
-                  ),
-                  Container(margin: EdgeInsets.only(top: 30), child: Text("1")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 8,
-                  ),
-                  Container(margin: EdgeInsets.only(top: 30), child: Text("1")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 11,
-                  ),
-                  Container(margin: EdgeInsets.only(top: 30), child: Text("0")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 10,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("5.00")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 10,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("0.00")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 13,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 30), child: Text("125.00")),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 14,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 27),
-                      alignment: Alignment.topCenter,
-                      child: Icon(
-                        Icons.delete_rounded,
-                        color: Colors.red,
-                      ))
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 300,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(left: 10),
-                  child: Text("Subtotal",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 19,
-                          fontWeight: FontWeight.bold)),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                Container(
-                  margin: EdgeInsets.only(right: 20),
-                  child: Text("130.00 QR",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600)),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(left: 10),
-                  child: Text("Discount",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 19,
-                          fontWeight: FontWeight.bold)),
-                ),
-                SizedBox(
-                  width: 32,
-                ),
-                Container(
-                  margin: EdgeInsets.only(right: 20),
-                  child: Text("0.00 QR",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600)),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(left: 10),
-                  child: Text("Total",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 19,
-                          fontWeight: FontWeight.bold)),
-                ),
-                SizedBox(
-                  width: 45,
-                ),
-                Container(
-                  margin: EdgeInsets.only(right: 20),
-                  child: Text("125.00 QR",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600)),
-                ),
-              ],
-            ),
-          ],
-        ),
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text("Some Error Occured"),
+                      );
+                    }
+                  }
+                  return Center(
+                    child: LinearProgressIndicator(),
+                  );
+                });
+          }
+          return Center(
+            child: Text("Not Supported"),
+          );
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Container(
-        width: MediaQuery.of(context).size.width / 3,
+        width: MediaQuery.of(context).size.width / 2,
         child: FloatingActionButton.extended(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CheckoutScreen()));
+            },
             icon: Icon(
               Icons.shopping_cart,
               color: Colors.amber,

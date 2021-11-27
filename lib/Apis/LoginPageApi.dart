@@ -22,7 +22,7 @@ Future salesmanId(emailAddress) async {
   var data = {'qatarid': emailAddress};
 
   var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
-  print(response.body);
+  
   String message = jsonDecode(response.body);
   
   SharedPreferences pf = await SharedPreferences.getInstance();
@@ -30,7 +30,7 @@ Future salesmanId(emailAddress) async {
   pf.setString("qatarid", message);
   pf.setString("email", emailAddress);
 
-  print(pf.getString("qatardid"));
+  
   
 
   return message;

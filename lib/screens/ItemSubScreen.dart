@@ -1,5 +1,6 @@
 import 'dart:convert';
 //import 'package:double_back_to_close_app/double_back_to_close_app.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -105,15 +106,23 @@ class _ItemSubState extends State<ItemSub> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Image.network(
-                                        'https://onlinefamilypharmacy.com/images/itemsubgroupimages/' +
-                                            data[index].imageurl,
+                                      CachedNetworkImage(
+                                        imageUrl:
+                                            'https://onlinefamilypharmacy.com/images/itemsubgroupimages/' +
+                                                data[index].imageurl,
                                         height:
                                             MediaQuery.of(context).size.height /
                                                 5.6,
                                         width:
                                             MediaQuery.of(context).size.width /
                                                 2,
+                                        progressIndicatorBuilder:
+                                            (context, url, progress) => Center(
+                                          child: CircularProgressIndicator(
+                                            value: progress.progress,
+                                            color: Colors.black,
+                                          ),
+                                        ),
                                       ),
                                       Container(
                                         height:
@@ -187,12 +196,13 @@ class _ItemSubState extends State<ItemSub> {
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () {
-                                // Navigator.push(
-                                //     context,
-                                //     new MaterialPageRoute(
-                                //         builder: (context) => ItemGroup(
-                                //             itemid: data[index].id,
-                                //             itemtitle: data[index].title)));
+                                print('going to sublist');
+                                Navigator.push(
+                                    context,
+                                    new MaterialPageRoute(
+                                        builder: (context) => SubList_Items(
+                                            sublist: data[index].id,
+                                            title: data[index].title)));
                               },
                               child: Container(
                                 height: MediaQuery.of(context).size.height / 5,
@@ -206,14 +216,22 @@ class _ItemSubState extends State<ItemSub> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Image.network(
-                                      'https://onlinefamilypharmacy.com/images/itemsubgroupimages/' +
-                                          data[index].imageurl,
+                                    CachedNetworkImage(
+                                      imageUrl:
+                                          'https://onlinefamilypharmacy.com/images/itemsubgroupimages/' +
+                                              data[index].imageurl,
                                       height:
                                           MediaQuery.of(context).size.height /
                                               5.5,
                                       width:
                                           MediaQuery.of(context).size.width / 2,
+                                      progressIndicatorBuilder:
+                                          (context, url, progress) => Center(
+                                        child: CircularProgressIndicator(
+                                          value: progress.progress,
+                                          color: Colors.black,
+                                        ),
+                                      ),
                                     ),
                                     Container(
                                       height:
@@ -313,9 +331,10 @@ class _ItemSubState extends State<ItemSub> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Image.network(
-                                          'https://onlinefamilypharmacy.com/images/itemsubgroupimages/' +
-                                              data[index].imageurl,
+                                        CachedNetworkImage(
+                                          imageUrl:
+                                              'https://onlinefamilypharmacy.com/images/itemsubgroupimages/' +
+                                                  data[index].imageurl,
                                           height: MediaQuery.of(context)
                                                   .size
                                                   .height /
@@ -324,6 +343,14 @@ class _ItemSubState extends State<ItemSub> {
                                                   .size
                                                   .width /
                                               2,
+                                          progressIndicatorBuilder:
+                                              (context, url, progress) =>
+                                                  Center(
+                                            child: CircularProgressIndicator(
+                                              value: progress.progress,
+                                              color: Colors.black,
+                                            ),
+                                          ),
                                         ),
                                         Container(
                                           height: MediaQuery.of(context)

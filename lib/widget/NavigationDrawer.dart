@@ -23,14 +23,21 @@ class NavigationDrawer extends StatefulWidget {
 }
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
-  String qatarId;
+  String workingIn;
+  String employeeName;
+  String employeeCode;
 
   getQatarInfo() async {
     SharedPreferences pf = await SharedPreferences.getInstance();
     pf.getString("qatarid");
+    pf.getString("employeeName");
+    pf.getString("ecode");
 
     setState(() {
-      qatarId = pf.getString("qatarid");
+      workingIn = pf.getString("workingin");
+      employeeCode = pf.getString("ecode");
+
+      employeeName = pf.getString("employeeName");
     });
   }
 
@@ -52,7 +59,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                 color: Colors.black87,
               ),
               accountName: Text(
-                qatarId == null ? "Hi" : qatarId,
+                employeeName == null ? "Meet Shah" : employeeName,
                 style: TextStyle(
                     fontSize: 19,
                     color: Colors.white,
@@ -68,7 +75,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.black,
                 child: Text(
-                  "M",
+                  "P01",
                   style: TextStyle(
                       fontSize: 22,
                       color: Colors.white,

@@ -102,6 +102,7 @@ class ItemMainGroup {
 /// maxretailprice : "5.250"
 /// minretailprice : "5.250"
 /// rs : "5.250"
+/// ws : "3.40"
 /// origin : ""
 /// whichcompany : "FPG"
 /// allowsonapp : "0"
@@ -134,45 +135,52 @@ class SearchList {
   // String seq;
   String maxretailprice;
   String minretailprice;
-  // String rs;
+  String maxwholesaleprice;
+  String minwholesaleprice;
+  String rs;
+  // String ws;
+
   // String origin;
   // String whichcompany;
   // String allowsonapp;
   // String status;
 
-  SearchList({
-    this.itemid,
-    this.img,
-    this.itemnameEn,
-    // this.labelname,
-    // this.itempack,
-    // this.itemstrength,
-    this.itemmaingroupid,
-    this.itemmaingrouptitle,
-    // this.itemgroupid,
-    // this.itemgrouptitle,
-    // this.itemsubgroupid,
-    this.itemproductgroupid,
-    // this.id,
-    this.itemproductgrouptitle,
-    // this.itemproductgroupimage,
-    // this.shortdescription,
-    // this.description,
-    // this.additionalinformation,
-    // this.type,
-    // this.itemdosageid,
-    // this.itemclassid,
-    // this.manufactureid,
-    // this.manufactureshortname,
-    // this.seq,
-    this.maxretailprice,
-    this.minretailprice,
-    // this.rs,
-    // this.origin,
-    // this.whichcompany,
-    // this.allowsonapp,
-    // this.status
-  });
+  SearchList(
+      {this.itemid,
+      this.img,
+      this.itemnameEn,
+      // this.labelname,
+      // this.itempack,
+      // this.itemstrength,
+      this.itemmaingroupid,
+      this.itemmaingrouptitle,
+      // this.itemgroupid,
+      // this.itemgrouptitle,
+      // this.itemsubgroupid,
+      this.itemproductgroupid,
+      // this.id,
+      this.itemproductgrouptitle,
+      // this.itemproductgroupimage,
+      // this.shortdescription,
+      // this.description,
+      // this.additionalinformation,
+      // this.type,
+      // this.itemdosageid,
+      // this.itemclassid,
+      // this.manufactureid,
+      // this.manufactureshortname,
+      // this.seq,
+      this.maxretailprice,
+      this.minretailprice,
+      this.maxwholesaleprice,
+      this.minwholesaleprice
+      // this.rs,
+      // this.ws,
+      // this.origin,
+      // this.whichcompany,
+      // this.allowsonapp,
+      // this.status
+      });
 
   SearchList.fromJson(dynamic json) {
     itemid = json['itemid'];
@@ -201,7 +209,11 @@ class SearchList {
     // seq = json['seq'];
     maxretailprice = json['maxretailprice'];
     minretailprice = json['minretailprice'];
+    maxwholesaleprice = json['maxwholesaleprice'];
+    minwholesaleprice = json['minwholesaleprice'];
     // rs = json['rs'];
+    // ws = json['ws'];
+
     // origin = json['origin'];
     // whichcompany = json['whichcompany'];
     // allowsonapp = json['allowsonapp'];
@@ -236,7 +248,10 @@ class SearchList {
     // map['seq'] = seq;
     map['maxretailprice'] = maxretailprice;
     map['minretailprice'] = minretailprice;
+    map['maxwholesaleprice'] = maxwholesaleprice;
+    map['minwholesaleprice'] = minwholesaleprice;
     // map['rs'] = rs;
+
     // map['origin'] = origin;
     // map['whichcompany'] = whichcompany;
     // map['allowsonapp'] = allowsonapp;

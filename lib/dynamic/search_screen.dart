@@ -293,15 +293,15 @@ class SearchscreenState extends State<Searchscreen> {
         case DataConnectionStatus.connected:
           setState(() {
             isOnline = true;
-            print(isOnline);
+            
           });
-          print('Data connection is available.');
+          
           break;
         case DataConnectionStatus.disconnected:
-          print('You are disconnected from the internet.');
+          
           setState(() {
             isOnline = false;
-            print(isOnline);
+            
           });
           break;
       }
@@ -754,7 +754,7 @@ class SearchscreenState extends State<Searchscreen> {
 
   Future<List<ItemData>> _fetchItemData() async {
     final jobsListAPIUrl = 'https://onlinefamilypharmacy.com/mobileapplication/search_api.php';
-    print(itemmaingroup);
+    
     var data = {
       'itemname': itemname,
       '_lowerValue': _lowerValue,

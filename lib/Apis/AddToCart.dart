@@ -3,24 +3,29 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future addToCart() async {
+//  {custid: 1419, selectedcustbranch: 2}
+// ignore: non_constant_identifier_names
+Future addToCart(user_id, itemid, price, quantity, foc, exfoc, disc,
+    selectedCustbranch) async {
   String baseUrl =
       'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesmanaddtocart.php';
 
   Map<String, dynamic> data = {
-    'user_id': "125",
-    'itemid': "10112",
-    'price': "24",
+    'user_id': user_id,
+    'itemid': itemid,
+    'price': price,
     // 'finalprice': finalprice,
-    'quantity': "6",
-    'foc': "1",
-    'ex_foc': "9",
-    'disc': "0",
-    'selectedcustbranch': "124",
+    'quantity': quantity,
+    'foc': foc,
+    'ex_foc': exfoc,
+    'disc': disc,
+    'selectedcustbranch': selectedCustbranch,
   };
+  print("Add to CART MAPPED DATA");
+  print(data);
 
   var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
-  print(response.body.toString());
+
   if (response.body.toString().contains("Added to Cart")) {
     return {
       Fluttertoast.showToast(
@@ -43,13 +48,16 @@ Future addToCart() async {
 Future getCartCount() async {
   String baseUrl =
       'https://onlinefamilypharmacy.com/mobileapplication/getcart_count.php';
-  // SharedPreferences prefs = await SharedPreferences.getInstance();
-  // var user_id = prefs.getString("id");
-  Map<String, dynamic> data = {'userid': "125"};
+  SharedPreferences pf = await SharedPreferences.getInstance();
+  String customerId = pf.getString('customerId');
+  Map<String, dynamic> data = {'userid': customerId};
 
   var response2 = await http.post(Uri.parse(baseUrl), body: json.encode(data));
 
   var cartTotal = jsonDecode(response2.body);
+  print(
+      "=================================================================================");
+  print(cartTotal);
   print(cartTotal);
   // cart_total = jsonDecode(response2.body);
   // if (cart_total == null) {

@@ -1,14 +1,16 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:testing/models/SearchScreenModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/models/SearchScreenModel.dart';
 import 'package:testing/screens/DetailPageScreen.dart';
 import 'package:testing/widget/NavigationDrawer.dart';
 import 'package:http/http.dart' as http;
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key key}) : super(key: key);
@@ -19,6 +21,13 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   TextEditingController searchController = TextEditingController();
+  String customerType = 'Retail'; // Wholesale
+  getCustomerInfo() async {
+    SharedPreferences pf = await SharedPreferences.getInstance();
+    customerType = pf.getString('cust_type');
+    print(customerType);
+  }
+
   bool man = false;
 
   Future<List<ItemMainGroup>> fetchItemMainGroupList() async {
@@ -83,6 +92,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
+    getCustomerInfo();
     _fetchdata();
     fetchAllItem();
   }
@@ -300,11 +310,11 @@ class _SearchScreenState extends State<SearchScreen> {
                     if (snapshot.hasData) {
                       List<SearchList> data = snapshot.data;
 
-                      return ListView.builder(
+                      return ListView.separated(
                         primary: true,
-                        itemExtent: 100.0,
-                        cacheExtent:
-                            5.00 * double.parse(data.length.toString()),
+                        separatorBuilder: (context, index) {
+                          return Divider();
+                        },
                         scrollDirection: Axis.vertical,
                         itemCount: data.length,
                         itemBuilder: (context, index) {
@@ -320,21 +330,61 @@ class _SearchScreenState extends State<SearchScreen> {
                                           )));
                             },
                             child: ListTile(
-                              leading:
-                                  'https://onlinefamilypharmacy.com/images/item/${data[index].img}' ==
-                                          'https://onlinefamilypharmacy.com/images/item/null'
-                                      ? Image.network(
+                              leading: 'https://onlinefamilypharmacy.com/images/item/${data[index].img}' ==
+                                      'https://onlinefamilypharmacy.com/images/item/null'
+                                  // ? Image.network(
+                                  //     'https://onlinefamilypharmacy.com/images/noimage.jpg',
+                                  //     height: 100,
+                                  //     width: 100,
+                                  //     fit: BoxFit.fill,
+                                  //   )
+                                  ? CachedNetworkImage(
+                                      imageUrl:
                                           'https://onlinefamilypharmacy.com/images/noimage.jpg',
-                                          height: 100,
-                                          width: 100,
-                                          fit: BoxFit.fill,
-                                        )
-                                      : Image.network(
+                                      height: 100,
+                                      width: 100,
+                                      fit: BoxFit.fill,
+                                      progressIndicatorBuilder:
+                                          (_, url, download) {
+                                        if (download.progress != null) {
+                                          return Center(
+                                            child: CircularProgressIndicator(
+                                              value: download.progress,
+                                              color: Colors.black,
+                                            ),
+                                          );
+                                        }
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            color: Colors.black,
+                                          ),
+                                        );
+                                      },
+                                    )
+                                  : CachedNetworkImage(
+                                      imageUrl:
                                           'https://onlinefamilypharmacy.com/images/item/${data[index].img}',
-                                          height: 100,
-                                          width: 100,
-                                          fit: BoxFit.fill,
-                                        ),
+                                      height: 100,
+                                      width: 100,
+                                      fit: BoxFit.fill,
+                                      progressIndicatorBuilder:
+                                          (_, url, download) {
+                                        if (download.progress != null) {
+                                          return Center(
+                                            child: CircularProgressIndicator(
+                                              value: download.progress,
+                                              color: Colors.black,
+                                            ),
+                                          );
+                                        }
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            color: Colors.black,
+                                          ),
+                                        );
+                                      },
+                                    ),
+
                               title: Text(
                                 data[index].itemproductgrouptitle,
                                 style: TextStyle(
@@ -353,15 +403,25 @@ class _SearchScreenState extends State<SearchScreen> {
                                   SizedBox(
                                     height: 2,
                                   ),
-                                  Text(
-                                    "\QR ${data[index].minretailprice}" +
-                                        " - " +
-                                        "\QR ${data[index].maxretailprice}",
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold),
-                                  ),
+                                  customerType == 'Wholesale'
+                                      ? Text(
+                                          "\QR ${data[index].minwholesaleprice}" +
+                                              " - " +
+                                              "\QR ${data[index].maxwholesaleprice}",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold),
+                                        )
+                                      : Text(
+                                          "\QR ${data[index].minretailprice}" +
+                                              " - " +
+                                              "\QR ${data[index].maxretailprice}",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold),
+                                        ),
                                 ],
                               ),
                               // isThreeLine: true,
@@ -613,10 +673,11 @@ class _SearchScreenState extends State<SearchScreen> {
 }
 
 SearchListD(context, data) {
-  return ListView.builder(
+  return ListView.separated(
+    separatorBuilder: (context, index) {
+      return Divider();
+    },
     primary: true,
-    itemExtent: 100.0,
-    cacheExtent: 5.00 * double.parse(data.length.toString()),
     scrollDirection: Axis.vertical,
     itemCount: data.length,
     itemBuilder: (context, index) {
@@ -633,17 +694,49 @@ SearchListD(context, data) {
           leading:
               'https://onlinefamilypharmacy.com/images/item/${data[index].img}' ==
                       'https://onlinefamilypharmacy.com/images/item/null'
-                  ? Image.network(
-                      'https://onlinefamilypharmacy.com/images/noimage.jpg',
+                  ? CachedNetworkImage(
+                      imageUrl:
+                          'https://onlinefamilypharmacy.com/images/noimage.jpg',
                       height: 100,
                       width: 100,
                       fit: BoxFit.fill,
+                      progressIndicatorBuilder: (_, url, download) {
+                        if (download.progress != null) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: download.progress,
+                              color: Colors.black,
+                            ),
+                          );
+                        }
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.black,
+                          ),
+                        );
+                      },
                     )
-                  : Image.network(
-                      'https://onlinefamilypharmacy.com/images/item/${data[index].img}',
+                  : CachedNetworkImage(
+                      imageUrl:
+                          'https://onlinefamilypharmacy.com/images/item/${data[index].img}',
                       height: 100,
                       width: 100,
                       fit: BoxFit.fill,
+                      progressIndicatorBuilder: (_, url, download) {
+                        if (download.progress != null) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: download.progress,
+                              color: Colors.black,
+                            ),
+                          );
+                        }
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.black,
+                          ),
+                        );
+                      },
                     ),
           title: Text(
             data[index].itemproductgrouptitle,
