@@ -7,6 +7,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:responsify/responsify_files/responsify_enum.dart';
 import 'package:responsify/responsify_files/responsify_ui_widget.dart';
 import 'package:testing/models/ItemSubGroupModel.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import 'ItemGroupList.dart';
 import 'ItemSubGroupList.dart';
@@ -26,6 +27,7 @@ class _ItemSubState extends State<ItemSub> {
   void initState() {
     super.initState();
     _fetchItemSubData();
+    _fetchdata();
   }
 
   Future<List<ItemSubGroupModel>> _fetchItemSubData() async {
@@ -44,12 +46,35 @@ class _ItemSubState extends State<ItemSub> {
     }
   }
 
+  List<ItemSubGroupModel> data;
+  String pharmacyname = "";
+
+  Future<void> _showSearch() async {
+    await showSearch(
+      context: context,
+      delegate: TheSearch(data: data),
+      query: pharmacyname,
+    );
+  }
+
+  void _fetchdata() async {
+    data = await _fetchItemSubData();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.itemetitle),
         backgroundColor: Colors.black,
+        actions: [
+          IconButton(
+              onPressed: () {
+                _showSearch();
+              },
+              icon: Icon(Icons.search))
+        ],
       ),
       body: ResponsiveUiWidget(
         targetOlderComputers: false,
@@ -133,6 +158,8 @@ class _ItemSubState extends State<ItemSub> {
                                                 2,
                                         child: Text(
                                           data[index].title,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontSize: 15,
@@ -241,6 +268,8 @@ class _ItemSubState extends State<ItemSub> {
                                           MediaQuery.of(context).size.width / 2,
                                       child: Text(
                                         data[index].title,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 15,
@@ -428,10 +457,11 @@ Grid(context, data) {
           return InkWell(
             onTap: () {
               print(data[index].id);
-              // Navigator.push(context,
-              //     new MaterialPageRoute(builder: (context) =>
-              //         SubList_Items(
-              //           sublist: data[index].id, title: data[index].title,))
+              Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                      builder: (context) => SubList_Items(
+                          sublist: data[index].id, title: data[index].title)));
               // );
             },
             child: Padding(
@@ -487,11 +517,11 @@ Grid(context, data) {
           return InkWell(
             onTap: () {
               print(data[index].id);
-              // Navigator.push(context,
-              //     new MaterialPageRoute(builder: (context) =>
-              //         SubList_Items(
-              //           sublist: data[index].id, title: data[index].title,))
-              // );
+              Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                      builder: (context) => SubList_Items(
+                          sublist: data[index].id, title: data[index].title)));
             },
             child: Padding(
               padding: const EdgeInsets.all(5.0),
@@ -511,7 +541,7 @@ Grid(context, data) {
                     children: [
                       Image.network(
                         'https://onlinefamilypharmacy.com/images/itemsubgroupimages/' +
-                            data[index].url,
+                            data[index].imageurl,
                         height: containerh / 1.5,
                         width: width / 2,
                       ),
@@ -548,11 +578,11 @@ Grid(context, data) {
           return InkWell(
             onTap: () {
               print(data[index].id);
-              // Navigator.push(context,
-              //     new MaterialPageRoute(builder: (context) =>
-              //         SubList_Items(
-              //           sublist: data[index].id, title: data[index].title,))
-              // );
+              Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                      builder: (context) => SubList_Items(
+                          sublist: data[index].id, title: data[index].title)));
             },
             child: Padding(
               padding: const EdgeInsets.all(5.0),
@@ -572,7 +602,7 @@ Grid(context, data) {
                     children: [
                       Image.network(
                         'https://onlinefamilypharmacy.com/images/itemsubgroupimages/' +
-                            data[index].url,
+                            data[index].imageurl,
                         height: containerh / 3.5,
                         width: width / 2,
                       ),
@@ -609,11 +639,11 @@ Grid(context, data) {
           return InkWell(
             onTap: () {
               print(data[index].id);
-              // Navigator.push(context,
-              //     new MaterialPageRoute(builder: (context) =>
-              //         SubList_Items(
-              //           sublist: data[index].id, title: data[index].title,))
-              // );
+              Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                      builder: (context) => SubList_Items(
+                          sublist: data[index].id, title: data[index].title)));
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -633,7 +663,7 @@ Grid(context, data) {
                     children: [
                       Image.network(
                         'https://onlinefamilypharmacy.com/images/itemsubgroupimages/' +
-                            data[index].url,
+                            data[index].imageurl,
                         height: containerh / 1.5,
                         width: width / 2,
                       ),
@@ -658,5 +688,69 @@ Grid(context, data) {
             ),
           );
         });
+  }
+}
+
+class TheSearch extends SearchDelegate<String> {
+  TheSearch({this.contextPage, this.controller, @required this.data});
+
+  List<ItemSubGroupModel> data;
+  BuildContext contextPage;
+  WebViewController controller;
+  final suggestions1 = [];
+
+  @override
+  ThemeData appBarTheme(BuildContext context) {
+    return ThemeData(
+      primaryColor: Colors.black,
+    );
+  }
+
+  @override
+  String get searchFieldLabel => "Search Item Group";
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = "";
+        },
+      )
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: AnimatedIcon(
+        icon: AnimatedIcons.menu_arrow,
+        progress: transitionAnimation,
+      ),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return Grid(
+        context,
+        data
+            .where((element) =>
+                element.title.toLowerCase().contains(query.toLowerCase()))
+            .toList());
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    return Grid(
+        context,
+        data
+            .where((element) =>
+                element.title.toLowerCase().contains(query.toLowerCase()))
+            .toList());
   }
 }

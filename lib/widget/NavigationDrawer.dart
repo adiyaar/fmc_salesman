@@ -65,13 +65,6 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                     color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
-              accountEmail: Text(
-                "manu@gmail.com",
-                style: TextStyle(
-                    fontSize: 17,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
-              ),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.black,
                 child: Text(

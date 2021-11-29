@@ -254,6 +254,7 @@ class _ItemGroupState extends State<ItemGroup> with TickerProviderStateMixin {
                                             MediaQuery.of(context).size.width /
                                                 2,
                                       ),
+                                      SizedBox(height: 10),
                                       Container(
                                         height:
                                             MediaQuery.of(context).size.height /
@@ -438,6 +439,7 @@ class _ItemGroupState extends State<ItemGroup> with TickerProviderStateMixin {
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
+
       return jsonResponse
           .map((job) => new ItemGroupModel.fromJson(job))
           .toList();
@@ -456,9 +458,7 @@ Grid(context, data) {
     return GridView.builder(
         itemCount: data.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            childAspectRatio: MediaQuery.of(context).size.width /
-                (MediaQuery.of(context).size.height / 1),
-            crossAxisCount: 4),
+            childAspectRatio: 1.2, crossAxisCount: 4),
         itemBuilder: (context, index) {
           return InkWell(
             onTap: () {
@@ -470,44 +470,49 @@ Grid(context, data) {
                           itemsubid: data[index].id,
                           itemetitle: data[index].title)));
             },
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Container(
-                // height: containerh,
-                width: width / 2,
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Color(0xFFFECEFF1),
-                    ),
-                    borderRadius: BorderRadius.circular(13),
-                    color: Colors.white),
-                // child: Padding(padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Image.network(
-                      'https://onlinefamilypharmacy.com/images/itemgroupimages/' +
-                          data[index].imageurl,
-                      height: containerh / 2.5,
-                      width: width / 2,
-                    ),
-                    Container(
-                      height: containerh / 15,
-                      width: width / 2,
-                      child: Text(
-                        data[index].title,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+            child: Container(
+              // height: containerh,
+              width: width / 2,
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Color(0xFFFECEFF1),
+                  ),
+                  borderRadius: BorderRadius.circular(13),
+                  color: Colors.white),
+              // child: Padding(padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CachedNetworkImage(
+                    progressIndicatorBuilder: (context, url, progress) =>
+                        Center(
+                      child: CircularProgressIndicator(
+                        value: progress.progress,
+                        color: Colors.black,
                       ),
                     ),
-                  ],
-                ),
-                //  ),
+                    imageUrl:
+                        'https://onlinefamilypharmacy.com/images/itemgroupimages/' +
+                            data[index].imageurl,
+                    height: MediaQuery.of(context).size.height / 5.6,
+                    width: MediaQuery.of(context).size.width / 2,
+                  ),
+                  Container(
+                    height: containerh / 15,
+                    width: width / 2,
+                    child: Text(
+                      data[index].title,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
+              //  ),
             ),
           );
         });
@@ -607,7 +612,7 @@ Grid(context, data) {
                   children: [
                     Image.network(
                       'https://onlinefamilypharmacy.com/images/itemgroupimages/' +
-                          data[index].url,
+                          data[index].imageurl,
                       height: containerh / 3.5,
                       width: width / 2,
                     ),
@@ -668,7 +673,7 @@ Grid(context, data) {
                     children: [
                       Image.network(
                         'https://onlinefamilypharmacy.com/images/itemgroupimages/' +
-                            data[index].url,
+                            data[index].imageurl,
                         height: containerh / 1.5,
                         width: width / 2,
                       ),
@@ -744,7 +749,7 @@ class TheSearch extends SearchDelegate<String> {
         context,
         data
             .where((element) =>
-                element.imageurl.toLowerCase().contains(query.toLowerCase()))
+                element.title.toLowerCase().contains(query.toLowerCase()))
             .toList());
   }
 

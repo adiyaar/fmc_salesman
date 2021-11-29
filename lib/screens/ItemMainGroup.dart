@@ -42,6 +42,7 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
+
       return jsonResponse
           .map((job) => new ItemMainGroupModel.fromJson(job))
           .toList();
@@ -208,6 +209,7 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () {
+                                print(data[index].id);
                                 Navigator.push(
                                     context,
                                     new MaterialPageRoute(
@@ -216,7 +218,8 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
                                             itemtitle: data[index].title)));
                               },
                               child: Container(
-                                height: MediaQuery.of(context).size.height / 5,
+                                height:
+                                    MediaQuery.of(context).size.height / 4.7,
                                 width: MediaQuery.of(context).size.width / 2,
                                 decoration: BoxDecoration(
                                     border: Border.all(
@@ -244,6 +247,7 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
                                         ),
                                       ),
                                     ),
+                                    SizedBox(height: 10),
                                     Container(
                                       height:
                                           MediaQuery.of(context).size.height /

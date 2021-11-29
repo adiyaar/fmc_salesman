@@ -44,7 +44,8 @@ dependencies:
   # syncfusion_flutter_calendar:
   intl:
   date_format:
-  shimmer_animation:
+  shimmer: 
+  nb_utils:
   connectivity:
   dio:
   webview_flutter:

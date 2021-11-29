@@ -8,6 +8,7 @@ import 'package:responsify/responsify.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:testing/Apis/AddToCart.dart';
+import 'package:testing/Common/DetailShimmer.dart';
 import 'package:testing/Common/ErrorPage.dart';
 import 'package:testing/models/DetailPageModel.dart';
 import 'package:http/http.dart' as http;
@@ -798,28 +799,31 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                       ),
                     ],
                   ));
-                } else if (snapshot.hasError) {
-                  return ConnectionFaildScreen();
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return DetailPageShimmer();
                 }
-                return Center(
-                  child: CircularPercentIndicator(
-                    radius: 100.0,
-                    lineWidth: 10.0,
-                    percent: 1.0,
-                    animationDuration: 8000,
-                    restartAnimation: true,
-                    animation: true,
-                    footer: Text("Fetching Data Securely!"),
-                    center: new Icon(
-                      Icons.lock,
-                      size: 50.0,
-                      color: Colors.black,
-                    ),
-                    backgroundColor: Colors.white,
-                    circularStrokeCap: CircularStrokeCap.round,
-                    progressColor: Colors.black,
-                  ),
-                );
+
+                return DetailPageShimmer();
+                // return Center(
+                //   child: CircularPercentIndicator(
+                //     radius: 100.0,
+                //     lineWidth: 10.0,
+                //     percent: 1.0,
+                //     animationDuration: 8000,
+                //     restartAnimation: true,
+                //     animation: true,
+                //     footer: Text("Fetching Data Securely!"),
+                //     center: new Icon(
+                //       Icons.lock,
+                //       size: 50.0,
+                //       color: Colors.black,
+                //     ),
+                //     backgroundColor: Colors.white,
+                //     circularStrokeCap: CircularStrokeCap.round,
+                //     progressColor: Colors.black,
+                //   ),
+                // );
               },
             );
           } else if (deviceInfo.deviceTypeInformation ==
@@ -1424,28 +1428,11 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                       ),
                     ],
                   ));
-                } else if (snapshot.hasError) {
-                  return ConnectionFaildScreen();
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return DetailPageShimmer();
                 }
-                return Center(
-                  child: CircularPercentIndicator(
-                    radius: 100.0,
-                    lineWidth: 10.0,
-                    percent: 1.0,
-                    animationDuration: 8000,
-                    restartAnimation: true,
-                    animation: true,
-                    footer: Text("Fetching Data Securely!"),
-                    center: new Icon(
-                      Icons.lock,
-                      size: 50.0,
-                      color: Colors.black,
-                    ),
-                    backgroundColor: Colors.white,
-                    circularStrokeCap: CircularStrokeCap.round,
-                    progressColor: Colors.black,
-                  ),
-                );
+                return DetailPageShimmer();
               },
             );
           } else if (deviceInfo.deviceTypeInformation ==
@@ -1988,28 +1975,11 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                       ),
                     ],
                   ));
-                } else if (snapshot.hasError) {
-                  return ConnectionFaildScreen();
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return DetailPageShimmer();
                 }
-                return Center(
-                  child: CircularPercentIndicator(
-                    radius: 100.0,
-                    lineWidth: 10.0,
-                    percent: 1.0,
-                    animationDuration: 8000,
-                    restartAnimation: true,
-                    animation: true,
-                    footer: Text("Fetching Data Securely!"),
-                    center: new Icon(
-                      Icons.lock,
-                      size: 50.0,
-                      color: Colors.black,
-                    ),
-                    backgroundColor: Colors.white,
-                    circularStrokeCap: CircularStrokeCap.round,
-                    progressColor: Colors.black,
-                  ),
-                );
+                return DetailPageShimmer();
               },
             );
           }

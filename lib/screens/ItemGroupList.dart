@@ -2,6 +2,7 @@ import 'dart:convert';
 //import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:testing/Common/Shimmer.dart';
 import 'package:testing/screens/DetailPageScreen.dart';
 
 class ListItems extends StatefulWidget {
@@ -114,10 +115,10 @@ class _ListItemsState extends State<ListItems> {
           if (snapshot.hasData) {
             List<ItemGrpData> data = snapshot.data;
             return Grid(context, data);
-          } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return SearchShimmer();
           }
-          return CircularProgressIndicator();
+          return SearchShimmer();
         },
       ),
     );

@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:testing/Common/Shimmer.dart';
 import 'package:testing/screens/DetailPageScreen.dart';
 
 String invoiceprice;
@@ -136,10 +137,10 @@ class _SubList_ItemsState extends State<SubList_Items> {
             List<ItemGrpData> data = snapshot.data;
 
             return Grid(context, data);
-          } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return SearchShimmer();
           }
-          return Center(child: CircularProgressIndicator());
+          return SearchShimmer();
         },
       ),
     );

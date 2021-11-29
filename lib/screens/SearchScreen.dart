@@ -5,12 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:testing/Common/Shimmer.dart';
 import 'package:testing/models/SearchScreenModel.dart';
 import 'package:testing/screens/DetailPageScreen.dart';
 import 'package:testing/widget/NavigationDrawer.dart';
 import 'package:http/http.dart' as http;
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key key}) : super(key: key);
@@ -429,246 +429,36 @@ class _SearchScreenState extends State<SearchScreen> {
                           );
                         },
                       );
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return SearchShimmer();
                     }
-
-                    return Center(
-                      child: CircularPercentIndicator(
-                        radius: 100.0,
-                        lineWidth: 10.0,
-                        percent: 1.0,
-                        animationDuration: 8000,
-                        restartAnimation: true,
-                        animation: true,
-                        footer: Text("Fetching Data Securely!"),
-                        center: new Icon(
-                          Icons.lock,
-                          size: 50.0,
-                          color: Colors.black,
-                        ),
-                        backgroundColor: Colors.white,
-                        circularStrokeCap: CircularStrokeCap.round,
-                        progressColor: Colors.black,
-                      ),
-                    );
+                    return SearchShimmer();
+                    // return Center(
+                    //   child: CircularPercentIndicator(
+                    //     radius: 100.0,
+                    //     lineWidth: 10.0,
+                    //     percent: 1.0,
+                    //     animationDuration: 8000,
+                    //     restartAnimation: true,
+                    //     animation: true,
+                    //     footer: Text("Fetching Data Securely!"),
+                    //     center: new Icon(
+                    //       Icons.lock,
+                    //       size: 50.0,
+                    //       color: Colors.black,
+                    //     ),
+                    //     backgroundColor: Colors.white,
+                    //     circularStrokeCap: CircularStrokeCap.round,
+                    //     progressColor: Colors.black,
+                    //   ),
+                    // );
                   },
                 ),
               )
             ],
           ),
         ));
-    // body: SingleChildScrollView(
-    //     child: Column(
-    //       children: <Widget>[
-    //         Container(
-    //           height: 60,
-    //           decoration: BoxDecoration(color: Colors.black87),
-    //           child: Row(
-    //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //               children: <Widget>[
-    //                 Padding(
-    //                   padding:
-    //                   const EdgeInsets.only(left: 0, top: 0, bottom: 0),
-    //                   child: Container(
-    //                     decoration: BoxDecoration(color: Colors.white),
-    //                     width: width / 1,
-    //                     child: TextField(
-    //                       autofocus: true,
-    //                       textInputAction: TextInputAction.go,
-    //                       decoration: InputDecoration(
-    //                         contentPadding: EdgeInsets.all(15.0),
-    //                         hintText: "Search Medicines / Healthcare Products",
-    //                       ),
-    //                       onChanged: (string) {
-    //                         setState(() {
-    //                           itemname = string;
-    //                           search = true;
-    //
-    //                         });
-    //                       },
-    //                     ),
-    //                   ),
-    //                 ),
-    //
-    //               ]),
-    //         ),
-    //         if ((search == true) & (filter == false))
-    //           (Container(
-    //             height: height / 1.22,
-    //             child: FutureBuilder<List<ItemData>>(
-    //               future: _fetchItemData(),
-    //               builder: (context, snapshot) {
-    //                 if (snapshot.hasData) {
-    //                   List<ItemData> data = snapshot.data;
-    //                   //filterdata(data);
-    //                   return Grid(context, data);
-    //                 } else if (snapshot.hasError) {
-    //                   return Text("${snapshot.error}");
-    //                 }
-    //                 return Center(
-    //                     child: CircularProgressIndicator(
-    //                       valueColor: AlwaysStoppedAnimation<Color>(
-    //                           Colors.black),
-    //                     ));
-    //               },
-    //             ),
-    //           ))
-    //         else if ((search == true) & (filter == true))
-    //           (Container(
-    //             height: height / 1.3,
-    //             child: FutureBuilder<List<ItemData>>(
-    //               future: _fetchItemData(),
-    //               builder: (context, snapshot) {
-    //                 if (snapshot.hasData) {
-    //                   List<ItemData> data = snapshot.data;
-    //                   filterdata(data);
-    //                   return Grid(context, data);
-    //                 } else if (snapshot.hasError) {
-    //                   return Text("${snapshot.error}");
-    //                 }
-    //                 return Center(
-    //                     child: CircularProgressIndicator(
-    //                       valueColor: AlwaysStoppedAnimation<Color>(
-    //                           Colors.black),
-    //                     ));
-    //               },
-    //             ),
-    //           ))
-    //         else
-    //           (Container()),
-    //       ],
-    //     )),
-    // floatingActionButton: Container(
-    //   height: 35.0,
-    //
-    //   //child: FittedBox(
-    //   child: Center(
-    //     child: FloatingActionButton.extended(
-    //       icon: Icon(Icons.format_align_center, color: Colors.white),
-    //       //  label: Text("Add to Cart"),
-    //       backgroundColor: Colors.black,
-    //       onPressed: () {
-    //         showMaterialModalBottomSheet(
-    //             expand: false,
-    //             context: context,
-    //             builder: (context) {
-    //               final width = MediaQuery.of(context).size.width;
-    //               return Container(
-    //                   height: 360.0,
-    //                   width: width,
-    //                   child: ListView(children: <Widget>[
-    //                     //   ..add(
-    //                     //
-    //                     // Simple example
-    //                     //
-    //                     Center(child: Text('Price range from 0 to 500')),
-    //                     Padding(
-    //                       padding: const EdgeInsets.only(left: 15),
-    //                       child: Row(children: <Widget>[
-    //                         Text(_lowerValueFormatter.toString()),
-    //                         Container(
-    //                           width: width/1.3,
-    //                           child: frs.RangeSlider(
-    //                             min: 0.0,
-    //                             max: 500.0,
-    //                             lowerValue: _lowerValueFormatter,
-    //                             upperValue: _upperValueFormatter,
-    //                             divisions: 10,
-    //                             showValueIndicator: true,
-    //                             valueIndicatorMaxDecimals: 1,
-    //                             onChanged: (double newLowerValue,
-    //                                 double newUpperValue) {
-    //                               setState(() {
-    //                                 _lowerValue = newLowerValue;
-    //                                 _upperValue = newUpperValue;
-    //
-    //                                 _fetchItemData();
-    //                               });
-    //                             },
-    //                             onChangeStart: (double startLowerValue,
-    //                                 double startUpperValue) {},
-    //                             onChangeEnd: (double newLowerValue,
-    //                                 double newUpperValue) {},
-    //                           ),
-    //                         ),
-    //                         Text(_upperValueFormatter.toString()),
-    //                       ]),
-    //                     ),
-    //                     //   ),
-    //                     SizedBox(height: 20),
-    //                     Divider(
-    //                       color: Colors.grey[200],
-    //                       height: 20,
-    //                       thickness: 10,
-    //                     ),
-    //
-    //                     ListTile(
-    //                       leading: Image.asset('assets/az.png',
-    //                           color: Colors.black, height: 24),
-    //                       title: Text('Name A To Z'),
-    //                       onTap: () {
-    //                         setState(() {
-    //                           filter = true;
-    //                           sort = 'asc';
-    //                           Navigator.of(context).pop();
-    //                         });
-    //                       },
-    //                     ),
-    //                     ListTile(
-    //                       leading: Image.asset('assets/za.png',
-    //                           color: Colors.black, height: 24),
-    //                       title: Text('Name Z To A'),
-    //                       onTap: () {
-    //                         setState(() {
-    //                           filter = true;
-    //                           sort = 'desc';
-    //                           Navigator.of(context).pop();
-    //                         });
-    //                       },
-    //                     ),
-    //                     ListTile(
-    //                       leading: Icon(Icons.arrow_upward,
-    //                           color: Colors.black, size: 30),
-    //                       title: Text('Price low to high'),
-    //                       onTap: () {
-    //                         setState(() {
-    //                           filter = true;
-    //                           sort = 'ltoh';
-    //                           Navigator.of(context).pop();
-    //                         });
-    //                       },
-    //                     ),
-    //                     ListTile(
-    //                       leading: Icon(Icons.arrow_downward,
-    //                           color: Colors.black, size: 30),
-    //                       title: Text('Price high to low'),
-    //                       onTap: () {
-    //                         setState(() {
-    //                           filter = true;
-    //                           sort = 'htol';
-    //                           Navigator.of(context).pop();
-    //                         });
-    //                       },
-    //                     ),
-    //                   ]));
-    //             });
-    //       },
-    //       // icon: Icon(Icons.save),
-    //       label: Center(
-    //           child: Padding(
-    //             padding: const EdgeInsets.all(8.0),
-    //             child: Text(
-    //               "Sort",
-    //               style: TextStyle(
-    //                   fontSize: 15,
-    //                   color: Colors.white,
-    //                   fontWeight: FontWeight.bold),
-    //             ),
-    //           )),
-    //     ),
-    //   ),
-    // ));
   }
 }
 
