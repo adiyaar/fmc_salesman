@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:responsify/responsify.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:snapshot_carousel/snapshot_carousel.dart';
+
 import 'package:testing/Apis/AddToCart.dart';
 import 'package:testing/Common/ErrorPage.dart';
 import 'package:testing/models/DetailPageModel.dart';
@@ -584,19 +584,48 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                       onTap: () {
                                         if (quantityController.text == '' ||
                                             quantityController.text == null) {
-                                          Fluttertoast.showToast(
-                                              msg: 'Please Enter quantity');
+                                          final snackBar = SnackBar(
+                                            content: const Text(
+                                                'Please enter quantity'),
+                                            action: SnackBarAction(
+                                              label: '',
+                                              onPressed: () {},
+                                            ),
+                                          );
+
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
                                         } else if (focController.text == '' ||
                                             focController.text == null) {
-                                          Fluttertoast.showToast(
-                                              msg: 'Please Enter foc');
+                                          final snackBar = SnackBar(
+                                            content:
+                                                const Text('Please enter FOC'),
+                                            action: SnackBarAction(
+                                              label: '',
+                                              onPressed: () {},
+                                            ),
+                                          );
+
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
+                                          ;
                                         } else if (extraFocController.text ==
                                                 '' ||
                                             extraFocController.text == null) {
-                                          Fluttertoast.showToast(
-                                              msg: 'Please Enter Extra FOC');
+                                          final snackBar = SnackBar(
+                                            content: const Text(
+                                                'Please enter exFOc'),
+                                            action: SnackBarAction(
+                                              label: '',
+                                              onPressed: () {},
+                                            ),
+                                          );
+
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
                                         } else {
                                           addToCart(
+                                              context,
                                               customerBranchId,
                                               widget.itemDetails.itemid,
                                               iteminfo[0].minretailprice,
@@ -1185,19 +1214,47 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                       onTap: () {
                                         if (quantityController.text == '' ||
                                             quantityController.text == null) {
-                                          Fluttertoast.showToast(
-                                              msg: 'Please Enter quantity');
+                                          final snackBar = SnackBar(
+                                            content: const Text(
+                                                'Please enter quantity'),
+                                            action: SnackBarAction(
+                                              label: '',
+                                              onPressed: () {},
+                                            ),
+                                          );
+
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
                                         } else if (focController.text == '' ||
                                             focController.text == null) {
-                                          Fluttertoast.showToast(
-                                              msg: 'Please Enter foc');
+                                          final snackBar = SnackBar(
+                                            content:
+                                                const Text('Please enter FOC'),
+                                            action: SnackBarAction(
+                                              label: '',
+                                              onPressed: () {},
+                                            ),
+                                          );
+
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
                                         } else if (extraFocController.text ==
                                                 '' ||
                                             extraFocController.text == null) {
-                                          Fluttertoast.showToast(
-                                              msg: 'Please Enter Extra FOC');
+                                          final snackBar = SnackBar(
+                                            content: const Text(
+                                                'Please enter EXFoc'),
+                                            action: SnackBarAction(
+                                              label: '',
+                                              onPressed: () {},
+                                            ),
+                                          );
+
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
                                         } else {
                                           addToCart(
+                                              context,
                                               customerBranchId,
                                               widget.itemDetails.itemid,
                                               iteminfo[0].minretailprice,
@@ -1227,7 +1284,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                           child: Text(
                                             "Add to Cart",
                                             style: TextStyle(
-                                                fontSize: 20,
+                                                fontSize: 17,
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.w700),
                                           ),
@@ -1245,7 +1302,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                       child: Container(
                                         width:
                                             MediaQuery.of(context).size.width /
-                                                5,
+                                                4.5,
                                         height: 50,
                                         decoration: BoxDecoration(
                                             color: Colors.black,
@@ -1256,7 +1313,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                           child: Text(
                                             "View Order History",
                                             style: TextStyle(
-                                                fontSize: 20,
+                                                fontSize: 15,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w700),
                                           ),
@@ -1756,18 +1813,45 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   onTap: () {
                                     if (quantityController.text == '' ||
                                         quantityController.text == null) {
-                                      Fluttertoast.showToast(
-                                          msg: 'Please Enter quantity');
+                                      final snackBar = SnackBar(
+                                        content:
+                                            const Text('Please Enter Quantity'),
+                                        action: SnackBarAction(
+                                          label: '',
+                                          onPressed: () {},
+                                        ),
+                                      );
+
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(snackBar);
                                     } else if (focController.text == '' ||
                                         focController.text == null) {
-                                      Fluttertoast.showToast(
-                                          msg: 'Please Enter foc');
+                                      final snackBar = SnackBar(
+                                        content: const Text('Please Enter FOC'),
+                                        action: SnackBarAction(
+                                          label: '',
+                                          onPressed: () {},
+                                        ),
+                                      );
+
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(snackBar);
                                     } else if (extraFocController.text == '' ||
                                         extraFocController.text == null) {
-                                      Fluttertoast.showToast(
-                                          msg: 'Please Enter Extra FOC');
+                                      final snackBar = SnackBar(
+                                        content: const Text(
+                                            'Please Enter extra Foc '),
+                                        action: SnackBarAction(
+                                          label: '',
+                                          onPressed: () {},
+                                        ),
+                                      );
+
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(snackBar);
                                     } else {
                                       addToCart(
+                                          context,
                                           customerBranchId,
                                           widget.itemDetails.itemid,
                                           iteminfo[0].minretailprice,

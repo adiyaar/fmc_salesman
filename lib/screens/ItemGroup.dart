@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -209,7 +209,7 @@ class _ItemGroupState extends State<ItemGroup> with TickerProviderStateMixin {
                             itemCount: data.length,
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
-                                    childAspectRatio: 1.2, crossAxisCount: 5),
+                                    childAspectRatio: 1.1, crossAxisCount: 6),
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () {

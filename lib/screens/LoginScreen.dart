@@ -48,8 +48,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                     image: DecorationImage(
                       colorFilter: new ColorFilter.mode(
                           Colors.black.withOpacity(0.1), BlendMode.dstATop),
-                      image: NetworkImage(
-                          "https://i.ibb.co/VQJK3RX/Whats-App-Image-2021-09-26-at-6-01-05-PM.jpg"),
+                      image: AssetImage('assets/images/backgroundImage.jpg'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -259,8 +258,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                     image: DecorationImage(
                       colorFilter: new ColorFilter.mode(
                           Colors.black.withOpacity(0.1), BlendMode.dstATop),
-                      image: NetworkImage(
-                          "https://i.ibb.co/VQJK3RX/Whats-App-Image-2021-09-26-at-6-01-05-PM.jpg"),
+                      image: AssetImage('assets/images/backgroundImage.jpg'),
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -497,8 +495,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                     image: DecorationImage(
                       colorFilter: new ColorFilter.mode(
                           Colors.black.withOpacity(0.1), BlendMode.dstATop),
-                      image: NetworkImage(
-                          "https://i.ibb.co/VQJK3RX/Whats-App-Image-2021-09-26-at-6-01-05-PM.jpg"),
+                      image: AssetImage('assets/images/backgroundImage.jpg'),
                       fit: BoxFit.cover,
                     ),
                   ),

@@ -8,7 +8,8 @@ import 'package:testing/models/CartItem.dart';
 import 'package:testing/screens/DoneOrdering.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  CheckoutScreen({Key key}) : super(key: key);
+  final int totalItems;
+  CheckoutScreen({Key key, @required this.totalItems}) : super(key: key);
 
   @override
   _CheckoutScreenState createState() => _CheckoutScreenState();
@@ -21,7 +22,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   TextEditingController emailId = TextEditingController();
   TextEditingController contactNumber = TextEditingController();
   TextEditingController notes = TextEditingController();
-  int cartCount = 4;
 
   final SignatureController _controller = SignatureController(
     penStrokeWidth: 5,
@@ -46,7 +46,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             backgroundColor: Colors.black,
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => DoneOrder()));
+                  MaterialPageRoute(builder: (context) => DoneOrdering()));
             },
             label: Text('Place Order')),
         appBar: AppBar(
@@ -332,7 +332,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           borderRadius:
                                               BorderRadius.circular(8)),
                                       child: Text(
-                                        "Total Items - $cartCount",
+                                        "Total Items - ${widget.totalItems}",
                                         style: TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold),
@@ -366,8 +366,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                               shrinkWrap: true,
                                               itemCount: snapshot.data.length,
                                               itemBuilder: (context, index) {
-                                                cartCount =
-                                                    snapshot.data.length;
                                                 CartItem cart =
                                                     snapshot.data[index];
                                                 return Row(
@@ -798,7 +796,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           borderRadius:
                                               BorderRadius.circular(8)),
                                       child: Text(
-                                        "Total Items - $cartCount",
+                                        "Total Items - ${widget.totalItems}",
                                         style: TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold),
@@ -832,8 +830,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                               shrinkWrap: true,
                                               itemCount: snapshot.data.length,
                                               itemBuilder: (context, index) {
-                                                cartCount =
-                                                    snapshot.data.length;
                                                 CartItem cart =
                                                     snapshot.data[index];
                                                 return Row(

@@ -14,6 +14,7 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  int totalItems;
   int itemCount = 0;
   int quantityCount = 0;
   int foc = 0;
@@ -73,6 +74,8 @@ class _CartPageState extends State<CartPage> {
                         child: Text("No Items in Cart"),
                       );
                     } else if (snapshot.data.length > 0) {
+                      totalItems = snapshot.data.length;
+                      print(totalItems);
                       return SingleChildScrollView(
                         child: Container(
                           margin: EdgeInsets.only(left: 05, right: 05),
@@ -202,7 +205,8 @@ class _CartPageState extends State<CartPage> {
                                                 color: Colors.red,
                                               ),
                                               onTap: () {
-                                                removeCart(data.itemCode);
+                                                removeCart(
+                                                    context, data.itemCode);
                                                 setState(() {});
 
                                                 // Navigator.pushAndRemoveUntil(
@@ -218,6 +222,7 @@ class _CartPageState extends State<CartPage> {
                                             InkWell(
                                               onTap: () {
                                                 updateCart(
+                                                    context,
                                                     data.itemCode,
                                                     '${int.parse(data.quantity) + quantityCount}',
                                                     data.finalprice,
@@ -261,7 +266,7 @@ class _CartPageState extends State<CartPage> {
         child: FloatingActionButton.extended(
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => CheckoutScreen()));
+                  MaterialPageRoute(builder: (context) => CheckoutScreen(totalItems: totalItems,)));
             },
             icon: Icon(
               Icons.shopping_cart,

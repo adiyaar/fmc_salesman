@@ -1,10 +1,26 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 import 'HomeScreen.dart';
 
-class DoneOrder extends StatelessWidget {
-  const DoneOrder({Key key}) : super(key: key);
+class DoneOrdering extends StatefulWidget {
+  DoneOrdering({Key key}) : super(key: key);
+
+  @override
+  _DoneOrderingState createState() => _DoneOrderingState();
+}
+
+class _DoneOrderingState extends State<DoneOrdering> {
+  @override
+  void initState() {
+    super.initState();
+    Timer(
+        Duration(seconds: 3),
+        () => Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => HomeScreen())));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +38,6 @@ class DoneOrder extends StatelessWidget {
                 'https://assets10.lottiefiles.com/packages/lf20_Dcbowq.json',
                 height: 350,
                 width: 350),
-            TextButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()));
-                },
-                child: Text('Go to HomePage'))
           ],
         ),
       ),

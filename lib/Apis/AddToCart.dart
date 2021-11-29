@@ -1,12 +1,15 @@
 import 'dart:convert';
-import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:flutter/cupertino.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:testing/widget/GlobalSnackbar.dart';
 
 //  {custid: 1419, selectedcustbranch: 2}
 // ignore: non_constant_identifier_names
-Future addToCart(user_id, itemid, price, quantity, foc, exfoc, disc,
-    selectedCustbranch) async {
+Future addToCart(BuildContext context, user_id, itemid, price, quantity, foc,
+    exfoc, disc, selectedCustbranch) async {
   String baseUrl =
       'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesmanaddtocart.php';
 
@@ -27,21 +30,9 @@ Future addToCart(user_id, itemid, price, quantity, foc, exfoc, disc,
   var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
 
   if (response.body.toString().contains("Added to Cart")) {
-    return {
-      Fluttertoast.showToast(
-          msg: "Added To Cart",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.SNACKBAR),
-      getCartCount()
-    };
+    return {GlobalSnackBar.show(context, 'Added to Cart'), getCartCount()};
   } else {
-    return {
-      Fluttertoast.showToast(
-          msg: "Already in  Cart",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM),
-      getCartCount()
-    };
+    return {GlobalSnackBar.show(context, 'Already in Cart'), getCartCount()};
   }
 }
 

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:responsify/responsify.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -643,8 +643,16 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                     child: InkWell(
                       onTap: () {
                         if (customerSelected == null) {
-                          Fluttertoast.showToast(
-                              msg: 'Please Select a customer first');
+                          final snackBar = SnackBar(
+                            content:
+                                const Text('Please Select a Customer First'),
+                            action: SnackBarAction(
+                              label: 'Undo',
+                              onPressed: () {},
+                            ),
+                          );
+
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         } else {
                           addCustomerData();
                           Future.delayed(Duration(seconds: 1), () {
@@ -926,7 +934,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                           margin: EdgeInsets.only(left: 10.0),
                           width: MediaQuery.of(context).size.width / 3.32,
                           decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black)),
+                              border: Border.all(color: Colors.grey[300])),
                           child: FutureBuilder(
                             future: getAllValue(),
                             builder: (context, snapshot) {
@@ -937,7 +945,8 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                     child: Text(
                                       "",
                                       style: TextStyle(
-                                          color: Colors.black, fontSize: 17),
+                                          color: Colors.grey[300],
+                                          fontSize: 17),
                                       textAlign: TextAlign.center,
                                     ),
                                   );
@@ -989,7 +998,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                           margin: EdgeInsets.only(left: 10.0),
                           width: MediaQuery.of(context).size.width / 3.32,
                           decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black)),
+                              border: Border.all(color: Colors.grey[300])),
                           child: FutureBuilder(
                             future: getAllValue(),
                             builder: (context, snapshot) {
@@ -999,7 +1008,8 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                     child: Text(
                                       "",
                                       style: TextStyle(
-                                          color: Colors.black, fontSize: 20),
+                                          color: Colors.grey[300],
+                                          fontSize: 20),
                                       textAlign: TextAlign.center,
                                     ),
                                   );
@@ -1074,7 +1084,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                           margin: EdgeInsets.only(left: 10.0),
                           width: MediaQuery.of(context).size.width / 3.32,
                           decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black)),
+                              border: Border.all(color: Colors.grey[300])),
                           child: FutureBuilder(
                             future: getAllValue(),
                             builder: (context, snapshot) {
@@ -1131,7 +1141,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                           margin: EdgeInsets.only(left: 10.0),
                           width: MediaQuery.of(context).size.width / 3.32,
                           decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black)),
+                              border: Border.all(color: Colors.grey[300])),
                           child: FutureBuilder(
                             future: getAllValue(),
                             builder: (context, snapshot) {
@@ -1336,7 +1346,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                           height: 50,
                           margin: EdgeInsets.only(left: 10.0),
                           decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black)),
+                              border: Border.all(color: Colors.grey[300])),
                           width: MediaQuery.of(context).size.width / 1.52,
                           child: TextFormField(
                             cursorColor: Colors.black,
@@ -1372,7 +1382,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                           height: 50,
                           margin: EdgeInsets.only(left: 10.0),
                           decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black)),
+                              border: Border.all(color: Colors.grey[300])),
                           width: MediaQuery.of(context).size.width / 1.52,
                           child: TextFormField(
                             cursorColor: Colors.black,
@@ -1395,8 +1405,16 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                     child: InkWell(
                       onTap: () {
                         if (customerSelected == null) {
-                          Fluttertoast.showToast(
-                              msg: 'Please Select a customer first');
+                          final snackBar = SnackBar(
+                            content:
+                                const Text('Please Select a Customer First'),
+                            action: SnackBarAction(
+                              label: 'Undo',
+                              onPressed: () {},
+                            ),
+                          );
+
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         } else {
                           addCustomerData();
                           Future.delayed(Duration(seconds: 1), () {
@@ -2130,8 +2148,16 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                     child: InkWell(
                       onTap: () {
                         if (customerSelected == null) {
-                          Fluttertoast.showToast(
-                              msg: 'Please Select a customer first');
+                          final snackBar = SnackBar(
+                            content:
+                                const Text('Please Select a Customer First'),
+                            action: SnackBarAction(
+                              label: 'Undo',
+                              onPressed: () {},
+                            ),
+                          );
+
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         } else {
                           addCustomerData();
                           Future.delayed(Duration(seconds: 1), () {

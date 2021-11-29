@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/models/CartItem.dart';
 import 'package:http/http.dart' as http;
 import 'package:testing/models/PastOrders.dart';
+import 'package:testing/widget/GlobalSnackbar.dart';
 
 //  {custid: 1419, selectedcustbranch: 2}
 
@@ -42,8 +44,8 @@ Future<List<PastOrder>> fetchPastOrder() async {
   }
 }
 
-Future updateCart(
-    itemCode, quantity, finalPrice, allocatedFoc, exFoc, discount) async {
+Future updateCart(BuildContext context, itemCode, quantity, finalPrice,
+    allocatedFoc, exFoc, discount) async {
   SharedPreferences pf = await SharedPreferences.getInstance();
   String customerId = pf.getString('customerId');
   String selectedCustomerBranch = pf.get('branchId');
@@ -69,12 +71,11 @@ Future updateCart(
   var message = jsonDecode(response.body);
   print("I am update message");
   if (message == 'Account Details Updated') {
-    Fluttertoast.showToast(
-        msg: 'Updated Your Cart', toastLength: Toast.LENGTH_LONG);
+    GlobalSnackBar.show(context, 'Cart Updated');
   }
 }
 
-Future removeCart(itemCode) async {
+Future removeCart(BuildContext context, itemCode) async {
   final String baseUrl =
       'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesmanremovecart.php';
   SharedPreferences pf = await SharedPreferences.getInstance();
@@ -90,6 +91,4 @@ Future removeCart(itemCode) async {
   var message = jsonDecode(response.body);
   print("I am removed message");
   print(message);
-
-  Fluttertoast.showToast(msg: message, toastLength: Toast.LENGTH_LONG);
 }

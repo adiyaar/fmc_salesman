@@ -204,7 +204,7 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
                           itemCount: data.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                                  childAspectRatio: 1.2, crossAxisCount: 5),
+                                  childAspectRatio: 1.1, crossAxisCount: 6),
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () {

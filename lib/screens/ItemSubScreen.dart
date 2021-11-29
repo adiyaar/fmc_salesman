@@ -192,7 +192,7 @@ class _ItemSubState extends State<ItemSub> {
                           itemCount: data.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                                  childAspectRatio: 1.2, crossAxisCount: 5),
+                                  childAspectRatio: 1.1, crossAxisCount: 6),
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () {
