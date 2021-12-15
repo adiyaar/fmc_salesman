@@ -21,10 +21,11 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   TextEditingController searchController = TextEditingController();
-  String customerType = 'Retail'; // Wholesale
+  String customerType; // Wholesale
   getCustomerInfo() async {
     SharedPreferences pf = await SharedPreferences.getInstance();
     customerType = pf.getString('cust_type');
+    print('I m the customerType');
     print(customerType);
   }
 
@@ -327,6 +328,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   CupertinoPageRoute(
                                       builder: (context) => DetailPageScreen(
                                             itemDetails: data[index],
+                                            customerType: customerType,
                                           )));
                             },
                             child: ListTile(

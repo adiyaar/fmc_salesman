@@ -13,12 +13,15 @@ import 'package:testing/Common/ErrorPage.dart';
 import 'package:testing/models/DetailPageModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:testing/screens/ViewPastOrder.dart';
+import 'package:testing/widget/GlobalSnackbar.dart';
 
 import 'CartPage.dart';
 
 class DetailPageScreen extends StatefulWidget {
+  final customerType;
   final itemDetails;
-  DetailPageScreen({Key key, @required this.itemDetails}) : super(key: key);
+  DetailPageScreen({Key key, @required this.itemDetails, this.customerType})
+      : super(key: key);
 
   @override
   _DetailPageScreenState createState() => _DetailPageScreenState();
@@ -581,89 +584,132 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    InkWell(
-                                      onTap: () {
-                                        if (quantityController.text == '' ||
-                                            quantityController.text == null) {
-                                          final snackBar = SnackBar(
-                                            content: const Text(
-                                                'Please enter quantity'),
-                                            action: SnackBarAction(
-                                              label: '',
-                                              onPressed: () {},
+                                    widget.customerType == null
+                                        ? GestureDetector(
+                                            onTap: () {
+                                              print(widget.customerType);
+                                              print('Disabled');
+                                              final snackBar = SnackBar(
+                                                content: const Text(
+                                                    'Please Select a Customer First'),
+                                                action: SnackBarAction(
+                                                  label: '',
+                                                  onPressed: () {},
+                                                ),
+                                              );
+
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(snackBar);
+                                            },
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  5,
+                                              height: 50,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.yellow,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12.0)),
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  "Add to Cart",
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                              ),
                                             ),
-                                          );
+                                          )
+                                        : InkWell(
+                                            onTap: () {
+                                              if (quantityController.text ==
+                                                      '' ||
+                                                  quantityController.text ==
+                                                      null) {
+                                                final snackBar = SnackBar(
+                                                  content: const Text(
+                                                      'Please enter quantity'),
+                                                  action: SnackBarAction(
+                                                    label: '',
+                                                    onPressed: () {},
+                                                  ),
+                                                );
 
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(snackBar);
-                                        } else if (focController.text == '' ||
-                                            focController.text == null) {
-                                          final snackBar = SnackBar(
-                                            content:
-                                                const Text('Please enter FOC'),
-                                            action: SnackBarAction(
-                                              label: '',
-                                              onPressed: () {},
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
+                                              } else if (focController.text ==
+                                                      '' ||
+                                                  focController.text == null) {
+                                                final snackBar = SnackBar(
+                                                  content: const Text(
+                                                      'Please enter FOC'),
+                                                  action: SnackBarAction(
+                                                    label: '',
+                                                    onPressed: () {},
+                                                  ),
+                                                );
+
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
+                                                ;
+                                              } else if (extraFocController
+                                                          .text ==
+                                                      '' ||
+                                                  extraFocController.text ==
+                                                      null) {
+                                                final snackBar = SnackBar(
+                                                  content: const Text(
+                                                      'Please enter exFOc'),
+                                                  action: SnackBarAction(
+                                                    label: '',
+                                                    onPressed: () {},
+                                                  ),
+                                                );
+
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
+                                              } else {
+                                                addToCart(
+                                                    context,
+                                                    customerBranchId,
+                                                    widget.itemDetails.itemid,
+                                                    iteminfo[0].minretailprice,
+                                                    quantityController.text,
+                                                    focController.text,
+                                                    extraFocController.text,
+                                                    "0",
+                                                    branchId);
+                                              }
+                                            },
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  5,
+                                              height: 50,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.yellow,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12.0)),
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  "Add to Cart",
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                              ),
                                             ),
-                                          );
-
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(snackBar);
-                                          ;
-                                        } else if (extraFocController.text ==
-                                                '' ||
-                                            extraFocController.text == null) {
-                                          final snackBar = SnackBar(
-                                            content: const Text(
-                                                'Please enter exFOc'),
-                                            action: SnackBarAction(
-                                              label: '',
-                                              onPressed: () {},
-                                            ),
-                                          );
-
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(snackBar);
-                                        } else {
-                                          addToCart(
-                                              context,
-                                              customerBranchId,
-                                              widget.itemDetails.itemid,
-                                              iteminfo[0].minretailprice,
-                                              quantityController.text,
-                                              focController.text,
-                                              extraFocController.text,
-                                              "0",
-                                              branchId);
-                                        }
-
-                                        // Navigator.push(
-                                        //     context,
-                                        //     MaterialPageRoute(
-                                        //         builder: (context) =>
-                                        //             CartPage()));
-                                      },
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                5,
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                            color: Colors.yellow,
-                                            borderRadius:
-                                                BorderRadius.circular(12.0)),
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            "Add to Cart",
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w700),
                                           ),
-                                        ),
-                                      ),
-                                    ),
                                     InkWell(
                                       onTap: () {
                                         // fetchCartItem();

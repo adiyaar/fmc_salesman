@@ -4,8 +4,8 @@ class CartItem {
   final String itemCode;
   final String finalprice; // ws || rs
   String quantity;
-  final String foc;
-  final String exFoc;
+   String foc;
+   String exFoc;
   final String discount;
   CartItem({
     this.itemName,
