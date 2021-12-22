@@ -17,6 +17,7 @@ class _CartPageState extends State<CartPage>
     with AutomaticKeepAliveClientMixin {
   bool loaderVisible = false;
   int totalItems;
+  double totalCheckout = 0.0;
   int itemCount = 0;
   int quantityCount = 0;
   int foc = 0;
@@ -36,6 +37,12 @@ class _CartPageState extends State<CartPage>
   void initState() {
     super.initState();
     getData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    totalCheckout = 0.0;
   }
 
   @override
@@ -94,7 +101,15 @@ class _CartPageState extends State<CartPage>
                         );
                       } else if (snapshot.data.length > 0) {
                         totalItems = snapshot.data.length;
-
+                        for (int i = 0; i < snapshot.data.length; i++) {
+                          totalCheckout =
+                              (double.parse(snapshot.data[i].finalprice)
+                                          .roundToDouble() *
+                                      double.parse(snapshot.data[i].quantity)
+                                          .roundToDouble()) +
+                                  totalCheckout;
+                         
+                        }
                         return SingleChildScrollView(
                           child: Container(
                             margin: EdgeInsets.only(left: 05, right: 05),
@@ -121,6 +136,7 @@ class _CartPageState extends State<CartPage>
                                   DataColumn(label: Text('FOC')),
                                   DataColumn(label: Text('Ex FOC')),
                                   DataColumn(label: Text('Discount')),
+                                  DataColumn(label: Text('SubTotal')),
                                   DataColumn(label: Text('')),
                                 ],
                                 rows: cartItems
@@ -154,6 +170,9 @@ class _CartPageState extends State<CartPage>
                                                 child: TextFormField(
                                                   initialValue: data.quantity,
                                                   decoration: InputDecoration(
+                                                      filled: true,
+                                                      fillColor:
+                                                          Colors.grey[300],
                                                       border: InputBorder.none),
                                                   onFieldSubmitted: (string) {
                                                     setState(() {
@@ -197,6 +216,9 @@ class _CartPageState extends State<CartPage>
                                                 child: TextFormField(
                                                   initialValue: data.foc,
                                                   decoration: InputDecoration(
+                                                      filled: true,
+                                                      fillColor:
+                                                          Colors.grey[300],
                                                       border: InputBorder.none),
                                                   onFieldSubmitted: (string) {
                                                     setState(() {
@@ -224,6 +246,9 @@ class _CartPageState extends State<CartPage>
                                                 child: TextFormField(
                                                   initialValue: data.exFoc,
                                                   decoration: InputDecoration(
+                                                      filled: true,
+                                                      fillColor:
+                                                          Colors.grey[300],
                                                       border: InputBorder.none),
                                                   onFieldSubmitted: (string) {
                                                     setState(() {
@@ -247,6 +272,8 @@ class _CartPageState extends State<CartPage>
                                             data.discount,
                                             style: TextStyle(fontSize: 13),
                                           )),
+                                          DataCell(Text(
+                                              '${double.parse(data.finalprice).roundToDouble() * double.parse(data.quantity).roundToDouble()} QR')),
                                           DataCell(Row(
                                             children: [
                                               InkWell(
@@ -260,29 +287,6 @@ class _CartPageState extends State<CartPage>
                                                   setState(() {});
                                                 },
                                               ),
-
-                                              // InkWell(
-                                              //   onTap: () async {
-                                              //     // context.loaderOverlay.show();
-                                              //     // setState(() {
-                                              //     //   loaderVisible = context
-                                              //     //       .loaderOverlay.visible;
-                                              //     // });
-                                              //     // await Future.delayed(
-                                              //     //     Duration(seconds: 2));
-                                              //     // if (loaderVisible) {
-                                              //     //   context.loaderOverlay
-                                              //     //       .hide();
-                                              //     // }
-                                              //     // setState(() {
-                                              //     //   loaderVisible = context
-                                              //     //       .loaderOverlay.visible;
-                                              //     // });
-
-                                              //     // setState(() {});
-                                              //   },
-
-                                              // ),
                                             ],
                                           )),
                                         ]))
@@ -318,6 +322,7 @@ class _CartPageState extends State<CartPage>
                   MaterialPageRoute(
                       builder: (context) => CheckoutScreen(
                             totalItems: totalItems,
+                            checkoutTotal: totalCheckout,
                           )));
             },
             icon: Icon(

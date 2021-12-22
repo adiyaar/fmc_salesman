@@ -4,6 +4,7 @@ import 'package:testing/dynamic/All_branch.dart';
 import 'package:testing/dynamic/All_branch_add.dart';
 import 'package:testing/dynamic/itemmaster.dart';
 import 'package:testing/dynamic/search_screen.dart';
+import 'package:testing/screens/CartPage.dart';
 import 'package:testing/screens/GenerateSales.dart';
 
 import 'package:testing/screens/LoginScreen.dart';
@@ -161,6 +162,14 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => ItemMainGroup()));
+            },
+          ), //IconButton
+          IconButton(
+            icon: Icon(Icons.shopping_bag),
+            tooltip: 'MainGroup',
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CartPage()));
             },
           ), //IconButton
         ],

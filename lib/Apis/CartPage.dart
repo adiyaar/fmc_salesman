@@ -92,3 +92,82 @@ Future removeCart(BuildContext context, itemCode) async {
   print("I am removed message");
   print(message);
 }
+
+Future salesorder(
+  List<int> quantity,
+  List<double> price,
+  List<String> itemCodes,
+  List<String> itemName,
+  List<int> foc,
+  List<int> exFoc,
+  int soRef,
+  String notes,
+  String typeofLead,
+  String orderPlacedby,
+) async {
+  SharedPreferences pf = await SharedPreferences.getInstance();
+
+  String customerType = pf.getString('cust_type');
+  String creditLimit = pf.getString('credit_limit');
+  String creditDays = pf.getString('credit_days');
+  // employee info
+// add branch // add company name
+  List<int> a = [1001, 383, 43];
+
+  List<String> s = ["Pc", "Box"];
+  var f3 = s.toSet().toList();
+
+  var f1 = a.toSet().toList();
+
+  var data = {
+    'invoiceprice': customerType,
+    'customername': 1288,
+    'customeremail': 'aditya@gmail.com',
+    'customertype': customerType,
+    'units': f3,
+    'packing': f1,
+    'item_whichcompany': "FMC",
+    'item_wac': f1,
+    'item_mgmtcost': f1,
+    'item_cutoffcost': f1,
+    'calculationtotal': f1,
+
+    'itemcode': itemCodes,
+    'quantity': quantity,
+    'price': price,
+    'itemname': itemName,
+    'foc': foc,
+    'ex_foc': exFoc,
+    'soreferenceno': soRef,
+    'typeoflead': typeofLead,
+    'orderplacedby': orderPlacedby,
+    'notess': notes,
+    'supplyto': "DEMO",
+    'whichcompany': 'FPG', // employee company
+    'whichbranch': 'W01', // employee branch
+
+    'invoicetype': customerType,
+    'billingon': customerType,
+    'creditlimits': creditLimit,
+    'creditdays': creditDays,
+    'customerstatus': 1
+    // 'user_id': '125'
+  };
+  print(data);
+  var url =
+      'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesman_confirm_order.php';
+
+  var response = await http.post(Uri.parse(url), body: json.encode(data));
+
+  print(response.body.toString());
+
+  // var f = json.decode(response.body);
+
+  // print(f);
+
+  // itemcode.clear();
+  // quantity.clear();
+  // price.clear();
+  // itemname.clear();
+  // foc.clear();ex_foc.clear();
+}

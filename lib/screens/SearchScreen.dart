@@ -29,7 +29,8 @@ class _SearchScreenState extends State<SearchScreen> {
     print(customerType);
   }
 
-  bool man = false;
+  bool itemGroup = false;
+  bool manuFacturer = false;
 
   Future<List<ItemMainGroup>> fetchItemMainGroupList() async {
     final String baseUrl =
@@ -75,6 +76,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   List<SearchList> data;
+  List _selecteCategorys = List();
 
   String pharmacyname = "";
   Future<void> _showSearch() async {
@@ -88,6 +90,18 @@ class _SearchScreenState extends State<SearchScreen> {
   void _fetchdata() async {
     data = await fetchAllItem();
     setState(() {});
+  }
+
+  void _onCategorySelected(bool selected, category_id) {
+    if (selected == true) {
+      setState(() {
+        _selecteCategorys.add(category_id);
+      });
+    } else {
+      setState(() {
+        _selecteCategorys.remove(category_id);
+      });
+    }
   }
 
   @override
@@ -184,20 +198,48 @@ class _SearchScreenState extends State<SearchScreen> {
                                                       itemCount: data.length,
                                                       itemBuilder:
                                                           (context, index) {
-                                                        return ListTile(
+                                                        return CheckboxListTile(
+                                                          value:
+                                                              _selecteCategorys
+                                                                  .contains(data[
+                                                                          index]
+                                                                      .title),
+                                                          onChanged:
+                                                              (bool value) {
+                                                            print(value);
+                                                            setState(() {
+                                                              if (value) {
+                                                                _selecteCategorys
+                                                                    .add(data[
+                                                                            index]
+                                                                        .title);
+                                                              } else {
+                                                                _selecteCategorys
+                                                                    .remove(data[
+                                                                            index]
+                                                                        .title);
+                                                              }
+                                                            });
+                                                          },
                                                           title: Text(
                                                               data[index]
                                                                   .title),
-                                                          leading: Checkbox(
-                                                            value: man,
-                                                            onChanged: (val) {
-                                                              print(val);
-                                                              setState(() {
-                                                                man = val;
-                                                              });
-                                                            },
-                                                          ),
                                                         );
+                                                        // return ListTile(
+                                                        //   title: Text(
+                                                        //       data[index]
+                                                        //           .title),
+                                                        //   leading: Checkbox(
+                                                        //     value: itemGroup,
+                                                        //     onChanged: (val) {
+                                                        //       print(val);
+                                                        //       setState(() {
+                                                        //         itemGroup = val;
+                                                        //         // man = val;
+                                                        //       });
+                                                        //     },
+                                                        //   ),
+                                                        // );
                                                       });
                                                 } else if (snapshot.hasError) {
                                                   return Text(
@@ -254,11 +296,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                                               data[index]
                                                                   .title),
                                                           leading: Checkbox(
-                                                            value: man,
+                                                            value: manuFacturer,
                                                             onChanged: (val) {
                                                               print(val);
                                                               setState(() {
-                                                                man = val;
+                                                                manuFacturer =
+                                                                    val;
                                                               });
                                                             },
                                                           ),
