@@ -9,6 +9,11 @@ import 'package:testing/models/PastOrders.dart';
 import 'package:testing/widget/GlobalSnackbar.dart';
 
 //  {custid: 1419, selectedcustbranch: 2}
+int custId = 1419;
+String whichCo = "FPG";
+String whichb = 'W01';
+List<String> variant = ['null', 'null'];
+List<int> packing = [1, 10];
 
 Future<List<CartItem>> fetchCartItem() async {
   SharedPreferences pf = await SharedPreferences.getInstance();
@@ -24,7 +29,7 @@ Future<List<CartItem>> fetchCartItem() async {
 
   List jsonResponse = json.decode(response.body);
   print(jsonResponse);
-
+  print(jsonResponse.length);
   return jsonResponse.map((item) => new CartItem.fromJson(item)).toList();
 }
 
@@ -63,13 +68,11 @@ Future updateCart(BuildContext context, itemCode, quantity, finalPrice,
     'ex_foc': exFoc,
     'disc': discount
   };
-  print(data);
 
   var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
-  print(response.body);
 
   var message = jsonDecode(response.body);
-  print("I am update message");
+
   if (message == 'Account Details Updated') {
     GlobalSnackBar.show(context, 'Cart Updated');
   }
@@ -104,47 +107,48 @@ Future salesorder(
   String notes,
   String typeofLead,
   String orderPlacedby,
+  List<double> common,
 ) async {
   SharedPreferences pf = await SharedPreferences.getInstance();
-
+  String customerBranchId = pf.getString('customerId');
   String customerType = pf.getString('cust_type');
   String creditLimit = pf.getString('credit_limit');
   String creditDays = pf.getString('credit_days');
+  String custemail = pf.getString('credit_days');
+
   // employee info
 // add branch // add company name
-  List<int> a = [1001, 383, 43];
 
-  List<String> s = ["Pc", "Box"];
-  var f3 = s.toSet().toList();
+// customer name - id dalna hai
+// units and packing
 
-  var f1 = a.toSet().toList();
-
+// units is type of backing that is
   var data = {
     'invoiceprice': customerType,
-    'customername': 1288,
-    'customeremail': 'aditya@gmail.com',
+    'customername': int.parse(customerBranchId),
+    'customeremail': custemail == null ? '' : custemail,
     'customertype': customerType,
-    'units': f3,
-    'packing': f1,
+    'units': itemName, // variant
+    'packing': foc, // packaging
     'item_whichcompany': "FMC",
-    'item_wac': f1,
-    'item_mgmtcost': f1,
-    'item_cutoffcost': f1,
-    'calculationtotal': f1,
+    'item_wac': common,
+    'item_mgmtcost': common,
+    'item_cutoffcost': common,
+    'calculationtotal': common,
 
     'itemcode': itemCodes,
     'quantity': quantity,
     'price': price,
-    'itemname': itemName,
+    'itemname': "Rest",
     'foc': foc,
     'ex_foc': exFoc,
     'soreferenceno': soRef,
     'typeoflead': typeofLead,
     'orderplacedby': orderPlacedby,
     'notess': notes,
-    'supplyto': "DEMO",
-    'whichcompany': 'FPG', // employee company
-    'whichbranch': 'W01', // employee branch
+    'supplyto': orderPlacedby,
+    'whichcompany': whichCo, // employee company
+    'whichbranch': whichb, // employee branch
 
     'invoicetype': customerType,
     'billingon': customerType,
@@ -153,6 +157,7 @@ Future salesorder(
     'customerstatus': 1
     // 'user_id': '125'
   };
+
   print(data);
   var url =
       'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesman_confirm_order.php';
@@ -160,14 +165,4 @@ Future salesorder(
   var response = await http.post(Uri.parse(url), body: json.encode(data));
 
   print(response.body.toString());
-
-  // var f = json.decode(response.body);
-
-  // print(f);
-
-  // itemcode.clear();
-  // quantity.clear();
-  // price.clear();
-  // itemname.clear();
-  // foc.clear();ex_foc.clear();
 }

@@ -9,11 +9,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:testing/Apis/AddToCart.dart';
 import 'package:testing/Common/DetailShimmer.dart';
-import 'package:testing/Common/ErrorPage.dart';
+
 import 'package:testing/models/DetailPageModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:testing/screens/ViewPastOrder.dart';
-import 'package:testing/widget/GlobalSnackbar.dart';
 
 import 'CartPage.dart';
 
@@ -46,7 +45,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
   TextEditingController extraFocController =
       TextEditingController(); // extra foc
 
-  Future<List<salesmandetailpage>> fetchProductInfo() async {
+  Future<List<Salesmandetailpage>> fetchProductInfo() async {
     final baseUrl =
         'https://onlinefamilypharmacy.com/mobileapplication/salesmandetailpage.php';
     var data = {'itemproductgroupid': widget.itemDetails.itemproductgroupid};
@@ -57,7 +56,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
       List jsonResponse = json.decode(response.body);
 
       return jsonResponse
-          .map((e) => new salesmandetailpage.fromJson(e))
+          .map((e) => new Salesmandetailpage.fromJson(e))
           .toList();
     } else {
       throw Exception('Failed to load jobs from API');
@@ -72,6 +71,9 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
         body: json.encode(data));
     var jsonResponse = response.body;
     var jsonData = json.decode(jsonResponse);
+
+    print(jsonData);
+
     setState(() {
       variants = jsonData;
     });
@@ -84,7 +86,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     var data = {'id': widget.itemDetails.itemid};
     var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
     var jsondataval = json.decode(response.body);
-
+    print(jsondataval);
     setState(() {
       units = jsondataval;
     });
@@ -140,7 +142,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
               future: fetchProductInfo(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  List<salesmandetailpage> iteminfo = snapshot.data;
+                  List<Salesmandetailpage> iteminfo = snapshot.data;
                   return SingleChildScrollView(
                       child: Column(
                     children: [
@@ -587,8 +589,6 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                     widget.customerType == null
                                         ? GestureDetector(
                                             onTap: () {
-                                              print(widget.customerType);
-                                              print('Disabled');
                                               final snackBar = SnackBar(
                                                 content: const Text(
                                                     'Please Select a Customer First'),
@@ -683,7 +683,14 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                                     focController.text,
                                                     extraFocController.text,
                                                     "0",
-                                                    branchId);
+                                                    branchId,
+                                                    1000,
+                                                    1000.00,
+                                                    "Bundle",
+                                                    1000.00,
+                                                    1000.00,
+                                                    1000.00,
+                                                    "FMEAPP");
                                               }
                                             },
                                             child: Container(
@@ -879,7 +886,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
               future: fetchProductInfo(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  List<salesmandetailpage> iteminfo = snapshot.data;
+                  List<Salesmandetailpage> iteminfo = snapshot.data;
                   return SingleChildScrollView(
                       child: Column(
                     children: [
@@ -1312,7 +1319,14 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                               focController.text,
                                               extraFocController.text,
                                               "0",
-                                              branchId);
+                                              branchId,
+                                              1000,
+                                              1000.00,
+                                              "Bundle",
+                                              1000.00,
+                                              1000.00,
+                                              1000.00,
+                                              "FMEAPP");
                                         }
                                         // Navigator.push(
                                         //     context,
@@ -1487,7 +1501,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
               future: fetchProductInfo(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  List<salesmandetailpage> iteminfo = snapshot.data;
+                  List<Salesmandetailpage> iteminfo = snapshot.data;
                   return SingleChildScrollView(
                       child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -1892,7 +1906,14 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                           focController.text,
                                           extraFocController.text,
                                           "0",
-                                          branchId);
+                                          branchId,
+                                          1000,
+                                          1000.00,
+                                          "Bundle",
+                                          1000.00,
+                                          1000.00,
+                                          1000.00,
+                                          "FMEAPP");
                                     }
 
                                     // Navigator.push(

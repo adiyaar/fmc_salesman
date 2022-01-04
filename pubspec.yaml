@@ -22,11 +22,13 @@ dependencies:
   shared_preferences:
 
   fluttertoast:
-  loader_overlay: 
+  loader_overlay:
+  filter_list: any
   font_awesome_flutter:
   # expansion_card:
   # cell_calendar:
   async:
+  
   percent_indicator:
   # syncfusion_flutter_calendar:
   intl:

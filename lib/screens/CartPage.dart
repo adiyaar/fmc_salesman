@@ -16,12 +16,19 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage>
     with AutomaticKeepAliveClientMixin {
   bool loaderVisible = false;
-  int totalItems;
+  int totalItems = 0;
   double totalCheckout = 0.0;
   int itemCount = 0;
   int quantityCount = 0;
   int foc = 0;
   int exFoc = 0;
+  List<String> itemCodes = [];
+  List<double> common = [];
+  List<String> itemName = [];
+  List<int> quantity = [];
+  List<int> focList = [];
+  List<int> exFocList = [];
+  List<double> price = [];
 
   Future resultGetData;
 
@@ -43,6 +50,13 @@ class _CartPageState extends State<CartPage>
   void dispose() {
     super.dispose();
     totalCheckout = 0.0;
+    itemCodes = [];
+    itemName = [];
+    quantity = [];
+    focList = [];
+    exFocList = [];
+    price = [];
+    common = [];
   }
 
   @override
@@ -89,6 +103,19 @@ class _CartPageState extends State<CartPage>
                   future: resultGetData,
                   builder: (context, snapshot) {
                     List<CartItem> cartItems = snapshot.data;
+                    print(cartItems.length);
+                    itemCodes.addAll(cartItems.map((e) => e.itemCode));
+                    common.addAll(cartItems.map((e) => double.parse(e.cutoFF)));
+                    itemName.addAll(cartItems.map((e) => e.itemName));
+                    quantity
+                        .addAll(cartItems.map((e) => int.parse(e.quantity)));
+                    focList.addAll(cartItems.map((e) => int.parse(e.foc)));
+                    exFocList.addAll(cartItems.map((e) => int.parse(e.exFoc)));
+
+                    price.addAll(cartItems.map((e) =>
+                        (double.parse(e.finalprice).roundToDouble() *
+                            double.parse(e.quantity).roundToDouble())));
+
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(
                         child: CircularProgressIndicator(),
@@ -108,7 +135,6 @@ class _CartPageState extends State<CartPage>
                                       double.parse(snapshot.data[i].quantity)
                                           .roundToDouble()) +
                                   totalCheckout;
-                         
                         }
                         return SingleChildScrollView(
                           child: Container(
@@ -323,6 +349,13 @@ class _CartPageState extends State<CartPage>
                       builder: (context) => CheckoutScreen(
                             totalItems: totalItems,
                             checkoutTotal: totalCheckout,
+                            exFoc: exFocList,
+                            foc: focList,
+                            itemCodes: itemCodes,
+                            itemName: itemName,
+                            price: price,
+                            quantity: quantity,
+                            common: common,
                           )));
             },
             icon: Icon(

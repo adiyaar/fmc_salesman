@@ -10,9 +10,25 @@ import 'package:testing/screens/DoneOrdering.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final int totalItems;
+  List<String> itemCodes;
+  List<String> itemName;
+  List<int> quantity;
+  List<int> foc;
+  List<int> exFoc;
+  List<double> price;
+  List<double> common;
   final double checkoutTotal;
   CheckoutScreen(
-      {Key key, @required this.totalItems, @required this.checkoutTotal})
+      {Key key,
+      @required this.totalItems,
+      @required this.checkoutTotal,
+      @required this.exFoc,
+      @required this.foc,
+      @required this.itemCodes,
+      @required this.itemName,
+      @required this.price,
+
+      @required this.quantity,@required this.common})
       : super(key: key);
 
   @override
@@ -20,12 +36,6 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
-  List<String> itemCodes = [];
-  List<String> itemName = [];
-  List<int> quantity = [];
-  List<int> foc = [];
-  List<int> exFoc = [];
-  List<double> price = [];
   TextEditingController soReferenceNumber = TextEditingController();
   TextEditingController typeOfLead = TextEditingController();
   TextEditingController orderPlacedBy = TextEditingController();
@@ -48,6 +58,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    widget.foc = [];
+    widget.exFoc = [];
+    widget.itemCodes = [];
+    widget.itemName = [];
+    widget.price = [];
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
@@ -66,16 +86,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(snackbar);
               } else {
                 salesorder(
-                    quantity,
-                    price,
-                    itemCodes,
-                    itemName,
-                    foc,
-                    exFoc,
+                    widget.quantity,
+                    widget.price,
+                    widget.itemCodes,
+                    widget.itemName,
+                    widget.foc,
+                    widget.exFoc,
                     int.parse(soReferenceNumber.text),
                     notes.text,
                     typeOfLead.text,
-                    orderPlacedBy.text);
+                    orderPlacedBy.text,
+                    widget.common);
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => DoneOrdering()));
               }
@@ -401,20 +422,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 CartItem cart =
                                                     snapshot.data[index];
 
-                                                itemCodes.add(cart
-                                                    .itemCode); // itemCode added
-                                                quantity.add(
-                                                    int.parse(cart.quantity));
-                                                foc.add(int.parse(cart.foc));
-                                                exFoc
-                                                    .add(int.parse(cart.exFoc));
+                                                // itemCode added
 
-                                                price.add(double.parse(
-                                                            cart.finalprice)
-                                                        .roundToDouble() *
-                                                    double.parse(cart.quantity)
-                                                        .roundToDouble());
-                                                itemName.add(cart.itemName);
+                                                // quantity.add(
+                                                //     int.parse(cart.quantity));
+                                                // foc.add(int.parse(cart.foc));
+                                                // exFoc
+                                                //     .add(int.parse(cart.exFoc));
+
+                                                // price.add(double.parse(
+                                                //             cart.finalprice)
+                                                //         .roundToDouble() *
+                                                //     double.parse(cart.quantity)
+                                                //         .roundToDouble());
+                                                // itemName.add(cart.itemName);
 
                                                 return Row(
                                                   children: [
@@ -882,20 +903,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                               itemBuilder: (context, index) {
                                                 CartItem cart =
                                                     snapshot.data[index];
-                                                itemCodes.add(cart
-                                                    .itemCode); // itemCode added
-                                                quantity.add(
-                                                    int.parse(cart.quantity));
-                                                foc.add(int.parse(cart.foc));
-                                                exFoc
-                                                    .add(int.parse(cart.exFoc));
 
-                                                price.add(double.parse(
-                                                            cart.finalprice)
-                                                        .roundToDouble() *
-                                                    double.parse(cart.quantity)
-                                                        .roundToDouble());
-                                                itemName.add(cart.itemName);
                                                 return Row(
                                                   children: [
                                                     Container(
@@ -1367,19 +1375,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         itemCount: snapshot.data.length,
                                         itemBuilder: (context, index) {
                                           CartItem cart = snapshot.data[index];
-                                          itemCodes.add(
-                                              cart.itemCode); // itemCode added
-                                          quantity
-                                              .add(int.parse(cart.quantity));
-                                          foc.add(int.parse(cart.foc));
-                                          exFoc.add(int.parse(cart.exFoc));
 
-                                          price.add(
-                                              double.parse(cart.finalprice)
-                                                      .roundToDouble() *
-                                                  double.parse(cart.quantity)
-                                                      .roundToDouble());
-                                          itemName.add(cart.itemName);
+                                          // itemCodes.add(
+                                          //     cart.itemCode); // itemCode added
+                                          // quantity
+                                          //     .add(int.parse(cart.quantity));
+                                          // foc.add(int.parse(cart.foc));
+                                          // exFoc.add(int.parse(cart.exFoc));
+
+                                          // price.add(
+                                          //     double.parse(cart.finalprice)
+                                          //             .roundToDouble() *
+                                          //         double.parse(cart.quantity)
+                                          //             .roundToDouble());
+                                          // itemName.add(cart.itemName);
+
+                                          // itemCodes.add(cart.itemCode);
+
                                           return Row(
                                             children: [
                                               Container(

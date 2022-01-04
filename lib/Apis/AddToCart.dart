@@ -8,8 +8,23 @@ import 'package:testing/widget/GlobalSnackbar.dart';
 
 //  {custid: 1419, selectedcustbranch: 2}
 // ignore: non_constant_identifier_names
-Future addToCart(BuildContext context, user_id, itemid, price, quantity, foc,
-    exfoc, disc, selectedCustbranch) async {
+Future addToCart(
+    BuildContext context,
+    user_id,
+    itemid,
+    price,
+    quantity,
+    foc,
+    exfoc,
+    disc,
+    selectedCustbranch,
+    int packing,
+    double itemWac,
+    String units,
+    double itemMgmt,
+    double calcCost,
+    double cutoFF,
+    String itemWhchCOmpany) async {
   String baseUrl =
       'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesmanaddtocart.php';
 
@@ -21,8 +36,16 @@ Future addToCart(BuildContext context, user_id, itemid, price, quantity, foc,
     'quantity': quantity,
     'foc': foc,
     'ex_foc': exfoc,
+
     'disc': disc,
     'selectedcustbranch': selectedCustbranch,
+    'packing': packing,
+    'units': units,
+    'item_wac': itemWac,
+    'item_mgmtcost': itemMgmt,
+    'item_cutoffcost': cutoFF,
+    'calculationcost': calcCost,
+    'item_whichcompany': itemWhchCOmpany,
   };
   print("Add to CART MAPPED DATA");
   print(data);

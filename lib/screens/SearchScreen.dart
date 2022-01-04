@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:filter_list/filter_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -8,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/Common/Shimmer.dart';
 import 'package:testing/models/SearchScreenModel.dart';
 import 'package:testing/screens/DetailPageScreen.dart';
+
 import 'package:testing/widget/NavigationDrawer.dart';
 import 'package:http/http.dart' as http;
 import 'package:webview_flutter/webview_flutter.dart';
@@ -25,12 +27,13 @@ class _SearchScreenState extends State<SearchScreen> {
   getCustomerInfo() async {
     SharedPreferences pf = await SharedPreferences.getInstance();
     customerType = pf.getString('cust_type');
-    print('I m the customerType');
-    print(customerType);
   }
 
   bool itemGroup = false;
+  List<ItemMainGroup> mainGroupOptions = [];
+  List<Manufactures> manufactureOptions = [];
   bool manuFacturer = false;
+  List<SearchList> temp = [];
 
   Future<List<ItemMainGroup>> fetchItemMainGroupList() async {
     final String baseUrl =
@@ -39,6 +42,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
+      mainGroupOptions.addAll(jsonResponse
+          .map((itemmaingroup) => new ItemMainGroup.fromJson(itemmaingroup)));
+      print(mainGroupOptions.length);
       return jsonResponse
           .map((itemmaingroup) => new ItemMainGroup.fromJson(itemmaingroup))
           .toList();
@@ -54,7 +60,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-
+      manufactureOptions
+          .addAll(jsonResponse.map((e) => new Manufactures.fromJson(e)));
       return jsonResponse.map((e) => new Manufactures.fromJson(e)).toList();
     } else {
       throw Exception('Failed to load jobs from API');
@@ -68,7 +75,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-
+      temp.addAll(jsonResponse
+          .map((e) => new SearchList.fromJson(e))
+          .where((element) => element.itemmaingrouptitle == "Instruments"));
       return jsonResponse.map((e) => new SearchList.fromJson(e)).toList();
     } else {
       throw Exception('Failed to load jobs from API');
@@ -92,24 +101,14 @@ class _SearchScreenState extends State<SearchScreen> {
     setState(() {});
   }
 
-  void _onCategorySelected(bool selected, category_id) {
-    if (selected == true) {
-      setState(() {
-        _selecteCategorys.add(category_id);
-      });
-    } else {
-      setState(() {
-        _selecteCategorys.remove(category_id);
-      });
-    }
-  }
-
   @override
   void initState() {
     super.initState();
     getCustomerInfo();
     _fetchdata();
+    fetchManufactures();
     fetchAllItem();
+    fetchItemMainGroupList();
   }
 
   @override
@@ -208,16 +207,21 @@ class _SearchScreenState extends State<SearchScreen> {
                                                               (bool value) {
                                                             print(value);
                                                             setState(() {
-                                                              if (value) {
+                                                              if (value ==
+                                                                  true) {
                                                                 _selecteCategorys
                                                                     .add(data[
                                                                             index]
                                                                         .title);
+                                                                print(
+                                                                    _selecteCategorys);
                                                               } else {
                                                                 _selecteCategorys
                                                                     .remove(data[
                                                                             index]
                                                                         .title);
+                                                                print(
+                                                                    _selecteCategorys);
                                                               }
                                                             });
                                                           },
@@ -225,21 +229,6 @@ class _SearchScreenState extends State<SearchScreen> {
                                                               data[index]
                                                                   .title),
                                                         );
-                                                        // return ListTile(
-                                                        //   title: Text(
-                                                        //       data[index]
-                                                        //           .title),
-                                                        //   leading: Checkbox(
-                                                        //     value: itemGroup,
-                                                        //     onChanged: (val) {
-                                                        //       print(val);
-                                                        //       setState(() {
-                                                        //         itemGroup = val;
-                                                        //         // man = val;
-                                                        //       });
-                                                        //     },
-                                                        //   ),
-                                                        // );
                                                       });
                                                 } else if (snapshot.hasError) {
                                                   return Text(
@@ -329,7 +318,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               );
                             });
                       });
-                  // do something
+                  // // do something
                 },
               ),
             ]),

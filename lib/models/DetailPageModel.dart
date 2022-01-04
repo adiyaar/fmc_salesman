@@ -1,4 +1,4 @@
-class salesmandetailpage {
+class Salesmandetailpage {
   String itemid;
   String img;
   String itemnameEn;
@@ -31,7 +31,7 @@ class salesmandetailpage {
   String allowsonapp;
   String status;
 
-  salesmandetailpage(
+  Salesmandetailpage(
       {this.itemid,
       this.img,
       this.itemnameEn,
@@ -64,7 +64,7 @@ class salesmandetailpage {
       this.allowsonapp,
       this.status});
 
-  salesmandetailpage.fromJson(Map<String, dynamic> json) {
+  Salesmandetailpage.fromJson(Map<String, dynamic> json) {
     itemid = json['itemid'];
     img = json['img'];
     itemnameEn = json['itemname_en'];
