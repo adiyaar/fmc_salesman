@@ -72,7 +72,7 @@ Future getCartCount() async {
   print(
       "=================================================================================");
   print(cartTotal);
-  print(cartTotal);
+
   // cart_total = jsonDecode(response2.body);
   // if (cart_total == null) {
   //   cart_total = '0';

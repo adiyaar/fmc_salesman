@@ -3,12 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
+
 import 'package:responsify/responsify.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:testing/Apis/AddToCart.dart';
 import 'package:testing/Common/DetailShimmer.dart';
+import 'package:testing/models/CartItem.dart';
 
 import 'package:testing/models/DetailPageModel.dart';
 import 'package:http/http.dart' as http;
@@ -37,13 +38,20 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
 
   List variants = [];
   List units = [];
+  List<VariantsD> a = [];
+  List<UnitsD> b = [];
   String selectedVariant;
+  String selectedVariantName = '';
+  String packing = '';
   String selectedUnit;
+  String selectedUnitName = '';
+  String price;
+
   TextEditingController quantityController =
-      TextEditingController(); // quantity
-  TextEditingController focController = TextEditingController(); // foc
+      TextEditingController(text: '1'); // quantity
+  TextEditingController focController = TextEditingController(text: '0'); // foc
   TextEditingController extraFocController =
-      TextEditingController(); // extra foc
+      TextEditingController(text: '0'); // extra foc
 
   Future<List<Salesmandetailpage>> fetchProductInfo() async {
     final baseUrl =
@@ -67,29 +75,33 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     var data = {'itemproductgroupid': widget.itemDetails.itemproductgroupid};
     var response = await http.post(
         Uri.parse(
-            'https://onlinefamilypharmacy.com/mobileapplication/pages/dropdown_api.php'),
+            'https://onlinefamilypharmacy.com/mobileapplication/pages/selectvariant.php'),
         body: json.encode(data));
     var jsonResponse = response.body;
-    var jsonData = json.decode(jsonResponse);
-
-    print(jsonData);
+    List jsonData = json.decode(jsonResponse);
+    a = jsonData.map((e) => VariantsD.fromJson(e)).toList();
 
     setState(() {
       variants = jsonData;
     });
+    return a;
   }
 
-  Future getUnitsandPrice() async {
+  Future getUnitsandPrice(itemid) async {
     String baseUrl =
-        'https://onlinefamilypharmacy.com/mobileapplication/pages/dropdown.php';
+        'https://onlinefamilypharmacy.com/mobileapplication/pages/selectunit.php';
 
-    var data = {'id': widget.itemDetails.itemid};
+    var data = {'itemid': itemid};
     var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
-    var jsondataval = json.decode(response.body);
+    List jsondataval = json.decode(response.body);
+    b = jsondataval.map((e) => UnitsD.fromJson(e)).toList();
+    // print('2');
+    print(b.length);
     print(jsondataval);
     setState(() {
       units = jsondataval;
     });
+    return b;
   }
 
   @override
@@ -97,7 +109,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     super.initState();
     // fetchProductInfo();
     getVariant();
-    getUnitsandPrice();
+
     customerInfo();
   }
 
@@ -112,7 +124,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
           Align(
             alignment: Alignment.center,
             child: Text(
-              "Manu Kumar \nEMP0001",
+              "Meet Shah \nP01",
               style: TextStyle(fontSize: 16.0),
             ),
           ),
@@ -286,21 +298,37 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                 SizedBox(
                                   height: 2,
                                 ),
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    "\QR ${iteminfo[0].minretailprice}" +
-                                        "-" +
-                                        "\QR ${iteminfo[0].maxretailprice}",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 17,
-                                        color: Colors.orange),
+                                Visibility(
+                                  visible: selectedUnitName == '',
+                                  child: Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "\QR ${iteminfo[0].minretailprice}" +
+                                          "-" +
+                                          "\QR ${iteminfo[0].maxretailprice}",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 17,
+                                          color: Colors.orange),
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: selectedUnitName != '',
+                                  child: Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "\QR $selectedUnitName",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 17,
+                                          color: Colors.green),
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
                                   height:
-                                      MediaQuery.of(context).size.height / 18,
+                                      MediaQuery.of(context).size.height / 30,
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -349,13 +377,6 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                         child: Container(
                                           margin: EdgeInsets.only(top: 3),
                                           padding: EdgeInsets.all(10),
-                                          // child: Text(
-                                          //   "Expiry",
-                                          //   style: TextStyle(
-                                          //       fontSize: 16,
-                                          //       fontWeight: FontWeight.w800),
-                                          //   textAlign: TextAlign.left,
-                                          // ),
                                           child: DropdownButton(
                                             underline: SizedBox(),
                                             value: selectedVariant,
@@ -370,7 +391,9 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                                                   .width /
                                                               4.7,
                                                       child: Text(
-                                                        list['itempack'],
+                                                        list['itempack'] == ''
+                                                            ? 'No Variant'
+                                                            : list['itempack'],
                                                         style: TextStyle(
                                                             fontSize: 16,
                                                             fontWeight:
@@ -386,6 +409,15 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                             onChanged: (value) {
                                               setState(() {
                                                 selectedVariant = value;
+
+                                                selectedVariantName = a
+                                                    .where((element) =>
+                                                        element.id ==
+                                                        selectedVariant)
+                                                    .map((e) => e.itempack)
+                                                    .first;
+                                                getUnitsandPrice(
+                                                    selectedVariant);
                                               });
                                             },
                                           ),
@@ -405,7 +437,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                           padding: EdgeInsets.all(10),
                                           child: DropdownButton(
                                             underline: SizedBox(),
-                                            value: selectedVariant,
+                                            value: selectedUnit,
                                             hint: Text("Select Unit"),
                                             items: units.map(
                                               (list) {
@@ -433,8 +465,36 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                               },
                                             ).toList(),
                                             onChanged: (value) {
+                                              print(customerType);
                                               setState(() {
                                                 selectedUnit = value;
+                                                // price ==>
+                                                (customerType == null ||
+                                                        customerType ==
+                                                            'Retail')
+                                                    ? selectedUnitName = b
+                                                        .where((element) =>
+                                                            element.id ==
+                                                            selectedUnit)
+                                                        .map((e) => e.rss)
+                                                        .first
+                                                        .toString()
+                                                    : selectedUnitName = b
+                                                        .where((element) =>
+                                                            element.id ==
+                                                            selectedUnit)
+                                                        .map((e) => e.wss)
+                                                        .first
+                                                        .toString();
+
+                                                //type of packagin
+                                                packing = b
+                                                    .where((element) =>
+                                                        element.id ==
+                                                        selectedUnit)
+                                                    .map((e) => e.unit)
+                                                    .first
+                                                    .toString();
                                               });
                                             },
                                           ),
@@ -443,6 +503,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                     ],
                                   ),
                                 ),
+
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Row(
@@ -751,17 +812,27 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   ],
                                 ),
                                 SizedBox(
-                                  height: 10,
+                                  height: 2,
                                 ),
-                                Container(
-                                    margin: EdgeInsets.only(left: 30),
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      "Item Code - ${widget.itemDetails.itemid} \nItem name - ${widget.itemDetails.itemproductgrouptitle} \nType of Packing - Expiry\nQty Per packing - 1",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                      ),
-                                    )),
+                                selectedVariant == null
+                                    ? Container(
+                                        margin: EdgeInsets.only(left: 30),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "Item Code - ${widget.itemDetails.itemid} \nItem name - ${widget.itemDetails.itemproductgrouptitle} \nType of Packing - ''\nQty Per packing - 1\nSelected Variant -$selectedVariantName",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                          ),
+                                        ))
+                                    : Container(
+                                        margin: EdgeInsets.only(left: 30),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "Item Code - $selectedVariant \nItem name - ${widget.itemDetails.itemproductgrouptitle} \nType of Packing - $packing\nQty Per packing - 1\nSelected Variant -$selectedVariantName",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                          ),
+                                        )),
                               ],
                             ),
                           )
@@ -969,16 +1040,32 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                 SizedBox(
                                   height: 2,
                                 ),
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    "\QR ${iteminfo[0].minretailprice}" +
-                                        "-" +
-                                        "\QR ${iteminfo[0].maxretailprice}",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 17,
-                                        color: Colors.orange),
+                                Visibility(
+                                  visible: selectedUnitName == '',
+                                  child: Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "\QR ${iteminfo[0].minretailprice}" +
+                                          "-" +
+                                          "\QR ${iteminfo[0].maxretailprice}",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 17,
+                                          color: Colors.orange),
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: selectedUnitName != '',
+                                  child: Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "\QR $selectedUnitName",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 17,
+                                          color: Colors.green),
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
@@ -1069,6 +1156,15 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                             onChanged: (value) {
                                               setState(() {
                                                 selectedVariant = value;
+
+                                                selectedVariantName = a
+                                                    .where((element) =>
+                                                        element.id ==
+                                                        selectedVariant)
+                                                    .map((e) => e.itempack)
+                                                    .first;
+                                                getUnitsandPrice(
+                                                    selectedVariant);
                                               });
                                             },
                                           ),
@@ -1118,6 +1214,33 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                             onChanged: (value) {
                                               setState(() {
                                                 selectedUnit = value;
+                                                // price ==>
+                                                (customerType == null ||
+                                                        customerType ==
+                                                            'Retail')
+                                                    ? selectedUnitName = b
+                                                        .where((element) =>
+                                                            element.id ==
+                                                            selectedUnit)
+                                                        .map((e) => e.rss)
+                                                        .first
+                                                        .toString()
+                                                    : selectedUnitName = b
+                                                        .where((element) =>
+                                                            element.id ==
+                                                            selectedUnit)
+                                                        .map((e) => e.wss)
+                                                        .first
+                                                        .toString();
+
+                                                //type of packagin
+                                                packing = b
+                                                    .where((element) =>
+                                                        element.id ==
+                                                        selectedUnit)
+                                                    .map((e) => e.unit)
+                                                    .first
+                                                    .toString();
                                               });
                                             },
                                           ),
@@ -1389,15 +1512,25 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                 SizedBox(
                                   height: 10,
                                 ),
-                                Container(
-                                    margin: EdgeInsets.only(left: 30),
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      "Item Code - ${widget.itemDetails.itemid} \nItem name - ${widget.itemDetails.itemproductgrouptitle} \nType of Packing - Expiry\nQty Per packing - 1",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                      ),
-                                    )),
+                                selectedVariant == null
+                                    ? Container(
+                                        margin: EdgeInsets.only(left: 30),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "Item Code - ${widget.itemDetails.itemid} \nItem name - ${widget.itemDetails.itemproductgrouptitle} \nType of Packing - ''\nQty Per packing - 1\nSelected Variant -$selectedVariantName",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                          ),
+                                        ))
+                                    : Container(
+                                        margin: EdgeInsets.only(left: 30),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "Item Code - $selectedVariant \nItem name - ${widget.itemDetails.itemproductgrouptitle} \nType of Packing - $packing\nQty Per packing - 1\nSelected Variant -$selectedVariantName",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                          ),
+                                        )),
                               ],
                             ),
                           )
@@ -1556,16 +1689,32 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    "\QR ${iteminfo[0].minretailprice}" +
-                                        "-" +
-                                        "\QR ${iteminfo[0].maxretailprice}",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 15,
-                                        color: Colors.orange),
+                                Visibility(
+                                  visible: selectedUnitName == '',
+                                  child: Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "\QR ${iteminfo[0].minretailprice}" +
+                                          "-" +
+                                          "\QR ${iteminfo[0].maxretailprice}",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 17,
+                                          color: Colors.orange),
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: selectedUnitName != '',
+                                  child: Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "\QR $selectedUnitName",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 17,
+                                          color: Colors.green),
+                                    ),
                                   ),
                                 ),
                                 Container(
@@ -1669,6 +1818,13 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                       onChanged: (value) {
                                         setState(() {
                                           selectedVariant = value;
+
+                                          selectedVariantName = a
+                                              .where((element) =>
+                                                  element.id == selectedVariant)
+                                              .map((e) => e.itempack)
+                                              .first;
+                                          getUnitsandPrice(selectedVariant);
                                         });
                                       },
                                     ),
@@ -1716,6 +1872,31 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                       onChanged: (value) {
                                         setState(() {
                                           selectedUnit = value;
+                                          // price ==>
+                                          (customerType == null ||
+                                                  customerType == 'Retail')
+                                              ? selectedUnitName = b
+                                                  .where((element) =>
+                                                      element.id ==
+                                                      selectedUnit)
+                                                  .map((e) => e.rss)
+                                                  .first
+                                                  .toString()
+                                              : selectedUnitName = b
+                                                  .where((element) =>
+                                                      element.id ==
+                                                      selectedUnit)
+                                                  .map((e) => e.wss)
+                                                  .first
+                                                  .toString();
+
+                                          //type of packagin
+                                          packing = b
+                                              .where((element) =>
+                                                  element.id == selectedUnit)
+                                              .map((e) => e.unit)
+                                              .first
+                                              .toString();
                                         });
                                       },
                                     ),
@@ -1972,14 +2153,25 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                             SizedBox(
                               height: 20,
                             ),
-                            Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Item Code - ${widget.itemDetails.itemid} \nItem name - ${widget.itemDetails.itemproductgrouptitle} \nType of Packing - Expiry\nQty Per packing - 1",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                  ),
-                                )),
+                            selectedVariant == null
+                                ? Container(
+                                    margin: EdgeInsets.only(left: 30),
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "Item Code - ${widget.itemDetails.itemid} \nItem name - ${widget.itemDetails.itemproductgrouptitle} \nType of Packing - ''\nQty Per packing - 1\nSelected Variant -$selectedVariantName",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                      ),
+                                    ))
+                                : Container(
+                                    margin: EdgeInsets.only(left: 30),
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "Item Code - $selectedVariant \nItem name - ${widget.itemDetails.itemproductgrouptitle} \nType of Packing - $packing\nQty Per packing - 1\nSelected Variant -$selectedVariantName",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                      ),
+                                    )),
                           ],
                         ),
                       ),

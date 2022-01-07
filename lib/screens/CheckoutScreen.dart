@@ -10,13 +10,13 @@ import 'package:testing/screens/DoneOrdering.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final int totalItems;
-  List<String> itemCodes;
-  List<String> itemName;
-  List<int> quantity;
-  List<int> foc;
-  List<int> exFoc;
-  List<double> price;
-  List<double> common;
+  final List<String> itemCodes;
+  final List<String> itemName;
+  final List<int> quantity;
+  final List<int> foc;
+  final List<int> exFoc;
+  final List<double> price;
+  final List<double> common;
   final double checkoutTotal;
   CheckoutScreen(
       {Key key,
@@ -27,8 +27,8 @@ class CheckoutScreen extends StatefulWidget {
       @required this.itemCodes,
       @required this.itemName,
       @required this.price,
-
-      @required this.quantity,@required this.common})
+      @required this.quantity,
+      @required this.common})
       : super(key: key);
 
   @override
@@ -42,6 +42,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   TextEditingController emailId = TextEditingController();
   TextEditingController contactNumber = TextEditingController();
   TextEditingController notes = TextEditingController();
+  Future getCart;
+
+  void getcart() {
+    setState(() {
+      getCart = fetchCartItem();
+    });
+  }
 
   final SignatureController _controller = SignatureController(
     penStrokeWidth: 5,
@@ -55,16 +62,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void initState() {
     super.initState();
     _controller.addListener(() => print('Value changed'));
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    widget.foc = [];
-    widget.exFoc = [];
-    widget.itemCodes = [];
-    widget.itemName = [];
-    widget.price = [];
+    getcart();
   }
 
   @override
@@ -86,19 +84,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(snackbar);
               } else {
                 salesorder(
-                    widget.quantity,
-                    widget.price,
-                    widget.itemCodes,
-                    widget.itemName,
-                    widget.foc,
-                    widget.exFoc,
+                    widget.quantity.toList(),
+                    widget.price.toList(),
+                    widget.itemCodes.toSet().toList(),
+                    widget.itemName.toList(),
+                    widget.foc..toList(),
+                    widget.exFoc.toList(),
                     int.parse(soReferenceNumber.text),
                     notes.text,
                     typeOfLead.text,
                     orderPlacedBy.text,
-                    widget.common);
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => DoneOrdering()));
+                    widget.common.toList());
+
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (context) => DoneOrdering()));
               }
             },
             label: Text('Place Order')),
@@ -109,7 +108,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             Align(
               alignment: Alignment.center,
               child: Text(
-                "Manu Kumar \nEMP0001",
+                "Meet Shah \nP01",
                 style: TextStyle(fontSize: 16.0),
               ),
             ),
@@ -393,7 +392,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 ],
                               ),
                               FutureBuilder(
-                                  future: fetchCartItem(),
+                                  future: getCart,
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
@@ -422,21 +421,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 CartItem cart =
                                                     snapshot.data[index];
 
-                                                // itemCode added
-
-                                                // quantity.add(
-                                                //     int.parse(cart.quantity));
-                                                // foc.add(int.parse(cart.foc));
-                                                // exFoc
-                                                //     .add(int.parse(cart.exFoc));
-
-                                                // price.add(double.parse(
-                                                //             cart.finalprice)
-                                                //         .roundToDouble() *
-                                                //     double.parse(cart.quantity)
-                                                //         .roundToDouble());
-                                                // itemName.add(cart.itemName);
-
                                                 return Row(
                                                   children: [
                                                     Container(
@@ -452,12 +436,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                       child: Text(
                                                           "Item Code - ${cart.itemCode} \nItem Name - ${cart.itemName}\nPrice - ${double.parse(cart.finalprice).roundToDouble() * double.parse(cart.quantity).roundToDouble()} QR"),
                                                     ),
-                                                    // Container(
-                                                    //   child: Text($(double.parse(
-                                                    //       cart.quantity) * double.parse(cart.finalprice).reduce(value,element){
-
-                                                    //       })),
-                                                    // )
                                                   ],
                                                 );
                                               }),
@@ -875,7 +853,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 ],
                               ),
                               FutureBuilder(
-                                  future: fetchCartItem(),
+                                  future: getCart,
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
@@ -1349,7 +1327,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           ],
                         ),
                         FutureBuilder(
-                            future: fetchCartItem(),
+                            future: getCart,
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {

@@ -1,17 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/dynamic/All_branch.dart';
 import 'package:testing/dynamic/All_branch_add.dart';
 import 'package:testing/dynamic/itemmaster.dart';
-import 'package:testing/dynamic/search_screen.dart';
+import 'package:http/http.dart' as http;
 import 'package:testing/screens/CartPage.dart';
 import 'package:testing/screens/GenerateSales.dart';
-
 import 'package:testing/screens/LoginScreen.dart';
 import 'package:testing/widget/NavigationDrawer.dart';
 import 'package:unicorndial/unicorndial.dart';
-
-import '../settings.dart';
 import 'ItemMainGroup.dart';
 import 'SearchScreen.dart';
 
@@ -23,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int a;
   String customerName,
       branchname,
       creditDays,
@@ -42,14 +42,38 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future fetchCrtCOunt() async {
+    SharedPreferences pf = await SharedPreferences.getInstance();
+    String customerId = pf.getString('customerId');
+    String branchId = pf.get('branchId');
+    Map<String, dynamic> data = {
+      'userid': customerId,
+      'selectedcustbranch': branchId
+    };
+    String baseUrl =
+        'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesman_cart.php';
+    var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
+
+    List jsonResponse = json.decode(response.body);
+    // print(jsonResponse);
+    print(jsonResponse.length);
+    a = jsonResponse.length;
+    setState(() {});
+    return a;
+  }
+
   @override
   void initState() {
     super.initState();
     fetchAllCustomerData();
+    fetchCrtCOunt();
   }
+
+ 
 
   @override
   Widget build(BuildContext context) {
+    // fetchCrtCOunt();
     final floatingButtons = <UnicornButton>[];
     floatingButtons.add(
       UnicornButton(
@@ -164,13 +188,28 @@ class _HomeScreenState extends State<HomeScreen> {
                   MaterialPageRoute(builder: (context) => ItemMainGroup()));
             },
           ), //IconButton
-          IconButton(
-            icon: Icon(Icons.shopping_bag),
-            tooltip: 'MainGroup',
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => CartPage()));
-            },
+          Stack(
+            children: [
+              IconButton(
+                icon: Icon(Icons.shopping_bag),
+                tooltip: 'MainGroup',
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CartPage()));
+                },
+              ),
+              Visibility(
+                visible: a != null,
+                child: Positioned(
+                    top: 20,
+                    left: 20,
+                    child: Text(
+                      '$a',
+                      style: TextStyle(
+                          color: Colors.red, fontWeight: FontWeight.bold),
+                    )),
+              )
+            ],
           ), //IconButton
         ],
       ),

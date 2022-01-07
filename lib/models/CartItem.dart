@@ -50,3 +50,47 @@ class CartItem {
         discount: json['disc']);
   }
 }
+
+class VariantsD {
+  String id;
+  String itempack;
+
+  VariantsD({this.id, this.itempack});
+//List data;
+  factory VariantsD.fromJson(Map<String, dynamic> json) {
+    return VariantsD(
+      id: json['id'],
+      itempack: json['itempack'],
+    );
+  }
+}
+
+class UnitsD {
+  String id;
+  String itemid;
+  String unit;
+  String packing;
+  String rss;
+  String wss;
+  String ass;
+
+  UnitsD(
+      {this.id,
+      this.itemid,
+      this.ass,
+      this.packing,
+      this.rss,
+      this.unit,
+      this.wss});
+//List data;
+  factory UnitsD.fromJson(Map<String, dynamic> json) {
+    return UnitsD(
+        id: json['id'],
+        itemid: json['itemid'],
+        unit: json['unit'],
+        packing: json['packaging'],
+        rss: json['rss'],
+        wss: json['wss'],
+        ass: json['ass']);
+  }
+}

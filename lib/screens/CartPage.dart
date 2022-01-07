@@ -72,7 +72,7 @@ class _CartPageState extends State<CartPage>
           Align(
             alignment: Alignment.center,
             child: Text(
-              "Manu Kumar \nEMP0001",
+              "Meet Shah \nP01",
               style: TextStyle(fontSize: 16.0),
             ),
           ),
@@ -80,263 +80,247 @@ class _CartPageState extends State<CartPage>
             icon: Icon(Icons.person_sharp),
             onPressed: () {},
           ),
-          IconButton(
-            icon: Icon(
-              Icons.shopping_cart_outlined,
-              color: Colors.yellow,
-            ),
-            onPressed: () {},
-          ),
         ],
       ),
-      body: LoaderOverlay(
-        disableBackButton: false,
-        child: ResponsiveUiWidget(
-          targetOlderComputers: true,
-          builder: (context, deviceInfo) {
-            if (deviceInfo.deviceTypeInformation ==
-                    DeviceTypeInformation.TABLET ||
-                deviceInfo.deviceTypeInformation ==
-                    DeviceTypeInformation.MOBILE) {
-              return FutureBuilder<List<CartItem>>(
-                  initialData: [],
-                  future: resultGetData,
-                  builder: (context, snapshot) {
-                    List<CartItem> cartItems = snapshot.data;
-                    print(cartItems.length);
-                    itemCodes.addAll(cartItems.map((e) => e.itemCode));
-                    common.addAll(cartItems.map((e) => double.parse(e.cutoFF)));
-                    itemName.addAll(cartItems.map((e) => e.itemName));
-                    quantity
-                        .addAll(cartItems.map((e) => int.parse(e.quantity)));
-                    focList.addAll(cartItems.map((e) => int.parse(e.foc)));
-                    exFocList.addAll(cartItems.map((e) => int.parse(e.exFoc)));
+      body: ResponsiveUiWidget(
+        targetOlderComputers: true,
+        builder: (context, deviceInfo) {
+          if (deviceInfo.deviceTypeInformation ==
+                  DeviceTypeInformation.TABLET ||
+              deviceInfo.deviceTypeInformation ==
+                  DeviceTypeInformation.MOBILE) {
+            return FutureBuilder<List<CartItem>>(
+                initialData: [],
+                future: resultGetData,
+                builder: (context, snapshot) {
+                  List<CartItem> cartItems = snapshot.data;
 
-                    price.addAll(cartItems.map((e) =>
-                        (double.parse(e.finalprice).roundToDouble() *
-                            double.parse(e.quantity).roundToDouble())));
+                  itemCodes.addAll(cartItems.map((e) => e.itemCode));
+                  common.addAll(cartItems.map((e) => double.parse(e.cutoFF)));
+                  itemName.addAll(cartItems.map((e) => e.itemName));
+                  quantity.addAll(cartItems.map((e) => int.parse(e.quantity)));
+                  focList.addAll(cartItems.map((e) => int.parse(e.foc)));
+                  exFocList.addAll(cartItems.map((e) => int.parse(e.exFoc)));
 
-                    if (snapshot.connectionState == ConnectionState.waiting) {
+                  price.addAll(cartItems.map((e) =>
+                      (double.parse(e.finalprice).roundToDouble() *
+                          double.parse(e.quantity).roundToDouble())));
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.data.length == 0) {
                       return Center(
-                        child: CircularProgressIndicator(),
+                        child: Text("No Items in Cart"),
                       );
-                    } else if (snapshot.connectionState ==
-                        ConnectionState.done) {
-                      if (snapshot.data.length == 0) {
-                        return Center(
-                          child: Text("No Items in Cart"),
-                        );
-                      } else if (snapshot.data.length > 0) {
-                        totalItems = snapshot.data.length;
-                        for (int i = 0; i < snapshot.data.length; i++) {
-                          totalCheckout =
-                              (double.parse(snapshot.data[i].finalprice)
-                                          .roundToDouble() *
-                                      double.parse(snapshot.data[i].quantity)
-                                          .roundToDouble()) +
-                                  totalCheckout;
-                        }
-                        return SingleChildScrollView(
-                          child: Container(
-                            margin: EdgeInsets.only(left: 05, right: 05),
-                            width: double.infinity,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: DataTable(
-                                headingRowHeight: 50,
-                                dataRowHeight: 100,
+                    } else if (snapshot.data.length > 0) {
+                      totalItems = snapshot.data.length;
+                      for (int i = 0; i < snapshot.data.length; i++) {
+                        totalCheckout =
+                            (double.parse(snapshot.data[i].finalprice)
+                                        .roundToDouble() *
+                                    double.parse(snapshot.data[i].quantity)
+                                        .roundToDouble()) +
+                                totalCheckout;
+                      }
+                      return SingleChildScrollView(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 05, right: 05),
+                          width: double.infinity,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: DataTable(
+                              headingRowHeight: 50,
+                              dataRowHeight: 100,
 
-                                columnSpacing: 110,
-                                headingRowColor:
-                                    MaterialStateProperty.all(Colors.white),
-                                headingTextStyle:
-                                    TextStyle(color: Colors.black),
-                                // dataRowColor:
-                                //     MaterialStateProperty.all(Colors.grey),
-                                columns: [
-                                  DataColumn(
-                                      label: Text(
-                                          'Product Info')), // image , name of product , itemcode
-                                  DataColumn(label: Text('Quantity')),
-                                  DataColumn(label: Text('Price')),
-                                  DataColumn(label: Text('FOC')),
-                                  DataColumn(label: Text('Ex FOC')),
-                                  DataColumn(label: Text('Discount')),
-                                  DataColumn(label: Text('SubTotal')),
-                                  DataColumn(label: Text('')),
-                                ],
-                                rows: cartItems
-                                    .map((data) => DataRow(cells: [
-                                          DataCell(ListTile(
-                                            leading: Container(
-                                              height: 50,
-                                              width: 50,
-                                              child: Image.network(
-                                                  'https://onlinefamilypharmacy.com/images/noimage.jpg'),
-                                            ),
-                                            title: Text(data.itemName),
-                                            subtitle: Text(data.itemCode),
-                                          )),
-                                          DataCell(Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              // IconButton(
-                                              //   onPressed: () {
-                                              //     setState(() {
-                                              //       quantityCount--;
-                                              //     });
-                                              //   },
-                                              //   icon: Icon(Icons.remove),
-                                              // ),
+                              columnSpacing: 110,
+                              headingRowColor:
+                                  MaterialStateProperty.all(Colors.white),
+                              headingTextStyle: TextStyle(color: Colors.black),
+                              // dataRowColor:
+                              //     MaterialStateProperty.all(Colors.grey),
+                              columns: [
+                                DataColumn(
+                                    label: Text(
+                                        'Product Info')), // image , name of product , itemcode
+                                DataColumn(label: Text('Quantity')),
+                                DataColumn(label: Text('Price')),
+                                DataColumn(label: Text('FOC')),
+                                DataColumn(label: Text('Ex FOC')),
+                                DataColumn(label: Text('Discount')),
+                                DataColumn(label: Text('SubTotal')),
+                                DataColumn(label: Text('')),
+                              ],
+                              rows: cartItems
+                                  .map((data) => DataRow(cells: [
+                                        DataCell(ListTile(
+                                          leading: Container(
+                                            height: 50,
+                                            width: 50,
+                                            child: Image.network(
+                                                'https://onlinefamilypharmacy.com/images/noimage.jpg'),
+                                          ),
+                                          title: Text(data.itemName),
+                                          subtitle: Text(data.itemCode),
+                                        )),
+                                        DataCell(Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            // IconButton(
+                                            //   onPressed: () {
+                                            //     setState(() {
+                                            //       quantityCount--;
+                                            //     });
+                                            //   },
+                                            //   icon: Icon(Icons.remove),
+                                            // ),
 
-                                              Container(
-                                                height: 30,
-                                                width: 100,
-                                                child: TextFormField(
-                                                  initialValue: data.quantity,
-                                                  decoration: InputDecoration(
-                                                      filled: true,
-                                                      fillColor:
-                                                          Colors.grey[300],
-                                                      border: InputBorder.none),
-                                                  onFieldSubmitted: (string) {
-                                                    setState(() {
-                                                      data.quantity = string;
-                                                    });
+                                            Container(
+                                              height: 30,
+                                              width: 100,
+                                              child: TextFormField(
+                                                initialValue: data.quantity,
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor: Colors.grey[300],
+                                                    border: InputBorder.none),
+                                                onFieldSubmitted: (string) {
+                                                  setState(() {
+                                                    data.quantity = string;
+                                                  });
 
-                                                    updateCart(
-                                                        context,
-                                                        data.itemCode,
-                                                        data.quantity,
-                                                        data.finalprice,
-                                                        '${int.parse(data.foc) + foc}',
-                                                        '${int.parse(data.exFoc) + exFoc}',
-                                                        data.discount);
-                                                  },
-                                                ),
-                                              ),
-                                              // Text(
-                                              //   '${int.parse(data.quantity) + quantityCount}',
-                                              //   style: TextStyle(fontSize: 13),
-                                              // ),
-                                              // IconButton(
-                                              //   onPressed: () {
-                                              //     setState(() {
-                                              //       quantityCount++;
-                                              //     });
-                                              //   },
-                                              //   icon: Icon(Icons.add),
-                                              // ),
-                                            ],
-                                          )),
-                                          DataCell(Text(
-                                            data.finalprice,
-                                            style: TextStyle(fontSize: 13),
-                                          )),
-                                          DataCell(Row(
-                                            children: [
-                                              Container(
-                                                height: 30,
-                                                width: 100,
-                                                child: TextFormField(
-                                                  initialValue: data.foc,
-                                                  decoration: InputDecoration(
-                                                      filled: true,
-                                                      fillColor:
-                                                          Colors.grey[300],
-                                                      border: InputBorder.none),
-                                                  onFieldSubmitted: (string) {
-                                                    setState(() {
-                                                      data.foc = string;
-                                                    });
-
-                                                    updateCart(
-                                                        context,
-                                                        data.itemCode,
-                                                        data.quantity,
-                                                        data.finalprice,
-                                                        data.foc,
-                                                        '${int.parse(data.exFoc) + exFoc}',
-                                                        data.discount);
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          )),
-                                          DataCell(Row(
-                                            children: [
-                                              Container(
-                                                height: 30,
-                                                width: 100,
-                                                child: TextFormField(
-                                                  initialValue: data.exFoc,
-                                                  decoration: InputDecoration(
-                                                      filled: true,
-                                                      fillColor:
-                                                          Colors.grey[300],
-                                                      border: InputBorder.none),
-                                                  onFieldSubmitted: (string) {
-                                                    setState(() {
-                                                      data.exFoc = string;
-                                                    });
-
-                                                    updateCart(
-                                                        context,
-                                                        data.itemCode,
-                                                        data.quantity,
-                                                        data.finalprice,
-                                                        data.foc,
-                                                        '${int.parse(data.exFoc) + exFoc}',
-                                                        data.discount);
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          )),
-                                          DataCell(Text(
-                                            data.discount,
-                                            style: TextStyle(fontSize: 13),
-                                          )),
-                                          DataCell(Text(
-                                              '${double.parse(data.finalprice).roundToDouble() * double.parse(data.quantity).roundToDouble()} QR')),
-                                          DataCell(Row(
-                                            children: [
-                                              InkWell(
-                                                child: Icon(
-                                                  Icons.delete_sharp,
-                                                  color: Colors.red,
-                                                ),
-                                                onTap: () {
-                                                  removeCart(
-                                                      context, data.itemCode);
-                                                  setState(() {});
+                                                  updateCart(
+                                                      context,
+                                                      data.itemCode,
+                                                      data.quantity,
+                                                      data.finalprice,
+                                                      '${int.parse(data.foc) + foc}',
+                                                      '${int.parse(data.exFoc) + exFoc}',
+                                                      data.discount);
                                                 },
                                               ),
-                                            ],
-                                          )),
-                                        ]))
-                                    .toList(),
-                              ),
+                                            ),
+                                            // Text(
+                                            //   '${int.parse(data.quantity) + quantityCount}',
+                                            //   style: TextStyle(fontSize: 13),
+                                            // ),
+                                            // IconButton(
+                                            //   onPressed: () {
+                                            //     setState(() {
+                                            //       quantityCount++;
+                                            //     });
+                                            //   },
+                                            //   icon: Icon(Icons.add),
+                                            // ),
+                                          ],
+                                        )),
+                                        DataCell(Text(
+                                          data.finalprice,
+                                          style: TextStyle(fontSize: 13),
+                                        )),
+                                        DataCell(Row(
+                                          children: [
+                                            Container(
+                                              height: 30,
+                                              width: 100,
+                                              child: TextFormField(
+                                                initialValue: data.foc,
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor: Colors.grey[300],
+                                                    border: InputBorder.none),
+                                                onFieldSubmitted: (string) {
+                                                  setState(() {
+                                                    data.foc = string;
+                                                  });
+
+                                                  updateCart(
+                                                      context,
+                                                      data.itemCode,
+                                                      data.quantity,
+                                                      data.finalprice,
+                                                      data.foc,
+                                                      '${int.parse(data.exFoc) + exFoc}',
+                                                      data.discount);
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        )),
+                                        DataCell(Row(
+                                          children: [
+                                            Container(
+                                              height: 30,
+                                              width: 100,
+                                              child: TextFormField(
+                                                initialValue: data.exFoc,
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor: Colors.grey[300],
+                                                    border: InputBorder.none),
+                                                onFieldSubmitted: (string) {
+                                                  setState(() {
+                                                    data.exFoc = string;
+                                                  });
+
+                                                  updateCart(
+                                                      context,
+                                                      data.itemCode,
+                                                      data.quantity,
+                                                      data.finalprice,
+                                                      data.foc,
+                                                      '${int.parse(data.exFoc) + exFoc}',
+                                                      data.discount);
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        )),
+                                        DataCell(Text(
+                                          data.discount,
+                                          style: TextStyle(fontSize: 13),
+                                        )),
+                                        DataCell(Text(
+                                            '${double.parse(data.finalprice).roundToDouble() * double.parse(data.quantity).roundToDouble()} QR')),
+                                        DataCell(Row(
+                                          children: [
+                                            InkWell(
+                                              child: Icon(
+                                                Icons.delete_sharp,
+                                                color: Colors.red,
+                                              ),
+                                              onTap: () {
+                                                removeCart(
+                                                    context, data.itemCode);
+                                                setState(() {});
+                                              },
+                                            ),
+                                          ],
+                                        )),
+                                      ]))
+                                  .toList(),
                             ),
                           ),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Center(
-                          child: Text("Some Error Occured"),
-                        );
-                      }
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text("Some Error Occured"),
+                      );
                     }
-                    return Center(
-                      child: LinearProgressIndicator(),
-                    );
-                  });
-            }
-            return Center(
-              child: Text("Not Supported"),
-            );
-          },
-        ),
+                  }
+                  return Center(
+                    child: LinearProgressIndicator(),
+                  );
+                });
+          }
+          return Center(
+            child: Text("Not Supported"),
+          );
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Container(

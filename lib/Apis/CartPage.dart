@@ -1,19 +1,21 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/models/CartItem.dart';
 import 'package:http/http.dart' as http;
 import 'package:testing/models/PastOrders.dart';
+import 'package:testing/screens/CartPage.dart';
 import 'package:testing/widget/GlobalSnackbar.dart';
 
 //  {custid: 1419, selectedcustbranch: 2}
-int custId = 1419;
+// int custId = 1419;
 String whichCo = "FPG";
 String whichb = 'W01';
-List<String> variant = ['null', 'null'];
-List<int> packing = [1, 10];
+// List<String> variant = ['null', 'null'];
+// List<int> packing = [1, 10];
 
 Future<List<CartItem>> fetchCartItem() async {
   SharedPreferences pf = await SharedPreferences.getInstance();
@@ -28,8 +30,8 @@ Future<List<CartItem>> fetchCartItem() async {
   var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
 
   List jsonResponse = json.decode(response.body);
-  print(jsonResponse);
-  print(jsonResponse.length);
+  // print(jsonResponse);
+  // print(jsonResponse.length);
   return jsonResponse.map((item) => new CartItem.fromJson(item)).toList();
 }
 
@@ -94,6 +96,12 @@ Future removeCart(BuildContext context, itemCode) async {
   var message = jsonDecode(response.body);
   print("I am removed message");
   print(message);
+  if (message == "Item Removed from Cart") {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) => CartPage()),
+    );
+  }
 }
 
 Future salesorder(
@@ -139,7 +147,7 @@ Future salesorder(
     'itemcode': itemCodes,
     'quantity': quantity,
     'price': price,
-    'itemname': "Rest",
+    // 'itemname': itemName,
     'foc': foc,
     'ex_foc': exFoc,
     'soreferenceno': soRef,
@@ -158,7 +166,7 @@ Future salesorder(
     // 'user_id': '125'
   };
 
-  print(data);
+  // print(data);
   var url =
       'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesman_confirm_order.php';
 
