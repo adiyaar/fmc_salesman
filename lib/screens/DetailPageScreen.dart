@@ -98,8 +98,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     List jsondataval = json.decode(response.body);
     b = jsondataval.map((e) => UnitsD.fromJson(e)).toList();
     // print('2');
-    print(b.length);
-    print(jsondataval);
+    
 
     setState(() {
       units = jsondataval;
@@ -122,7 +121,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
 
     List jsonResponse = json.decode(response.body);
     // print(jsonResponse);
-    print(jsonResponse.length);
+    
     a1 = jsonResponse.length;
     setState(() {});
     return a1;
@@ -503,7 +502,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                               },
                                             ).toList(),
                                             onChanged: (value) {
-                                              print(customerType);
+                                              
                                               setState(() {
                                                 selectedUnit = value;
                                                 // price ==>
@@ -800,8 +799,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                                     "FMEAPP");
                                                 Future.delayed(
                                                     Duration(seconds: 5), () {
-                                                  print(
-                                                      " This line is execute after 5 seconds");
+                                                  
                                                   fetchCrtCOunt();
                                                 });
                                               }
@@ -2156,8 +2154,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                           1000.00,
                                           "FMEAPP");
                                       Future.delayed(Duration(seconds: 5), () {
-                                        print(
-                                            " This line is execute after 5 seconds");
+                                        
                                         fetchCrtCOunt();
                                       });
                                     }
