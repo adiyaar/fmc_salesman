@@ -5,10 +5,12 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:responsify/responsify.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/models/ItemMainGroupModel.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
 
+import 'CartPage.dart';
 import 'ItemGroup.dart';
 
 class ItemMainGroup extends StatefulWidget {
@@ -51,11 +53,33 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
     }
   }
 
+  int a;
+  Future fetchCrtCOunt() async {
+    SharedPreferences pf = await SharedPreferences.getInstance();
+    String customerId = pf.getString('customerId');
+    String branchId = pf.get('branchId');
+    Map<String, dynamic> data = {
+      'userid': customerId,
+      'selectedcustbranch': branchId
+    };
+    String baseUrl =
+        'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesman_cart.php';
+    var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
+
+    List jsonResponse = json.decode(response.body);
+    // print(jsonResponse);
+    print(jsonResponse.length);
+    a = jsonResponse.length;
+    setState(() {});
+    return a;
+  }
+
   @override
   void initState() {
     super.initState();
     fetchItemData();
     _fetchdata();
+    fetchCrtCOunt();
   }
 
   @override
@@ -72,7 +96,31 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
               onPressed: () {
                 _showSearch();
               },
-              icon: Icon(Icons.search))
+              icon: Icon(Icons.search)),
+          Stack(
+            children: [
+              IconButton(
+                icon: Icon(Icons.shopping_cart_outlined),
+                tooltip: 'MainGroup',
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CartPage()));
+                },
+              ),
+              CircleAvatar(
+                radius: 9,
+                backgroundColor: Colors.yellow,
+                child: Visibility(
+                  visible: a != null,
+                  child: Text(
+                    '$a',
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
       body: ResponsiveUiWidget(

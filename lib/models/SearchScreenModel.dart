@@ -130,7 +130,7 @@ class SearchList {
   // String type;
   // String itemdosageid;
   // String itemclassid;
-  // String manufactureid;
+  String manufactureid;
   // String manufactureshortname;
   // String seq;
   String maxretailprice;
@@ -167,7 +167,7 @@ class SearchList {
       // this.type,
       // this.itemdosageid,
       // this.itemclassid,
-      // this.manufactureid,
+      this.manufactureid,
       // this.manufactureshortname,
       // this.seq,
       this.maxretailprice,
@@ -204,7 +204,7 @@ class SearchList {
     // type = json['type'];
     // itemdosageid = json['itemdosageid'];
     // itemclassid = json['itemclassid'];
-    // manufactureid = json['manufactureid'];
+    manufactureid = json['manufactureid'];
     // manufactureshortname = json['manufactureshortname'];
     // seq = json['seq'];
     maxretailprice = json['maxretailprice'];
@@ -243,7 +243,7 @@ class SearchList {
     // map['type'] = type;
     // map['itemdosageid'] = itemdosageid;
     // map['itemclassid'] = itemclassid;
-    // map['manufactureid'] = manufactureid;
+    map['manufactureid'] = manufactureid;
     // map['manufactureshortname'] = manufactureshortname;
     // map['seq'] = seq;
     map['maxretailprice'] = maxretailprice;

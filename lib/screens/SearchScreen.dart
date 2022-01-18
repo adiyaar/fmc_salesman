@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/Common/Shimmer.dart';
 import 'package:testing/models/SearchScreenModel.dart';
 import 'package:testing/screens/DetailPageScreen.dart';
+import 'package:testing/screens/FilterScreen.dart';
 
 import 'package:testing/widget/NavigationDrawer.dart';
 import 'package:http/http.dart' as http;
@@ -33,40 +34,8 @@ class _SearchScreenState extends State<SearchScreen> {
   List<ItemMainGroup> mainGroupOptions = [];
   List<Manufactures> manufactureOptions = [];
   bool manuFacturer = false;
-  List<SearchList> temp = [];
-
-  Future<List<ItemMainGroup>> fetchItemMainGroupList() async {
-    final String baseUrl =
-        'https://onlinefamilypharmacy.com/mobileapplication/categories/itemmaingroup.php?action=itemmaingroup';
-    final response = await http.get(Uri.parse(baseUrl));
-
-    if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
-      mainGroupOptions.addAll(jsonResponse
-          .map((itemmaingroup) => new ItemMainGroup.fromJson(itemmaingroup)));
-      print(mainGroupOptions.length);
-      return jsonResponse
-          .map((itemmaingroup) => new ItemMainGroup.fromJson(itemmaingroup))
-          .toList();
-    } else {
-      throw Exception('Failed to load jobs from API');
-    }
-  }
-
-  Future<List<Manufactures>> fetchManufactures() async {
-    final jobsListAPIUrl =
-        'https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=manufacture';
-    final response = await http.get(Uri.parse(jobsListAPIUrl));
-
-    if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
-      manufactureOptions
-          .addAll(jsonResponse.map((e) => new Manufactures.fromJson(e)));
-      return jsonResponse.map((e) => new Manufactures.fromJson(e)).toList();
-    } else {
-      throw Exception('Failed to load jobs from API');
-    }
-  }
+  List<SearchList> medicineList = [];
+  List<SearchList> allList = [];
 
   Future<List<SearchList>> fetchAllItem() async {
     final baseUrl =
@@ -75,29 +44,37 @@ class _SearchScreenState extends State<SearchScreen> {
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-      temp.addAll(jsonResponse
-          .map((e) => new SearchList.fromJson(e))
-          .where((element) => element.itemmaingrouptitle == "Instruments"));
-      return jsonResponse.map((e) => new SearchList.fromJson(e)).toList();
+      allList
+          .addAll(jsonResponse.map((e) => new SearchList.fromJson(e)).toList());
+      medicineList.addAll(
+          allList.where((element) => element.itemmaingroupid == "2").toList());
+      return allList;
     } else {
       throw Exception('Failed to load jobs from API');
     }
   }
 
-  List<SearchList> data;
-  List _selecteCategorys = List();
-
   String pharmacyname = "";
   Future<void> _showSearch() async {
     await showSearch(
       context: context,
-      delegate: TheSearch(data: data),
+      delegate: TheSearch(data: allList),
       query: pharmacyname,
     );
   }
 
   void _fetchdata() async {
-    data = await fetchAllItem();
+    allList = await fetchAllItem();
+    medicineList
+        .addAll(allList.where((element) => element.itemid == "2").toList());
+
+    print(allList.length);
+    print(medicineList.length);
+    setState(() {});
+  }
+
+  void categorlIst() async {
+    medicineList = await fetchAllItem();
     setState(() {});
   }
 
@@ -106,9 +83,10 @@ class _SearchScreenState extends State<SearchScreen> {
     super.initState();
     getCustomerInfo();
     _fetchdata();
-    fetchManufactures();
+    categorlIst();
+
     fetchAllItem();
-    fetchItemMainGroupList();
+    // fetchItemMainGroupList();
   }
 
   @override
@@ -132,193 +110,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  // showModalBottomSheet(context: context, builder: builder)
-                  showModalBottomSheet(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) {
-                        return DraggableScrollableSheet(
-                            expand: false,
-                            builder: (BuildContext context,
-                                ScrollController scrollcontroler) {
-                              return SingleChildScrollView(
-                                child: Container(
-
-                                    // width: width,
-                                    child: Column(children: <Widget>[
-                                  Container(
-                                    decoration:
-                                        new BoxDecoration(color: Colors.black),
-                                    child: ListTile(
-                                      title: Text(
-                                        'Filter',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 5),
-                                              child: Text(
-                                                " Item Main Group",
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                                textAlign: TextAlign.left,
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            height: height / 2.2,
-                                            width: width / 2.2,
-                                            child: FutureBuilder<
-                                                List<ItemMainGroup>>(
-                                              future: fetchItemMainGroupList(),
-                                              builder: (context, snapshot) {
-                                                if (snapshot.hasData) {
-                                                  List<ItemMainGroup> data =
-                                                      snapshot.data;
-                                                  return ListView.builder(
-                                                      scrollDirection:
-                                                          Axis.vertical,
-                                                      itemCount: data.length,
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        return CheckboxListTile(
-                                                          value:
-                                                              _selecteCategorys
-                                                                  .contains(data[
-                                                                          index]
-                                                                      .title),
-                                                          onChanged:
-                                                              (bool value) {
-                                                            print(value);
-                                                            setState(() {
-                                                              if (value ==
-                                                                  true) {
-                                                                _selecteCategorys
-                                                                    .add(data[
-                                                                            index]
-                                                                        .title);
-                                                                print(
-                                                                    _selecteCategorys);
-                                                              } else {
-                                                                _selecteCategorys
-                                                                    .remove(data[
-                                                                            index]
-                                                                        .title);
-                                                                print(
-                                                                    _selecteCategorys);
-                                                              }
-                                                            });
-                                                          },
-                                                          title: Text(
-                                                              data[index]
-                                                                  .title),
-                                                        );
-                                                      });
-                                                } else if (snapshot.hasError) {
-                                                  return Text(
-                                                      "${snapshot.error}");
-                                                }
-                                                return Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                          Color>(Colors.black),
-                                                ));
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 5, left: 5),
-                                              child: Text(
-                                                "Manufacture",
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                                textAlign: TextAlign.left,
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            height: height / 2.2,
-                                            width: width / 2.2,
-                                            child: FutureBuilder<
-                                                List<Manufactures>>(
-                                              future: fetchManufactures(),
-                                              builder: (context, snapshot) {
-                                                if (snapshot.hasData) {
-                                                  List<Manufactures> data =
-                                                      snapshot.data;
-                                                  return ListView.builder(
-                                                      scrollDirection:
-                                                          Axis.vertical,
-                                                      itemCount: data.length,
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        return ListTile(
-                                                          title: Text(
-                                                              data[index]
-                                                                  .title),
-                                                          leading: Checkbox(
-                                                            value: manuFacturer,
-                                                            onChanged: (val) {
-                                                              print(val);
-                                                              setState(() {
-                                                                manuFacturer =
-                                                                    val;
-                                                              });
-                                                            },
-                                                          ),
-                                                        );
-                                                      });
-                                                } else if (snapshot.hasError) {
-                                                  return Text(
-                                                      "${snapshot.error}");
-                                                }
-                                                return Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                          Color>(Colors.black),
-                                                ));
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ])),
-                              );
-                            });
-                      });
-                  // // do something
+                  Navigator.push(context,
+                      CupertinoPageRoute(builder: (context) => FilterScreen()));
                 },
               ),
             ]),
@@ -349,12 +142,13 @@ class _SearchScreenState extends State<SearchScreen> {
                           return Divider();
                         },
                         scrollDirection: Axis.vertical,
-                        itemCount: data.length,
+                        itemCount: medicineList.length,
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
                               print(data[index].itemid);
-                              print(data[index].itemproductgroupid);
+                              print(data[index].itemmaingrouptitle);
+
                               Navigator.push(
                                   context,
                                   CupertinoPageRoute(

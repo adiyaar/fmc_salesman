@@ -22,7 +22,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int a;
+  
   String customerName,
       branchname,
       creditDays,
@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
       customerType = pf.getString('cust_type');
     });
   }
-
+int a;
   Future fetchCrtCOunt() async {
     SharedPreferences pf = await SharedPreferences.getInstance();
     String customerId = pf.getString('customerId');
@@ -68,8 +68,6 @@ class _HomeScreenState extends State<HomeScreen> {
     fetchAllCustomerData();
     fetchCrtCOunt();
   }
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -191,24 +189,25 @@ class _HomeScreenState extends State<HomeScreen> {
           Stack(
             children: [
               IconButton(
-                icon: Icon(Icons.shopping_bag),
+                icon: Icon(Icons.shopping_cart_outlined),
                 tooltip: 'MainGroup',
                 onPressed: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => CartPage()));
                 },
               ),
-              Visibility(
-                visible: a != null,
-                child: Positioned(
-                    top: 20,
-                    left: 20,
-                    child: Text(
-                      '$a',
-                      style: TextStyle(
-                          color: Colors.red, fontWeight: FontWeight.bold),
-                    )),
-              )
+              CircleAvatar(
+                radius: 9,
+                backgroundColor: Colors.yellow,
+                child: Visibility(
+                  visible: a != null,
+                  child: Text(
+                    '$a',
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
             ],
           ), //IconButton
         ],

@@ -9,6 +9,8 @@ import 'package:testing/models/CartItem.dart';
 import 'package:testing/screens/DoneOrdering.dart';
 
 class CheckoutScreen extends StatefulWidget {
+  final List<String> packagingunit;
+  final List<int> packingqty;
   final int totalItems;
   final List<String> itemCodes;
   final List<String> itemName;
@@ -20,6 +22,8 @@ class CheckoutScreen extends StatefulWidget {
   final double checkoutTotal;
   CheckoutScreen(
       {Key key,
+      @required this.packagingunit,
+      @required this.packingqty,
       @required this.totalItems,
       @required this.checkoutTotal,
       @required this.exFoc,
@@ -87,8 +91,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     widget.quantity.toList(),
                     widget.price.toList(),
                     widget.itemCodes.toSet().toList(),
+                    widget.packagingunit.toList(),
+                    widget.packingqty.toList(),
                     widget.itemName.toList(),
-                    widget.foc..toList(),
+                    widget.foc.toList(),
                     widget.exFoc.toList(),
                     int.parse(soReferenceNumber.text),
                     notes.text,
@@ -96,8 +102,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     orderPlacedBy.text,
                     widget.common.toList());
 
-                // Navigator.push(context,
-                //     MaterialPageRoute(builder: (context) => DoneOrdering()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => DoneOrdering()));
               }
             },
             label: Text('Place Order')),
@@ -184,6 +190,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   width: 280,
                                   margin: EdgeInsets.only(left: 20),
                                   child: TextFormField(
+                                    keyboardType: TextInputType.number,
                                     controller: soReferenceNumber,
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(
@@ -268,6 +275,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   width: 220,
                                   margin: EdgeInsets.only(right: 60),
                                   child: TextFormField(
+                                    keyboardType: TextInputType.number,
                                     controller: contactNumber,
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(
@@ -645,6 +653,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   width: 200,
                                   margin: EdgeInsets.only(left: 20),
                                   child: TextFormField(
+                                    keyboardType: TextInputType.number,
                                     controller: soReferenceNumber,
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(
@@ -729,6 +738,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   width: 140,
                                   margin: EdgeInsets.only(right: 100),
                                   child: TextFormField(
+                                    keyboardType: TextInputType.number,
                                     controller: contactNumber,
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(
@@ -1125,6 +1135,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 width: 140,
                                 margin: EdgeInsets.only(right: 20, left: 20),
                                 child: TextFormField(
+                                  keyboardType: TextInputType.number,
                                   controller: soReferenceNumber,
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
@@ -1151,76 +1162,82 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           SizedBox(
                             height: 20,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(left: 20),
-                                child: Text(
-                                  "Order Placed By",
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(right: 50),
-                                child: Text(
-                                  "Email Id",
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(right: 65),
-                                child: Text("Contact"),
-                              ),
-                            ],
+                          Container(
+                            margin: EdgeInsets.only(left: 20),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Order Placed By",
+                            ),
                           ),
                           SizedBox(
                             height: 10,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                height: 40,
-                                width: 100,
-                                margin: EdgeInsets.only(left: 20),
-                                child: TextFormField(
-                                  controller: orderPlacedBy,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
+                          Container(
+                            height: 40,
+                            width: MediaQuery.of(context).size.width / 1.1,
+                            // margin: EdgeInsets.only(left: 20),
+                            child: TextFormField(
+                              controller: orderPlacedBy,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              Container(
-                                height: 40,
-                                width: 100,
-                                // margin: EdgeInsets.only(right: 30),
-                                child: TextFormField(
-                                  controller: emailId,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                height: 40,
-                                width: 100,
-                                margin: EdgeInsets.only(right: 30),
-                                child: TextFormField(
-                                  controller: contactNumber,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                           SizedBox(
-                            height: 20,
+                            height: 10,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(left: 20),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Email Id",
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            height: 40,
+                            width: MediaQuery.of(context).size.width / 1.1,
+                            // margin: EdgeInsets.only(right: 30),
+                            child: TextFormField(
+                              controller: emailId,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(left: 20),
+                            alignment: Alignment.centerLeft,
+                            child: Text("Contact"),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            height: 40,
+                            width: MediaQuery.of(context).size.width / 1.1,
+                            // margin: EdgeInsets.only(right: 30),
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              controller: contactNumber,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
                           ),
                           Container(
                             alignment: Alignment.centerLeft,

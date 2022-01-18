@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/Common/Shimmer.dart';
 import 'package:testing/screens/DetailPageScreen.dart';
 
+import 'CartPage.dart';
+
 String invoiceprice;
 getStringValues() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -123,12 +125,66 @@ class ItemGrpData {
 }
 
 class _SubList_ItemsState extends State<SubList_Items> {
+  int a;
+  Future fetchCrtCOunt() async {
+    SharedPreferences pf = await SharedPreferences.getInstance();
+    String customerId = pf.getString('customerId');
+    String branchId = pf.get('branchId');
+    Map<String, dynamic> data = {
+      'userid': customerId,
+      'selectedcustbranch': branchId
+    };
+    String baseUrl =
+        'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesman_cart.php';
+    var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
+
+    List jsonResponse = json.decode(response.body);
+    // print(jsonResponse);
+    print(jsonResponse.length);
+    a = jsonResponse.length;
+    setState(() {});
+    return a;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchCrtCOunt();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text(widget.title),
+        actions: [
+          Stack(
+            children: [
+              IconButton(
+                icon: Icon(Icons.shopping_cart_outlined),
+                tooltip: 'MainGroup',
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CartPage()));
+                },
+              ),
+              CircleAvatar(
+                radius: 9,
+                backgroundColor: Colors.yellow,
+                child: Visibility(
+                  visible: a != null,
+                  child: Text(
+                    '$a',
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
       body: FutureBuilder<List<ItemGrpData>>(
         future: _fetchItemGrpData(),

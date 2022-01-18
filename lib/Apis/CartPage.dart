@@ -108,6 +108,8 @@ Future salesorder(
   List<int> quantity,
   List<double> price,
   List<String> itemCodes,
+  List<String> packingunit,
+  List<int> packingqty,
   List<String> itemName,
   List<int> foc,
   List<int> exFoc,
@@ -136,8 +138,8 @@ Future salesorder(
     'customername': int.parse(customerBranchId),
     'customeremail': custemail == null ? '' : custemail,
     'customertype': customerType,
-    'units': itemName, // variant
-    'packing': foc, // packaging
+    'units': packingunit, // variant // Pc
+    'packing': packingqty, // packaging // 1 , 10 ,100
     'item_whichcompany': "FMC",
     'item_wac': common,
     'item_mgmtcost': common,

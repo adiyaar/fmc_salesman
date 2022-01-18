@@ -2,6 +2,7 @@ import 'dart:convert';
 //import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/Common/Shimmer.dart';
 import 'package:testing/screens/DetailPageScreen.dart';
 
@@ -106,6 +107,34 @@ class ItemGrpData {
 }
 
 class _ListItemsState extends State<ListItems> {
+  int a;
+  Future fetchCrtCOunt() async {
+    SharedPreferences pf = await SharedPreferences.getInstance();
+    String customerId = pf.getString('customerId');
+    String branchId = pf.get('branchId');
+    Map<String, dynamic> data = {
+      'userid': customerId,
+      'selectedcustbranch': branchId
+    };
+    String baseUrl =
+        'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesman_cart.php';
+    var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
+
+    List jsonResponse = json.decode(response.body);
+    // print(jsonResponse);
+    print(jsonResponse.length);
+    a = jsonResponse.length;
+    setState(() {});
+    return a;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchCrtCOunt();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

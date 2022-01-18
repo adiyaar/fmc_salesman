@@ -88,7 +88,7 @@ class UnitsD {
         id: json['id'],
         itemid: json['itemid'],
         unit: json['unit'],
-        packing: json['packaging'],
+        packing: json['packing'],
         rss: json['rss'],
         wss: json['wss'],
         ass: json['ass']);

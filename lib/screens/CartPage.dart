@@ -21,6 +21,8 @@ class _CartPageState extends State<CartPage>
   int itemCount = 0;
   int quantityCount = 0;
   int foc = 0;
+  List<int> packagingname = [];
+  List<String> packaginunit = [];
   int exFoc = 0;
   List<String> itemCodes = [];
   List<double> common = [];
@@ -54,6 +56,8 @@ class _CartPageState extends State<CartPage>
     itemName = [];
     quantity = [];
     focList = [];
+    packagingname = [];
+    packaginunit = [];
     exFocList = [];
     price = [];
     common = [];
@@ -101,6 +105,9 @@ class _CartPageState extends State<CartPage>
                   quantity.addAll(cartItems.map((e) => int.parse(e.quantity)));
                   focList.addAll(cartItems.map((e) => int.parse(e.foc)));
                   exFocList.addAll(cartItems.map((e) => int.parse(e.exFoc)));
+                  packagingname
+                      .addAll(cartItems.map((e) => int.parse(e.packing)));
+                  packaginunit.addAll(cartItems.map((e) => e.units));
 
                   price.addAll(cartItems.map((e) =>
                       (double.parse(e.finalprice).roundToDouble() *
@@ -331,6 +338,8 @@ class _CartPageState extends State<CartPage>
                   context,
                   MaterialPageRoute(
                       builder: (context) => CheckoutScreen(
+                            packagingunit: packaginunit,
+                            packingqty: packagingname,
                             totalItems: totalItems,
                             checkoutTotal: totalCheckout,
                             exFoc: exFocList,
