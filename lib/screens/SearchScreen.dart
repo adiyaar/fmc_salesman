@@ -16,7 +16,8 @@ import 'package:http/http.dart' as http;
 import 'package:webview_flutter/webview_flutter.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key key}) : super(key: key);
+  final List userInfo;
+  const SearchScreen({Key key, this.userInfo}) : super(key: key);
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -94,7 +95,7 @@ class _SearchScreenState extends State<SearchScreen> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
-        drawer: NavigationDrawer(),
+        // drawer: NavigationDrawer(),
         appBar: AppBar(
             backgroundColor: Colors.black87,
             iconTheme: IconThemeData(color: Colors.white),
@@ -153,6 +154,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   context,
                                   CupertinoPageRoute(
                                       builder: (context) => DetailPageScreen(
+                                            userInfo: widget.userInfo,
                                             itemDetails: data[index],
                                             customerType: customerType,
                                           )));

@@ -5,18 +5,15 @@ import 'package:testing/dynamic/All_branch.dart';
 import 'package:testing/dynamic/Contact_Us.dart';
 import 'package:testing/dynamic/itemmaster.dart';
 
-import 'package:testing/main.dart';
-import 'package:testing/screens/CartPage.dart';
-import 'package:testing/screens/CheckoutScreen.dart';
-import 'package:testing/screens/DetailPageScreen.dart';
 import 'package:testing/screens/GenerateSales.dart';
 import 'package:testing/screens/HomeScreen.dart';
-import 'package:testing/screens/ItemMainGroup.dart';
+
 import 'package:testing/screens/LoginScreen.dart';
 import 'package:testing/settings.dart';
 
 class NavigationDrawer extends StatefulWidget {
-  NavigationDrawer({Key key}) : super(key: key);
+  List userInfo;
+  NavigationDrawer({Key key, this.userInfo}) : super(key: key);
 
   @override
   _NavigationDrawerState createState() => _NavigationDrawerState();
@@ -27,24 +24,9 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
   String employeeName;
   String employeeCode;
 
-  getQatarInfo() async {
-    SharedPreferences pf = await SharedPreferences.getInstance();
-    pf.getString("qatarid");
-    pf.getString("employeeName");
-    pf.getString("ecode");
-
-    setState(() {
-      workingIn = pf.getString("workingin");
-      employeeCode = pf.getString("ecode");
-
-      employeeName = pf.getString("employeeName");
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    getQatarInfo();
   }
 
   @override
@@ -59,7 +41,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                 color: Colors.black87,
               ),
               accountName: Text(
-                employeeName == null ? "Meet Shah" : employeeName,
+                widget.userInfo[0].employeename,
                 style: TextStyle(
                     fontSize: 19,
                     color: Colors.white,
@@ -68,7 +50,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.black,
                 child: Text(
-                  "P01",
+                  widget.userInfo[0].workingin,
                   style: TextStyle(
                       fontSize: 22,
                       color: Colors.white,

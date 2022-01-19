@@ -5,6 +5,7 @@ import 'package:testing/widget/GlobalSnackbar.dart';
 // ignore: non_constant_identifier_names
 Future addToCart(
     BuildContext context,
+    // ignore: non_constant_identifier_names
     user_id,
     itemid,
     price,

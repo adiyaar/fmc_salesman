@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 import 'package:responsify/responsify.dart';
 import 'package:testing/Apis/CartPage.dart';
 import 'package:testing/models/CartItem.dart';
@@ -7,7 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:testing/screens/CheckoutScreen.dart';
 
 class CartPage extends StatefulWidget {
-  CartPage({Key key}) : super(key: key);
+  final List useriNfo;
+  CartPage({Key key, this.useriNfo}) : super(key: key);
 
   @override
   _CartPageState createState() => _CartPageState();
@@ -76,7 +76,7 @@ class _CartPageState extends State<CartPage>
           Align(
             alignment: Alignment.center,
             child: Text(
-              "Meet Shah \nP01",
+              "${widget.useriNfo[0].employeename} \n${widget.useriNfo[0].workingin}",
               style: TextStyle(fontSize: 16.0),
             ),
           ),
@@ -302,7 +302,7 @@ class _CartPageState extends State<CartPage>
                                               onTap: () {
                                                 removeCart(
                                                     context, data.itemCode);
-                                                setState(() {});
+                                                // setState(() {});
                                               },
                                             ),
                                           ],
@@ -338,6 +338,7 @@ class _CartPageState extends State<CartPage>
                   context,
                   MaterialPageRoute(
                       builder: (context) => CheckoutScreen(
+                            userInfo: widget.useriNfo,
                             packagingunit: packaginunit,
                             packingqty: packagingname,
                             totalItems: totalItems,

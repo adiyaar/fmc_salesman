@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
+// ignore: camel_case_types
 class branch_add extends StatefulWidget {
   @override
   _branch_add_State createState() => _branch_add_State();
@@ -75,7 +76,7 @@ class _branch_add_State extends State<branch_add> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
+    // final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
       key: _scaffoldKey,

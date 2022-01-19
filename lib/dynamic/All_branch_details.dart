@@ -1,11 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/dynamic/All_branch.dart';
 
+// ignore: must_be_immutable
 class BranchDetails extends StatefulWidget {
   allbranch todo;
 
@@ -39,10 +38,10 @@ class _BranchDetailsState extends State<BranchDetails> {
   @override
   Widget build(BuildContext context) {
     //List<int> sizeList = [7, 8, 9, 10];
-    Color cyan = Color(0xff37d6ba);
+    
     //List<Color> colorsList = [Colors.black, Colors.blue, Colors.red];
 
-    int itemCount = 0;
+  
     return Scaffold(
       key: _scaffoldKey,
       // backgroundColor: LightColor.yellowColor,

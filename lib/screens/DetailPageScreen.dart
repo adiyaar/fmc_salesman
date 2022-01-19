@@ -20,7 +20,9 @@ import 'CartPage.dart';
 class DetailPageScreen extends StatefulWidget {
   final customerType;
   final itemDetails;
-  DetailPageScreen({Key key, @required this.itemDetails, this.customerType})
+  List userInfo;
+  DetailPageScreen(
+      {Key key, @required this.itemDetails, this.customerType, this.userInfo})
       : super(key: key);
 
   @override
@@ -41,11 +43,15 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
   List<VariantsD> a = [];
   List<UnitsD> b = [];
   String selectedVariant;
+  double wacCost = 0.0;
+  double managementCost = 0.0;
+  double calculatedCost = 0.0;
   String selectedVariantName = '';
   String packing = '';
   String packingunit = '';
   String selectedUnit;
   String selectedUnitName = '';
+
   String price;
 
   TextEditingController quantityController =
@@ -58,6 +64,8 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     final baseUrl =
         'https://onlinefamilypharmacy.com/mobileapplication/salesmandetailpage.php';
     var data = {'itemproductgroupid': widget.itemDetails.itemproductgroupid};
+
+    print(data);
     final response =
         await http.post(Uri.parse(baseUrl), body: jsonEncode(data));
 
@@ -98,7 +106,6 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     List jsondataval = json.decode(response.body);
     b = jsondataval.map((e) => UnitsD.fromJson(e)).toList();
     // print('2');
-    
 
     setState(() {
       units = jsondataval;
@@ -121,7 +128,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
 
     List jsonResponse = json.decode(response.body);
     // print(jsonResponse);
-    
+
     a1 = jsonResponse.length;
     setState(() {});
     return a1;
@@ -147,7 +154,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
           Align(
             alignment: Alignment.center,
             child: Text(
-              "Meet Shah \nP01",
+              "${widget.userInfo[0].username} \n${widget.userInfo[0].workingin}",
               style: TextStyle(fontSize: 16.0),
             ),
           ),
@@ -161,8 +168,12 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                 icon: Icon(Icons.shopping_cart_outlined),
                 tooltip: 'MainGroup',
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => CartPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CartPage(
+                                useriNfo: widget.userInfo,
+                              )));
                 },
               ),
               CircleAvatar(
@@ -502,7 +513,6 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                               },
                                             ).toList(),
                                             onChanged: (value) {
-                                              
                                               setState(() {
                                                 selectedUnit = value;
                                                 // price ==>
@@ -799,7 +809,6 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                                     "FMEAPP");
                                                 Future.delayed(
                                                     Duration(seconds: 5), () {
-                                                  
                                                   fetchCrtCOunt();
                                                 });
                                               }
@@ -890,6 +899,79 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                       ),
                       SizedBox(
                         height: 10,
+                      ),
+                      Text('Vital Info'),
+                      Text(
+                        'Max Retail Price - ${iteminfo[0].maxretailprice}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      Text(
+                        'Max Wholesale Price - ${iteminfo[0].wholeSalePrice}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      Text(
+                        'Selected Variant Price-- ${selectedUnitName}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      Text(
+                        'Product Which Company - ${iteminfo[0].whichcompany}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      Text(
+                        'WAC Cost -  ${iteminfo[0].wacCost}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      Text(
+                        'Management COST ${iteminfo[0].wacCost}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      Text(
+                        'Cutoff COST ${iteminfo[0].wacCost}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      Text(
+                        'Salesman Which Company -  ${widget.userInfo[0].employeeCompany}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      Text(
+                        'Packing Qty -  $packing',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
                       ),
                       Container(
                           margin: EdgeInsets.only(left: 5),
@@ -1605,6 +1687,79 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                       SizedBox(
                         height: 10,
                       ),
+                      Text('Vital Info'),
+                      Text(
+                        'Max Retail Price - ${iteminfo[0].maxretailprice}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      Text(
+                        'Max Wholesale Price - ${iteminfo[0].wholeSalePrice}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      Text(
+                        'Selected Variant Price-- ${selectedUnitName}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      Text(
+                        'Product Which Company - ${iteminfo[0].whichcompany}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      Text(
+                        'WAC Cost -  ${iteminfo[0].wacCost}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      Text(
+                        'Management COST ${iteminfo[0].wacCost}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      Text(
+                        'Cutoff COST ${iteminfo[0].wacCost}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      Text(
+                        'Salesman Which Company -  ${widget.userInfo[0].employeeCompany}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      Text(
+                        'Packing Qty -  $packing',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
                       Container(
                           margin: EdgeInsets.only(left: 5),
                           alignment: Alignment.centerLeft,
@@ -1948,7 +2103,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                       packing = b
                                           .where((element) =>
                                               element.id == selectedUnit)
-                                          .map((e) => e.unit)
+                                          .map((e) => e.packing)
                                           .first
                                           .toString();
                                       packingunit = b
@@ -2154,7 +2309,6 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                           1000.00,
                                           "FMEAPP");
                                       Future.delayed(Duration(seconds: 5), () {
-                                        
                                         fetchCrtCOunt();
                                       });
                                     }
@@ -2217,22 +2371,98 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                             ),
                             selectedVariant == null
                                 ? Container(
-                                    margin: EdgeInsets.only(left: 30),
+                                    // margin: EdgeInsets.only(left: 30),
                                     alignment: Alignment.centerLeft,
                                     child: Text(
                                       "Item Code - ${widget.itemDetails.itemid} \nItem name - ${widget.itemDetails.itemproductgrouptitle} \nType of Packing - ''\nQty Per packing - 1\nSelected Variant -$selectedVariantName",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                      ),
+                                      style: TextStyle(fontSize: 15),
                                     ))
                                 : Container(
-                                    margin: EdgeInsets.only(left: 30),
+                                    // margin: EdgeInsets.only(left: 10),
                                     alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      "Item Code - $selectedVariant \nItem name - ${widget.itemDetails.itemproductgrouptitle} \nQty of Packing - $packingunit\nType Per packing - $packing\nSelected Variant -$selectedVariantName",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                      ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Item Code - $selectedVariant \nItem name - ${widget.itemDetails.itemproductgrouptitle} \nQty of Packing - $packing\nType Per packing - $packingunit\nSelected Variant -$selectedVariantName",
+                                          style: TextStyle(fontSize: 15),
+                                        ),
+                                        Text(
+                                          'Max Retail Price - ${iteminfo[0].maxretailprice}',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          'Max Wholesale Price - ${iteminfo[0].wholeSalePrice}',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          'Selected Variant Price-- ${selectedUnitName}',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          'Product Which Company - ${iteminfo[0].whichcompany}',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          'WAC Cost -  ${iteminfo[0].wacCost}',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          'Management COST ${iteminfo[0].wacCost}',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          'Cutoff COST ${iteminfo[0].wacCost}',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          'Salesman Which Company -  ${widget.userInfo[0].employeeCompany}',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          'Packing Qty -  $packing',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                      ],
                                     )),
                           ],
                         ),

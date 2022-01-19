@@ -26,6 +26,9 @@ class Salesmandetailpage {
   String maxretailprice;
   String minretailprice;
   String rs;
+
+  String wholeSalePrice;
+  String wacCost;
   String origin;
   String whichcompany;
   String allowsonapp;
@@ -35,6 +38,8 @@ class Salesmandetailpage {
       {this.itemid,
       this.img,
       this.itemnameEn,
+      this.wholeSalePrice,
+      this.wacCost,
       this.labelname,
       this.itempack,
       this.itemstrength,
@@ -87,6 +92,8 @@ class Salesmandetailpage {
     itemdosageid = json['itemdosageid'];
     itemclassid = json['itemclassid'];
     manufactureid = json['manufactureid'];
+    wholeSalePrice = json['ws'];
+    wacCost = json['waccost'];
     manufactureshortname = json['manufactureshortname'];
     seq = json['seq'];
     maxretailprice = json['maxretailprice'];
@@ -102,6 +109,8 @@ class Salesmandetailpage {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['itemid'] = this.itemid;
     data['img'] = this.img;
+    data['waccost'] = this.wacCost;
+    data['ws'] = this.wholeSalePrice;
     data['itemname_en'] = this.itemnameEn;
     data['labelname'] = this.labelname;
     data['itempack'] = this.itempack;

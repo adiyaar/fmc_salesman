@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:testing/screens/HomeScreen.dart';
 import 'package:testing/screens/LoginScreen.dart';
 
 void main() {

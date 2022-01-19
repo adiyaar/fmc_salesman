@@ -7,6 +7,7 @@ class UserInfoModel {
   String username;
   String uRolecode;
   String workingin;
+  String employeeCompany;
   String mobileno;
   String emailid;
 
@@ -16,6 +17,7 @@ class UserInfoModel {
       this.employeename,
       this.qidno,
       this.familyid,
+      this.employeeCompany,
       this.username,
       this.uRolecode,
       this.workingin,
@@ -31,6 +33,7 @@ class UserInfoModel {
     username = json['username'];
     uRolecode = json['u_rolecode'];
     workingin = json['workingin'];
+    employeeCompany = json['employeewhichcompany'];
     mobileno = json['mobileno'];
     emailid = json['emailid'];
   }
@@ -43,6 +46,7 @@ class UserInfoModel {
     data['qidno'] = this.qidno;
     data['familyid'] = this.familyid;
     data['username'] = this.username;
+    data['employeewhichcompany'] = this.employeeCompany;
     data['u_rolecode'] = this.uRolecode;
     data['workingin'] = this.workingin;
     data['mobileno'] = this.mobileno;

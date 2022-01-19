@@ -5,11 +5,13 @@ import 'package:testing/widget/NavigationDrawer.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
 
+// ignore: camel_case_types
 class All_branch extends StatefulWidget {
   @override
   _All_branchState createState() => _All_branchState();
 }
 
+// ignore: camel_case_types
 class _All_branchState extends State<All_branch> {
   Future<List<allbranch>> _fetchallbranch() async {
     final url =
@@ -175,6 +177,7 @@ class AllBranch extends StatefulWidget {
   _AllBranchState createState() => _AllBranchState();
 }
 
+// ignore: camel_case_types
 class allbranch {
   final String id;
   final String locationlatitude;
@@ -182,6 +185,7 @@ class allbranch {
   final String tel;
   final String whatsapp;
   final String branchecommercename;
+  // ignore: non_constant_identifier_names
   final String branchname_english;
   final String shortdescription;
   final String street;
@@ -202,6 +206,7 @@ class allbranch {
       this.tel,
       this.whatsapp,
       this.branchecommercename,
+      // ignore: non_constant_identifier_names
       this.branchname_english,
       this.shortdescription,
       this.street,

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:responsify/responsify_files/responsify_enum.dart';
 import 'package:responsify/responsify_files/responsify_ui_widget.dart';
 import 'package:signature/signature.dart';
-import 'package:testing/Apis/AddToCart.dart';
 import 'package:testing/Apis/CartPage.dart';
 import 'package:testing/models/CartItem.dart';
 import 'package:testing/screens/DoneOrdering.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final List<String> packagingunit;
+  final List userInfo;
   final List<int> packingqty;
   final int totalItems;
   final List<String> itemCodes;
@@ -26,6 +25,7 @@ class CheckoutScreen extends StatefulWidget {
       @required this.packingqty,
       @required this.totalItems,
       @required this.checkoutTotal,
+      this.userInfo,
       @required this.exFoc,
       @required this.foc,
       @required this.itemCodes,
@@ -88,19 +88,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(snackbar);
               } else {
                 salesorder(
-                    widget.quantity.toList(),
-                    widget.price.toList(),
-                    widget.itemCodes.toSet().toList(),
-                    widget.packagingunit.toList(),
-                    widget.packingqty.toList(),
-                    widget.itemName.toList(),
-                    widget.foc.toList(),
-                    widget.exFoc.toList(),
-                    int.parse(soReferenceNumber.text),
-                    notes.text,
-                    typeOfLead.text,
-                    orderPlacedBy.text,
-                    widget.common.toList());
+                  widget.quantity.toList(),
+                  widget.price.toList(),
+                  widget.itemCodes.toSet().toList(),
+                  widget.packagingunit.toList(),
+                  widget.packingqty.toList(),
+                  widget.itemName.toList(),
+                  widget.foc.toList(),
+                  widget.exFoc.toList(),
+                  int.parse(soReferenceNumber.text),
+                  notes.text,
+                  typeOfLead.text,
+                  orderPlacedBy.text,
+                  widget.common.toList(),
+                  widget.userInfo[0].workingin,
+                  widget.userInfo[0].employeeCompany,
+                  int.parse(
+                    widget.userInfo[0].id,
+                  ),
+                  widget.userInfo[0].employeename,
+                );
 
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => DoneOrdering()));
@@ -114,7 +121,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             Align(
               alignment: Alignment.center,
               child: Text(
-                "Meet Shah \nP01",
+                "${widget.userInfo[0].employeename} \n${widget.userInfo[0].workingin}",
                 style: TextStyle(fontSize: 16.0),
               ),
             ),

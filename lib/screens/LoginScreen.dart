@@ -180,26 +180,27 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
 
                                     var response1 = await http.post(
                                         Uri.parse(baseUrl1),
-                                        body: json.encode(data1));
+                                        body: jsonEncode(data1));
                                     print(response1.body);
-                                    // List<UserInfoModel> message1 =
-                                    //     response1.body as List<UserInfoModel>;
-                                    //
-                                    // pf.setString("workingin",
-                                    //     message1[0].workingin.toString());
-                                    //
-                                    // pf.setString("employeeName",
-                                    //     message1[0].employeename);
-                                    // pf.setString(
-                                    //     "ecode", message1[2].employeecode);
+                                    var jsonReponse =
+                                        json.decode(response1.body);
+
+                                    List userInfo = jsonReponse
+                                        .map((e) =>
+                                            new UserInfoModel.fromJson(e))
+                                        .toList();
+
+                                    print('Here');
+                                    print(userInfo.length);
 
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  HomeScreen()));
+                                              builder: (context) => HomeScreen(
+                                                    userList: userInfo,
+                                                  )));
                                     });
                                   } else {
                                     final snackBar = SnackBar(
@@ -387,26 +388,27 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
 
                                     var response1 = await http.post(
                                         Uri.parse(baseUrl1),
-                                        body: json.encode(data1));
+                                        body: jsonEncode(data1));
                                     print(response1.body);
-                                    // List<UserInfoModel> message1 =
-                                    //     response1.body as List<UserInfoModel>;
-                                    //
-                                    // pf.setString("workingin",
-                                    //     message1[0].workingin.toString());
-                                    //
-                                    // pf.setString("employeeName",
-                                    //     message1[0].employeename);
-                                    // pf.setString(
-                                    //     "ecode", message1[2].employeecode);
+                                    var jsonReponse =
+                                        json.decode(response1.body);
+
+                                    List userInfo = jsonReponse
+                                        .map((e) =>
+                                            new UserInfoModel.fromJson(e))
+                                        .toList();
+
+                                    print('Here');
+                                    print(userInfo.length);
 
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  HomeScreen()));
+                                              builder: (context) => HomeScreen(
+                                                    userList: userInfo,
+                                                  )));
                                     });
                                   } else {
                                     final snackBar = SnackBar(
@@ -614,26 +616,27 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
 
                                     var response1 = await http.post(
                                         Uri.parse(baseUrl1),
-                                        body: json.encode(data1));
+                                        body: jsonEncode(data1));
                                     print(response1.body);
-                                    // List<UserInfoModel> message1 =
-                                    //     response1.body as List<UserInfoModel>;
-                                    //
-                                    // pf.setString("workingin",
-                                    //     message1[0].workingin.toString());
-                                    //
-                                    // pf.setString("employeeName",
-                                    //     message1[0].employeename);
-                                    // pf.setString(
-                                    //     "ecode", message1[2].employeecode);
+                                    var jsonReponse =
+                                        json.decode(response1.body);
+
+                                    List userInfo = jsonReponse
+                                        .map((e) =>
+                                            new UserInfoModel.fromJson(e))
+                                        .toList();
+
+                                    print('Here');
+                                    print(userInfo.length);
 
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  HomeScreen()));
+                                              builder: (context) => HomeScreen(
+                                                    userList: userInfo,
+                                                  )));
                                     });
                                   } else {
                                     final snackBar = SnackBar(

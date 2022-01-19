@@ -6,6 +6,7 @@ import 'package:testing/dynamic/All_branch.dart';
 import 'package:testing/dynamic/All_branch_add.dart';
 import 'package:testing/dynamic/itemmaster.dart';
 import 'package:http/http.dart' as http;
+import 'package:testing/models/UserInfo.dart';
 import 'package:testing/screens/CartPage.dart';
 import 'package:testing/screens/GenerateSales.dart';
 import 'package:testing/screens/LoginScreen.dart';
@@ -15,14 +16,14 @@ import 'ItemMainGroup.dart';
 import 'SearchScreen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key key}) : super(key: key);
+  final List userList;
+  const HomeScreen({Key key, this.userList}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  
   String customerName,
       branchname,
       creditDays,
@@ -41,7 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
       customerType = pf.getString('cust_type');
     });
   }
-int a;
+
+  int a;
   Future fetchCrtCOunt() async {
     SharedPreferences pf = await SharedPreferences.getInstance();
     String customerId = pf.getString('customerId');
@@ -79,8 +81,12 @@ int a;
         labelText: "Search",
         currentButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SearchScreen()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SearchScreen(
+                          userInfo: widget.userList,
+                        )));
           },
           heroTag: "search",
           backgroundColor: Colors.black,
@@ -192,8 +198,12 @@ int a;
                 icon: Icon(Icons.shopping_cart_outlined),
                 tooltip: 'MainGroup',
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => CartPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CartPage(
+                                useriNfo: widget.userList,
+                              )));
                 },
               ),
               CircleAvatar(
@@ -212,7 +222,9 @@ int a;
           ), //IconButton
         ],
       ),
-      drawer: NavigationDrawer(),
+      drawer: NavigationDrawer(
+        userInfo: widget.userList,
+      ),
       body: SingleChildScrollView(
           child: Container(
         decoration: new BoxDecoration(color: Color(0xFFf2f2f2)),

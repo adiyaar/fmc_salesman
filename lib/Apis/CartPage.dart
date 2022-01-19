@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/models/CartItem.dart';
 import 'package:http/http.dart' as http;
@@ -39,7 +38,7 @@ Future<List<PastOrder>> fetchPastOrder() async {
   String baseUrl =
       'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesmanviewitemhistory.php';
 
-  Map data = {'customerid': "10014", 'itemcode': '117929'};
+  // Map data = {'customerid': "10014", 'itemcode': '117929'};
 
   var response = await http.get(Uri.parse(baseUrl));
 
@@ -97,10 +96,7 @@ Future removeCart(BuildContext context, itemCode) async {
   print("I am removed message");
   print(message);
   if (message == "Item Removed from Cart") {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (BuildContext context) => CartPage()),
-    );
+    GlobalSnackBar.show(context, 'Item Removed from Cart');
   }
 }
 
@@ -118,6 +114,10 @@ Future salesorder(
   String typeofLead,
   String orderPlacedby,
   List<double> common,
+  String whichCompanyBranch,
+  String whichCompany,
+  int employeid,
+  String employeename,
 ) async {
   SharedPreferences pf = await SharedPreferences.getInstance();
   String customerBranchId = pf.getString('customerId');
@@ -157,9 +157,10 @@ Future salesorder(
     'orderplacedby': orderPlacedby,
     'notess': notes,
     'supplyto': orderPlacedby,
-    'whichcompany': whichCo, // employee company
-    'whichbranch': whichb, // employee branch
-
+    'whichcompany': whichCompany, // employee company
+    'whichbranch': whichCompanyBranch, // employee branch
+    'employee_tbl_id': employeid,
+    'employeeid': employeename,
     'invoicetype': customerType,
     'billingon': customerType,
     'creditlimits': creditLimit,
