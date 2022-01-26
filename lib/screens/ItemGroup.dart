@@ -7,6 +7,8 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:responsify/responsify_files/responsify_enum.dart';
 import 'package:responsify/responsify_files/responsify_ui_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:testing/Common/ItemGroupLoader.dart';
+import 'package:testing/Common/ItemTabletLoader.dart';
 import 'package:testing/models/ItemGroupModel.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -14,10 +16,15 @@ import 'CartPage.dart';
 import 'ItemSubScreen.dart';
 
 class ItemGroup extends StatefulWidget {
+  List userInfo;
   final itemid;
   final itemtitle;
 
-  ItemGroup({Key key, @required this.itemid, @required this.itemtitle})
+  ItemGroup(
+      {Key key,
+      @required this.itemid,
+      @required this.itemtitle,
+      @required this.userInfo})
       : super(key: key);
   @override
   _ItemGroupState createState() => _ItemGroupState();
@@ -31,7 +38,7 @@ class _ItemGroupState extends State<ItemGroup> with TickerProviderStateMixin {
   Future<void> _showSearch() async {
     await showSearch(
       context: context,
-      delegate: TheSearch(data: data),
+      delegate: TheSearch(data: data, userInfo: widget.userInfo),
       query: pharmacyname,
     );
   }
@@ -151,6 +158,7 @@ class _ItemGroupState extends State<ItemGroup> with TickerProviderStateMixin {
                                       context,
                                       new MaterialPageRoute(
                                           builder: (context) => ItemSub(
+                                              userInfo: widget.userInfo,
                                               itemsubid: data[index].id,
                                               itemetitle: data[index].title)));
                                 },
@@ -219,25 +227,7 @@ class _ItemGroupState extends State<ItemGroup> with TickerProviderStateMixin {
                       } else if (snapshot.hasError) {
                         return Text("${snapshot.error}");
                       }
-                      return Center(
-                        child: CircularPercentIndicator(
-                          radius: 100.0,
-                          lineWidth: 10.0,
-                          percent: 1.0,
-                          animationDuration: 5000,
-                          restartAnimation: true,
-                          animation: true,
-                          footer: Text("Fetching Data Securely!"),
-                          center: new Icon(
-                            Icons.lock,
-                            size: 50.0,
-                            color: Colors.black,
-                          ),
-                          backgroundColor: Colors.white,
-                          circularStrokeCap: CircularStrokeCap.round,
-                          progressColor: Colors.black,
-                        ),
-                      );
+                      return Horizonatal();
                     },
                   ),
                 ),
@@ -265,6 +255,7 @@ class _ItemGroupState extends State<ItemGroup> with TickerProviderStateMixin {
                                       context,
                                       new MaterialPageRoute(
                                           builder: (context) => ItemSub(
+                                              userInfo: widget.userInfo,
                                               itemsubid: data[index].id,
                                               itemetitle: data[index].title)));
                                 },
@@ -327,25 +318,7 @@ class _ItemGroupState extends State<ItemGroup> with TickerProviderStateMixin {
                       } else if (snapshot.hasError) {
                         return Text("${snapshot.error}");
                       }
-                      return Center(
-                        child: CircularPercentIndicator(
-                          radius: 100.0,
-                          lineWidth: 10.0,
-                          percent: 1.0,
-                          animationDuration: 5000,
-                          restartAnimation: true,
-                          animation: true,
-                          footer: Text("Fetching Data Securely!"),
-                          center: new Icon(
-                            Icons.lock,
-                            size: 50.0,
-                            color: Colors.black,
-                          ),
-                          backgroundColor: Colors.white,
-                          circularStrokeCap: CircularStrokeCap.round,
-                          progressColor: Colors.black,
-                        ),
-                      );
+                      return ItemmTablet();
                     },
                   ),
                 ),
@@ -378,6 +351,7 @@ class _ItemGroupState extends State<ItemGroup> with TickerProviderStateMixin {
                                       context,
                                       new MaterialPageRoute(
                                           builder: (context) => ItemSub(
+                                              userInfo: widget.userInfo,
                                               itemsubid: data[index].id,
                                               itemetitle: data[index].title)));
                                 },
@@ -450,25 +424,7 @@ class _ItemGroupState extends State<ItemGroup> with TickerProviderStateMixin {
                       } else if (snapshot.hasError) {
                         return Text("${snapshot.error}");
                       }
-                      return Center(
-                        child: CircularPercentIndicator(
-                          radius: 100.0,
-                          lineWidth: 10.0,
-                          percent: 1.0,
-                          animationDuration: 5000,
-                          restartAnimation: true,
-                          animation: true,
-                          footer: Text("Fetching Data Securely!"),
-                          center: new Icon(
-                            Icons.lock,
-                            size: 50.0,
-                            color: Colors.black,
-                          ),
-                          backgroundColor: Colors.white,
-                          circularStrokeCap: CircularStrokeCap.round,
-                          progressColor: Colors.black,
-                        ),
-                      );
+                      return ItemGroupLoaderMobile();
                     },
                   ),
                 ),
@@ -497,7 +453,7 @@ class _ItemGroupState extends State<ItemGroup> with TickerProviderStateMixin {
   }
 }
 
-Grid(context, data) {
+Grid(context, data, userInfo) {
   final width = MediaQuery.of(context).size.width;
   final height = MediaQuery.of(context).size.height;
   final containerh = height / 2;
@@ -515,6 +471,7 @@ Grid(context, data) {
                   context,
                   new MaterialPageRoute(
                       builder: (context) => ItemSub(
+                          userInfo: userInfo,
                           itemsubid: data[index].id,
                           itemetitle: data[index].title)));
             },
@@ -580,6 +537,7 @@ Grid(context, data) {
                   context,
                   new MaterialPageRoute(
                       builder: (context) => ItemSub(
+                          userInfo: userInfo,
                           itemsubid: data[index].id,
                           itemetitle: data[index].title)));
             },
@@ -640,6 +598,7 @@ Grid(context, data) {
                   context,
                   new MaterialPageRoute(
                       builder: (context) => ItemSub(
+                          userInfo: userInfo,
                           itemsubid: data[index].id,
                           itemetitle: data[index].title)));
             },
@@ -700,6 +659,7 @@ Grid(context, data) {
                   context,
                   new MaterialPageRoute(
                       builder: (context) => ItemSub(
+                          userInfo: userInfo,
                           itemsubid: data[index].id,
                           itemetitle: data[index].title)));
             },
@@ -749,7 +709,12 @@ Grid(context, data) {
 }
 
 class TheSearch extends SearchDelegate<String> {
-  TheSearch({this.contextPage, this.controller, @required this.data});
+  List userInfo;
+  TheSearch(
+      {this.contextPage,
+      this.controller,
+      @required this.data,
+      @required this.userInfo});
 
   List<ItemGroupModel> data;
   BuildContext contextPage;
@@ -798,7 +763,8 @@ class TheSearch extends SearchDelegate<String> {
         data
             .where((element) =>
                 element.title.toLowerCase().contains(query.toLowerCase()))
-            .toList());
+            .toList(),
+        userInfo);
   }
 
   @override
@@ -808,6 +774,7 @@ class TheSearch extends SearchDelegate<String> {
         data
             .where((element) =>
                 element.title.toLowerCase().contains(query.toLowerCase()))
-            .toList());
+            .toList(),
+        userInfo);
   }
 }

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:responsify/responsify.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:testing/Common/CustomerListLoader.dart';
 import 'package:testing/models/GenerateBranch.dart';
 import 'package:http/http.dart' as http;
 import 'package:testing/models/GenerateCustomerList.dart';
@@ -14,7 +15,8 @@ import 'package:testing/models/GenerateCustomerList.dart';
 import 'HomeScreen.dart';
 
 class GenerateSalesOrder extends StatefulWidget {
-  GenerateSalesOrder({Key key}) : super(key: key);
+  List userInfo;
+  GenerateSalesOrder({Key key, @required this.userInfo}) : super(key: key);
 
   @override
   _GenerateSalesOrderState createState() => _GenerateSalesOrderState();
@@ -135,9 +137,11 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                           height: 50,
                           width: MediaQuery.of(context).size.width / 2.32,
                           margin: EdgeInsets.only(left: 10),
+                          padding: EdgeInsets.only(left: 10),
                           decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12.0)),
+                            border:
+                                Border.all(color: Colors.grey.withOpacity(0.4)),
+                          ),
                           child: DropdownSearch<CustomerList>(
                             showClearButton: true,
                             hint: "Select Customer",
@@ -166,25 +170,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                               );
                             },
                             loadingBuilder: (context, filter) {
-                              return Center(
-                                child: CircularPercentIndicator(
-                                  radius: 100.0,
-                                  lineWidth: 5.0,
-                                  percent: 1.0,
-                                  animationDuration: 5000,
-                                  restartAnimation: true,
-                                  animation: true,
-                                  footer: Text("Fetching Data Securely!"),
-                                  center: new Icon(
-                                    Icons.lock,
-                                    size: 30.0,
-                                    color: Colors.black,
-                                  ),
-                                  backgroundColor: Colors.white,
-                                  circularStrokeCap: CircularStrokeCap.round,
-                                  progressColor: Colors.black,
-                                ),
-                              );
+                              return CustomerShimmer();
                             },
                             onFind: (String filter) async {
                               var response = await Dio().get(
@@ -233,9 +219,10 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                           height: 50,
                           width: MediaQuery.of(context).size.width / 2.32,
                           margin: EdgeInsets.only(left: 10),
+                          padding: EdgeInsets.only(left: 10),
                           decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12.0)),
+                            border: Border.all(color: Colors.grey[500]),
+                          ),
                           child: DropdownSearch<CustomerBranch>(
                             showClearButton: true,
                             mode: Mode.BOTTOM_SHEET,
@@ -256,25 +243,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                               );
                             },
                             loadingBuilder: (context, filter) {
-                              return Center(
-                                child: CircularPercentIndicator(
-                                  radius: 100.0,
-                                  lineWidth: 5.0,
-                                  percent: 1.0,
-                                  animationDuration: 5000,
-                                  restartAnimation: true,
-                                  animation: true,
-                                  footer: Text("Fetching Data Securely!"),
-                                  center: new Icon(
-                                    Icons.lock,
-                                    size: 30.0,
-                                    color: Colors.black,
-                                  ),
-                                  backgroundColor: Colors.white,
-                                  circularStrokeCap: CircularStrokeCap.round,
-                                  progressColor: Colors.black,
-                                ),
-                              );
+                              return CustomerShimmer();
                             },
                             showSearchBox: true,
                             onFind: (String filter) async {
@@ -659,7 +628,9 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => HomeScreen()),
+                                  builder: (context) => HomeScreen(
+                                        userList: widget.userInfo,
+                                      )),
                             ).then((value) {
                               setState(() {
                                 addCustomerData();
@@ -740,9 +711,11 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                             Container(
                               height: 50,
                               width: MediaQuery.of(context).size.width / 3.32,
+                              padding: EdgeInsets.only(left: 10),
                               decoration: BoxDecoration(
-                                  // color: Colors.black,
-                                  borderRadius: BorderRadius.circular(12.0)),
+                                // color: Colors.black,
+                                border: Border.all(color: Colors.grey[500]),
+                              ),
                               margin: EdgeInsets.only(left: 10.0),
                               child: DropdownSearch<CustomerList>(
                                 showClearButton: true,
@@ -772,26 +745,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                   );
                                 },
                                 loadingBuilder: (context, filter) {
-                                  return Center(
-                                    child: CircularPercentIndicator(
-                                      radius: 100.0,
-                                      lineWidth: 10.0,
-                                      percent: 1.0,
-                                      animationDuration: 5000,
-                                      restartAnimation: true,
-                                      animation: true,
-                                      footer: Text("Fetching Data Securely!"),
-                                      center: new Icon(
-                                        Icons.lock,
-                                        size: 50.0,
-                                        color: Colors.black,
-                                      ),
-                                      backgroundColor: Colors.white,
-                                      circularStrokeCap:
-                                          CircularStrokeCap.round,
-                                      progressColor: Colors.black,
-                                    ),
-                                  );
+                                  return CustomerShimmer();
                                 },
                                 onFind: (String filter) async {
                                   var response = await Dio().get(
@@ -819,7 +773,9 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                               height: 50,
                               width: MediaQuery.of(context).size.width / 3.32,
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12.0)),
+                                border: Border.all(color: Colors.grey[500]),
+                              ),
+                              padding: EdgeInsets.only(left: 10),
                               margin: EdgeInsets.only(right: 20.0),
                               child: DropdownSearch<CustomerBranch>(
                                 hint: "Select Branch",
@@ -848,26 +804,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                   );
                                 },
                                 loadingBuilder: (context, filter) {
-                                  return Center(
-                                    child: CircularPercentIndicator(
-                                      radius: 100.0,
-                                      lineWidth: 10.0,
-                                      percent: 1.0,
-                                      animationDuration: 5000,
-                                      restartAnimation: true,
-                                      animation: true,
-                                      footer: Text("Fetching Data Securely!"),
-                                      center: new Icon(
-                                        Icons.lock,
-                                        size: 50.0,
-                                        color: Colors.black,
-                                      ),
-                                      backgroundColor: Colors.white,
-                                      circularStrokeCap:
-                                          CircularStrokeCap.round,
-                                      progressColor: Colors.black,
-                                    ),
-                                  );
+                                  return CustomerShimmer();
                                 },
                                 onFind: (String filter) async {
                                   var response = await Dio().get(
@@ -1421,7 +1358,9 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => HomeScreen()),
+                                  builder: (context) => HomeScreen(
+                                        userList: widget.userInfo,
+                                      )),
                             ).then((value) {
                               setState(() {
                                 addCustomerData();
@@ -1500,9 +1439,11 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                               height: 50,
                               width: MediaQuery.of(context).size.width / 2.32,
                               decoration: BoxDecoration(
-                                  // color: Colors.black,
-                                  borderRadius: BorderRadius.circular(12.0)),
+                                // color: Colors.black,
+                                border: Border.all(color: Colors.grey[500]),
+                              ),
                               margin: EdgeInsets.only(left: 10.0),
+                              padding: EdgeInsets.only(left: 10),
                               child: DropdownSearch<CustomerList>(
                                 showClearButton: true,
                                 hint: "Select Customer",
@@ -1531,26 +1472,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                   );
                                 },
                                 loadingBuilder: (context, filter) {
-                                  return Center(
-                                    child: CircularPercentIndicator(
-                                      radius: 100.0,
-                                      lineWidth: 10.0,
-                                      percent: 1.0,
-                                      animationDuration: 5000,
-                                      restartAnimation: true,
-                                      animation: true,
-                                      footer: Text("Fetching Data Securely!"),
-                                      center: new Icon(
-                                        Icons.lock,
-                                        size: 50.0,
-                                        color: Colors.black,
-                                      ),
-                                      backgroundColor: Colors.white,
-                                      circularStrokeCap:
-                                          CircularStrokeCap.round,
-                                      progressColor: Colors.black,
-                                    ),
-                                  );
+                                  return CustomerShimmer();
                                 },
                                 onFind: (String filter) async {
                                   var response = await Dio().get(
@@ -1575,8 +1497,10 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                               height: 50,
                               width: MediaQuery.of(context).size.width / 2.32,
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12.0)),
+                                border: Border.all(color: Colors.grey[500]),
+                              ),
                               margin: EdgeInsets.only(right: 20.0),
+                              padding: EdgeInsets.only(left: 10),
                               child: DropdownSearch<CustomerBranch>(
                                 hint: "Select Branch",
                                 mode: Mode.BOTTOM_SHEET,
@@ -1604,26 +1528,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                   );
                                 },
                                 loadingBuilder: (context, filter) {
-                                  return Center(
-                                    child: CircularPercentIndicator(
-                                      radius: 100.0,
-                                      lineWidth: 10.0,
-                                      percent: 1.0,
-                                      animationDuration: 5000,
-                                      restartAnimation: true,
-                                      animation: true,
-                                      footer: Text("Fetching Data Securely!"),
-                                      center: new Icon(
-                                        Icons.lock,
-                                        size: 50.0,
-                                        color: Colors.black,
-                                      ),
-                                      backgroundColor: Colors.white,
-                                      circularStrokeCap:
-                                          CircularStrokeCap.round,
-                                      progressColor: Colors.black,
-                                    ),
-                                  );
+                                  return CustomerShimmer();
                                 },
                                 onFind: (String filter) async {
                                   var response = await Dio().get(
@@ -2164,7 +2069,9 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => HomeScreen()),
+                                  builder: (context) => HomeScreen(
+                                        userList: widget.userInfo,
+                                      )),
                             ).then((value) {
                               setState(() {
                                 addCustomerData();

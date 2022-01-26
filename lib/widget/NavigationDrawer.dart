@@ -66,7 +66,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                    MaterialPageRoute(builder: (context) => HomeScreen(userList: widget.userInfo,)),
                   );
                 }),
             Divider(
@@ -97,7 +97,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => GenerateSalesOrder()));
+                          builder: (context) => GenerateSalesOrder(userInfo: widget.userInfo)));
                 }),
 
             // ListTile(

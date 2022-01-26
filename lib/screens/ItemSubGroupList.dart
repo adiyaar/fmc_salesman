@@ -17,10 +17,15 @@ getStringValues() async {
 }
 
 class SubList_Items extends StatefulWidget {
+  List userInfo;
   final sublist;
   final title;
 
-  SubList_Items({Key key, @required this.sublist, @required this.title})
+  SubList_Items(
+      {Key key,
+      @required this.sublist,
+      @required this.title,
+      @required this.userInfo})
       : super(key: key);
   @override
   _SubList_ItemsState createState() => _SubList_ItemsState();
@@ -192,7 +197,7 @@ class _SubList_ItemsState extends State<SubList_Items> {
           if (snapshot.hasData) {
             List<ItemGrpData> data = snapshot.data;
 
-            return Grid(context, data);
+            return Grid(context, data, widget.userInfo);
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return SearchShimmer();
           }
@@ -217,7 +222,7 @@ class _SubList_ItemsState extends State<SubList_Items> {
   }
 }
 
-Grid(context, data) {
+Grid(context, data, userInfo) {
   return ListView.builder(
     scrollDirection: Axis.vertical,
     itemCount: data.length,
@@ -227,8 +232,8 @@ Grid(context, data) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        DetailPageScreen(itemDetails: data[index])));
+                    builder: (context) => DetailPageScreen(
+                        userInfo: userInfo, itemDetails: data[index])));
           },
 
           // var finalprice = data[index].price;

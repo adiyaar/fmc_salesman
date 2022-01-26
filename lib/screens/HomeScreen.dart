@@ -17,7 +17,7 @@ import 'SearchScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   final List userList;
-  const HomeScreen({Key key, this.userList}) : super(key: key);
+  const HomeScreen({Key key, @required this.userList}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -189,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
             tooltip: 'MainGroup',
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ItemMainGroup()));
+                  MaterialPageRoute(builder: (context) => ItemMainGroup(userInfo: widget.userList,)));
             },
           ), //IconButton
           Stack(
@@ -784,7 +784,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          GenerateSalesOrder()),
+                                          GenerateSalesOrder(userInfo: widget.userList,)),
                                 ).then((value) {
                                   setState(() {});
                                 });

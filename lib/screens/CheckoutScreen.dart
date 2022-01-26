@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:responsify/responsify_files/responsify_enum.dart';
 import 'package:responsify/responsify_files/responsify_ui_widget.dart';
 import 'package:signature/signature.dart';
 import 'package:testing/Apis/CartPage.dart';
 import 'package:testing/models/CartItem.dart';
-import 'package:testing/screens/DoneOrdering.dart';
+import 'package:http/http.dart' as http;
+
+import 'DoneOrdering.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final List<String> packagingunit;
@@ -12,13 +16,17 @@ class CheckoutScreen extends StatefulWidget {
   final List<int> packingqty;
   final int totalItems;
   final List<String> itemCodes;
+  final List<String> itemSubtotal;
   final List<String> itemName;
   final List<int> quantity;
   final List<int> foc;
   final List<int> exFoc;
   final List<double> price;
-  final List<double> common;
+  final List<double> wacCost;
+  final List<double> mgmtCost;
+  final List<double> calcCOst;
   final double checkoutTotal;
+
   CheckoutScreen(
       {Key key,
       @required this.packagingunit,
@@ -27,12 +35,15 @@ class CheckoutScreen extends StatefulWidget {
       @required this.checkoutTotal,
       this.userInfo,
       @required this.exFoc,
+      @required this.itemSubtotal,
       @required this.foc,
       @required this.itemCodes,
       @required this.itemName,
       @required this.price,
       @required this.quantity,
-      @required this.common})
+      @required this.mgmtCost,
+      @required this.calcCOst,
+      @required this.wacCost})
       : super(key: key);
 
   @override
@@ -47,6 +58,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   TextEditingController contactNumber = TextEditingController();
   TextEditingController notes = TextEditingController();
   Future getCart;
+  String selectedLead;
+  List typeOfLeadDropdown = [];
+
+  Future getTypeOfLead() async {
+    var response = await http.get(
+      Uri.parse(
+          'https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=leadsmaster'),
+    );
+    var jsonResponse = response.body;
+    List jsonData = json.decode(jsonResponse);
+    List<TypeOfLead> a = jsonData.map((e) => TypeOfLead.fromJson(e)).toList();
+
+    setState(() {
+      typeOfLeadDropdown = jsonData;
+    });
+    return a;
+  }
 
   void getcart() {
     setState(() {
@@ -65,6 +93,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   void initState() {
     super.initState();
+    getTypeOfLead();
     _controller.addListener(() => print('Value changed'));
     getcart();
   }
@@ -98,19 +127,27 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   widget.exFoc.toList(),
                   int.parse(soReferenceNumber.text),
                   notes.text,
-                  typeOfLead.text,
+                  selectedLead,
                   orderPlacedBy.text,
-                  widget.common.toList(),
                   widget.userInfo[0].workingin,
                   widget.userInfo[0].employeeCompany,
                   int.parse(
                     widget.userInfo[0].id,
                   ),
                   widget.userInfo[0].employeename,
+                  widget.checkoutTotal,
+                  emailId.text,
+                  widget.wacCost.toList(),
+                  widget.mgmtCost.toList(),
+                  widget.calcCOst.toList(),
+                  widget.itemSubtotal.toList(),
                 );
 
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => DoneOrdering()));
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) =>
+                //             DoneOrdering(userInfo: widget.userInfo)));
               }
             },
             label: Text('Place Order')),
@@ -181,7 +218,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   ),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.only(right: 250),
+                                  margin: EdgeInsets.only(right: 260),
                                   child: Text("Type of Lead"),
                                 )
                               ],
@@ -210,13 +247,51 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   height: 50,
                                   width: 280,
                                   margin: EdgeInsets.only(right: 60),
-                                  child: TextFormField(
-                                    controller: typeOfLead,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                          color:
+                                              Colors.black.withOpacity(0.4))),
+                                  padding: EdgeInsets.only(left: 8),
+                                  // child: TextFormField(
+                                  //   controller: typeOfLead,
+                                  //   decoration: InputDecoration(
+                                  //     border: OutlineInputBorder(
+                                  //       borderRadius: BorderRadius.circular(12),
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  child: DropdownButton(
+                                    underline: SizedBox(),
+                                    value: selectedLead,
+                                    hint: Text("Select Variants"),
+                                    items: typeOfLeadDropdown.map(
+                                      (list) {
+                                        return DropdownMenuItem(
+                                            child: SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  5.5,
+                                              child: Text(
+                                                list['title'] == ''
+                                                    ? 'No Lead'
+                                                    : list['title'],
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.w800),
+                                                textAlign: TextAlign.left,
+                                              ),
+                                            ),
+                                            value: list['title']);
+                                      },
+                                    ).toList(),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedLead = value;
+                                      });
+                                    },
                                   ),
                                 ),
                               ],

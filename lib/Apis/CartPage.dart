@@ -113,42 +113,44 @@ Future salesorder(
   String notes,
   String typeofLead,
   String orderPlacedby,
-  List<double> common,
   String whichCompanyBranch,
   String whichCompany,
   int employeid,
   String employeename,
+  double checkOutTotal,
+  String customerEmail,
+  List<double> wacCost,
+  List<double> mgmgt,
+  List<double> calcCost,
+  List<String> itemSubtotal,
 ) async {
   SharedPreferences pf = await SharedPreferences.getInstance();
   String customerBranchId = pf.getString('customerId');
   String customerType = pf.getString('cust_type');
   String creditLimit = pf.getString('credit_limit');
   String creditDays = pf.getString('credit_days');
-  String custemail = pf.getString('credit_days');
 
-  // employee info
-// add branch // add company name
-
-// customer name - id dalna hai
-// units and packing
-
-// units is type of backing that is
+  print(mgmgt);
+  print(calcCost);
   var data = {
     'invoiceprice': customerType,
     'customername': int.parse(customerBranchId),
-    'customeremail': custemail == null ? '' : custemail,
+    'customeremail': customerEmail,
     'customertype': customerType,
     'units': packingunit, // variant // Pc
     'packing': packingqty, // packaging // 1 , 10 ,100
     'item_whichcompany': "FMC",
-    'item_wac': common,
-    'item_mgmtcost': common,
-    'item_cutoffcost': common,
-    'calculationtotal': common,
-
+    'item_wac': wacCost,
+    'item_mgmtcost': mgmgt,
+    'item_cutoffcost': calcCost,
+    'order_item_actual_amount' :itemSubtotal,
+'order_item_final_amount' : itemSubtotal,
+    'calculationtotal': calcCost,
+    'order_total': checkOutTotal,
     'itemcode': itemCodes,
     'quantity': quantity,
     'price': price,
+
     // 'itemname': itemName,
     'foc': foc,
     'ex_foc': exFoc,
@@ -169,7 +171,7 @@ Future salesorder(
     // 'user_id': '125'
   };
 
-  // print(data);
+  print(data);
   var url =
       'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesman_confirm_order.php';
 

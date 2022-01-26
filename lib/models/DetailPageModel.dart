@@ -26,7 +26,7 @@ class Salesmandetailpage {
   String maxretailprice;
   String minretailprice;
   String rs;
-
+  String mohprice;
   String wholeSalePrice;
   String wacCost;
   String origin;
@@ -42,6 +42,7 @@ class Salesmandetailpage {
       this.wacCost,
       this.labelname,
       this.itempack,
+      this.mohprice,
       this.itemstrength,
       this.itemmaingroupid,
       this.itemmaingrouptitle,
@@ -77,6 +78,8 @@ class Salesmandetailpage {
     itempack = json['itempack'];
     itemstrength = json['itemstrength'];
     itemmaingroupid = json['itemmaingroupid'];
+
+    mohprice = json['mohprice'];
     itemmaingrouptitle = json['itemmaingrouptitle'];
     itemgroupid = json['itemgroupid'];
     itemgrouptitle = json['itemgrouptitle'];
@@ -118,6 +121,7 @@ class Salesmandetailpage {
     data['itemmaingroupid'] = this.itemmaingroupid;
     data['itemmaingrouptitle'] = this.itemmaingrouptitle;
     data['itemgroupid'] = this.itemgroupid;
+    data['mohprice'] = this.mohprice;
     data['itemgrouptitle'] = this.itemgrouptitle;
     data['itemsubgroupid'] = this.itemsubgroupid;
     data['itemproductgroupid'] = this.itemproductgroupid;
@@ -292,3 +296,124 @@ class Variant {
   @override
   String toString() => itempack;
 }
+
+class PriceSetting {
+  String id;
+  String branchid;
+  String datee;
+  String status;
+  String company;
+  String type;
+  String margin;
+  String realmgmtof;
+  String markup;
+
+  PriceSetting(
+      {this.id,
+      this.branchid,
+      this.datee,
+      this.status,
+      this.company,
+      this.type,
+      this.margin,
+      this.realmgmtof,
+      this.markup});
+
+  PriceSetting.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    branchid = json['branchid'];
+    datee = json['datee'];
+    status = json['status'];
+    company = json['company'];
+    type = json['type'];
+    margin = json['margin'];
+    realmgmtof = json['realmgmtof'];
+    markup = json['markup'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['branchid'] = this.branchid;
+    data['datee'] = this.datee;
+    data['status'] = this.status;
+    data['company'] = this.company;
+    data['type'] = this.type;
+    data['margin'] = this.margin;
+    data['realmgmtof'] = this.realmgmtof;
+    data['markup'] = this.markup;
+    return data;
+  }
+}
+
+class PriceSettingCutoff {
+  String id;
+  String branchid;
+  String datee;
+  String status;
+  String company;
+  String type;
+  String margin;
+  String realmargincost;
+  String operator;
+  String bonuspercentage;
+  String cutof;
+
+  PriceSettingCutoff(
+      {this.id,
+      this.branchid,
+      this.datee,
+      this.status,
+      this.company,
+      this.type,
+      this.margin,
+      this.realmargincost,
+      this.operator,
+      this.bonuspercentage,
+      this.cutof});
+
+  PriceSettingCutoff.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    branchid = json['branchid'];
+    datee = json['datee'];
+    status = json['status'];
+    company = json['company'];
+    type = json['type'];
+    margin = json['margin'];
+    realmargincost = json['realmargincost'];
+    operator = json['operator'];
+    bonuspercentage = json['bonuspercentage'];
+    cutof = json['cutof'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['branchid'] = this.branchid;
+    data['datee'] = this.datee;
+    data['status'] = this.status;
+    data['company'] = this.company;
+    data['type'] = this.type;
+    data['margin'] = this.margin;
+    data['realmargincost'] = this.realmargincost;
+    data['operator'] = this.operator;
+    data['bonuspercentage'] = this.bonuspercentage;
+    data['cutof'] = this.cutof;
+    return data;
+  }
+}
+
+
+
+
+// let currentselectedbranch = $('#requestfrom').val(),
+//             currentselectedcompany = $(whichcompany).val(),
+//             currentselectedtype = $(moh).val();
+//             mgmtprice = await pricesetting_mgmpricelist(currentselectedcompany,  currentselectedbranch, currentselectedtype); 
+//             mgmtcost.val((finalwac/(1-mgmtprice/100)).toFixed(2));  
+//             let mgmtcostt = (finalwac/(1-mgmtprice/100)).toFixed(2);
+//             cutofcostfromsetting = await pricesetting_cutofprice(currentselectedcompany,  currentselectedbranch, currentselectedtype); 
+//             operator = await pricesetting_cutofprice22(currentselectedcompany,  currentselectedbranch, currentselectedtype); 
+//             bonuspercentage = await pricesetting_cutofprice222(currentselectedcompany,  currentselectedbranch, currentselectedtype); 
+//             cutoffprice_cutof = await pricesetting_cutofprice2222(currentselectedcompany,  currentselectedbranch, currentselectedtype); 
+//             let calculatecutoffcost = (mgmtcostt/(1-cutofcostfromsetting/100)+(wp-finalwac)*bonuspercentage/100).toFixed(2);

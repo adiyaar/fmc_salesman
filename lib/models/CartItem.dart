@@ -45,7 +45,7 @@ class CartItem {
         packing: json['packing'],
         itemMgmt: json['item_mgmtcost'],
         itemWhchCOmpany: json['item_whichcompany'],
-        calcCost: json['calculationtotal'],
+        calcCost: json['calculationtotal'], 
         cutoFF: json['item_cutoffcost'],
         discount: json['disc']);
   }
@@ -61,6 +61,21 @@ class VariantsD {
     return VariantsD(
       id: json['id'],
       itempack: json['itempack'],
+    );
+  }
+}
+
+
+class TypeOfLead {
+  String id;
+  String title;
+
+  TypeOfLead({this.id, this.title});
+//List data;
+  factory TypeOfLead.fromJson(Map<String, dynamic> json) {
+    return TypeOfLead(
+      id: json['id'],
+      title: json['title'],
     );
   }
 }

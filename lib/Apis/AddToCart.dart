@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:testing/widget/GlobalSnackbar.dart';
+
 // ignore: non_constant_identifier_names
 Future addToCart(
     BuildContext context,
@@ -37,10 +38,12 @@ Future addToCart(
     'units': units,
     'item_wac': itemWac,
     'item_mgmtcost': itemMgmt,
-    'item_cutoffcost': cutoFF,
-    'calculationcost': calcCost,
+    'item_cutoffcost': calcCost, // refers to cutoff
+    'calculationcost': calcCost, //
     'item_whichcompany': itemWhchCOmpany,
   };
+
+  print(data);
 
   var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
 
@@ -50,5 +53,3 @@ Future addToCart(
     return {GlobalSnackBar.show(context, 'Already in Cart')};
   }
 }
-
-

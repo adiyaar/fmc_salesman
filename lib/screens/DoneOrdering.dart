@@ -6,7 +6,8 @@ import 'package:lottie/lottie.dart';
 import 'HomeScreen.dart';
 
 class DoneOrdering extends StatefulWidget {
-  DoneOrdering({Key key}) : super(key: key);
+  List userInfo;
+  DoneOrdering({Key key, this.userInfo}) : super(key: key);
 
   @override
   _DoneOrderingState createState() => _DoneOrderingState();
@@ -19,7 +20,11 @@ class _DoneOrderingState extends State<DoneOrdering> {
     Timer(
         Duration(seconds: 3),
         () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomeScreen())));
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomeScreen(
+                      userList: widget.userInfo,
+                    ))));
   }
 
   @override

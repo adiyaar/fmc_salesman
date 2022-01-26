@@ -31,6 +31,7 @@ class DetailPageScreen extends StatefulWidget {
 
 class _DetailPageScreenState extends State<DetailPageScreen> {
   String customerType, customerBranchId, branchId;
+  String employeeWhichCompany;
   void customerInfo() async {
     SharedPreferences pf = await SharedPreferences.getInstance();
     customerBranchId = pf.getString('customerId');
@@ -42,6 +43,9 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
   List units = [];
   List<VariantsD> a = [];
   List<UnitsD> b = [];
+
+  List<PriceSetting> priceSetting = [];
+  List<PriceSettingCutoff> priceSettingCutoff = [];
   String selectedVariant;
   double wacCost = 0.0;
   double managementCost = 0.0;
@@ -93,8 +97,49 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     setState(() {
       variants = jsonData;
     });
-    print(variants);
+
     return a;
+  }
+
+  Future getPriceSettingPhp(String type, String itemCompany) async {
+    // employee company
+    // employee branch
+    // item MohPrice - 0 - moh || 1 - Non-Moh
+
+    var data = {
+      'branch': widget.userInfo[0].workingin,
+      'company': itemCompany,
+      'type': type,
+    };
+    print(data);
+    String baseUrl =
+        'https://onlinefamilypharmacy.com/mobileapplication/pages/pricesetting.php';
+
+    var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
+    List jsondataval = json.decode(response.body);
+    print("!111");
+    print(jsondataval);
+    priceSetting = jsondataval.map((e) => PriceSetting.fromJson(e)).toList();
+
+    return priceSetting;
+  }
+
+  Future getPriceSettingPhpCutOff(String type, String itemCompany) async {
+    var data = {
+      'branch': widget.userInfo[0].workingin,
+      'company': itemCompany,
+      'type': type,
+    };
+
+    String baseUrl =
+        'https://onlinefamilypharmacy.com/mobileapplication/pages/pricesetting_cutofprice.php';
+
+    var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
+    List jsondataval = json.decode(response.body);
+    priceSettingCutoff =
+        jsondataval.map((e) => PriceSettingCutoff.fromJson(e)).toList();
+
+    return priceSettingCutoff;
   }
 
   Future getUnitsandPrice(itemid) async {
@@ -139,6 +184,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     super.initState();
     // fetchProductInfo();
     getVariant();
+    employeeWhichCompany = widget.userInfo[0].employeeCompany;
     fetchCrtCOunt();
     customerInfo();
   }
@@ -203,6 +249,39 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Salesmandetailpage> iteminfo = snapshot.data;
+                  print("========");
+                  print(iteminfo[0].mohprice);
+                  if (iteminfo[0].mohprice == "1") {
+                    getPriceSettingPhp("MOH", iteminfo[0].whichcompany);
+                    getPriceSettingPhpCutOff("MOH", iteminfo[0].whichcompany);
+                  } else {
+                    getPriceSettingPhp("NONMOH", iteminfo[0].whichcompany);
+                    getPriceSettingPhpCutOff(
+                        "NONMOH", iteminfo[0].whichcompany);
+                  }
+
+                  Future.delayed(Duration(seconds: 1), () {
+                    managementCost = (double.parse(iteminfo[0].wacCost) /
+                        (1 - double.parse(priceSetting[0].margin)));
+                    print("object");
+                    print(priceSettingCutoff[0].realmargincost);
+
+                    double a =
+                        (double.parse(priceSettingCutoff[0].realmargincost)) /
+                            100;
+                    print(a);
+                    double x = 1 - a;
+                    print(managementCost);
+                    print(x);
+
+                    calculatedCost = (managementCost / x).roundToDouble();
+                    print(calculatedCost);
+                    // ((double.parse(iteminfo[0].wholeSalePrice) -
+                    //             double.parse(iteminfo[0].wacCost)) *
+                    //         double.parse(
+                    //             priceSettingCutoff[0].bonuspercentage) /
+                    //         100)
+                  });
                   return SingleChildScrollView(
                       child: Column(
                     children: [
@@ -366,7 +445,11 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   child: Container(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      "\QR $selectedUnitName",
+                                      calculatedCost >=
+                                              double.parse(
+                                                  iteminfo[0].wholeSalePrice)
+                                          ? "\QR $selectedUnitName"
+                                          : "\QR ${iteminfo[0].wholeSalePrice}",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 17,
@@ -790,23 +873,60 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(snackBar);
                                               } else {
-                                                addToCart(
-                                                    context,
-                                                    customerBranchId,
-                                                    widget.itemDetails.itemid,
-                                                    iteminfo[0].minretailprice,
-                                                    quantityController.text,
-                                                    focController.text,
-                                                    extraFocController.text,
-                                                    "0",
-                                                    branchId,
-                                                    int.parse(packing),
-                                                    1000.00,
-                                                    packingunit,
-                                                    1000.00,
-                                                    1000.00,
-                                                    1000.00,
-                                                    "FMEAPP");
+                                                (employeeWhichCompany
+                                                                .trim()
+                                                                .toLowerCase() ==
+                                                            "fme" &&
+                                                        iteminfo[0]
+                                                                .whichcompany
+                                                                .trim()
+                                                                .toLowerCase() ==
+                                                            "fme" &&
+                                                        customerType
+                                                                .toLowerCase() ==
+                                                            "wholesale")
+                                                    ? addToCart(
+                                                        context,
+                                                        customerBranchId,
+                                                        widget
+                                                            .itemDetails.itemid,
+                                                        iteminfo[0]
+                                                            .wholeSalePrice,
+                                                        quantityController.text,
+                                                        focController.text,
+                                                        extraFocController.text,
+                                                        "0",
+                                                        branchId,
+                                                        int.parse(packing),
+                                                        double.parse(iteminfo[0]
+                                                            .wacCost),
+                                                        packingunit,
+                                                        managementCost,
+                                                        calculatedCost,
+                                                        1000.00,
+                                                        iteminfo[0]
+                                                            .whichcompany)
+                                                    : addToCart(
+                                                        context,
+                                                        customerBranchId,
+                                                        widget
+                                                            .itemDetails.itemid,
+                                                        iteminfo[0]
+                                                            .minretailprice,
+                                                        quantityController.text,
+                                                        focController.text,
+                                                        extraFocController.text,
+                                                        "0",
+                                                        branchId,
+                                                        int.parse(packing),
+                                                        double.parse(iteminfo[0]
+                                                            .wacCost),
+                                                        packingunit,
+                                                        managementCost,
+                                                        calculatedCost,
+                                                        1000.00,
+                                                        iteminfo[0]
+                                                            .whichcompany);
                                                 Future.delayed(
                                                     Duration(seconds: 5), () {
                                                   fetchCrtCOunt();
@@ -875,21 +995,21 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                 ),
                                 selectedVariant == null
                                     ? Container(
-                                        margin: EdgeInsets.only(left: 30),
+                                        margin: EdgeInsets.only(left: 10),
                                         alignment: Alignment.centerLeft,
                                         child: Text(
                                           "Item Code - ${widget.itemDetails.itemid} \nItem name - ${widget.itemDetails.itemproductgrouptitle} \nType of Packing - ''\nQty Per packing - 1\nSelected Variant -$selectedVariantName",
                                           style: TextStyle(
-                                            fontSize: 18,
+                                            fontSize: 15,
                                           ),
                                         ))
                                     : Container(
-                                        margin: EdgeInsets.only(left: 30),
+                                        margin: EdgeInsets.only(left: 10),
                                         alignment: Alignment.centerLeft,
                                         child: Text(
                                           "Item Code - $selectedVariant \nItem name - ${widget.itemDetails.itemproductgrouptitle} \nQty of Packing - $packingunit\nType Per packing - $packing\nSelected Variant -$selectedVariantName",
                                           style: TextStyle(
-                                            fontSize: 18,
+                                            fontSize: 15,
                                           ),
                                         )),
                               ],
@@ -897,82 +1017,91 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                           )
                         ],
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text('Vital Info'),
-                      Text(
-                        'Max Retail Price - ${iteminfo[0].maxretailprice}',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15),
-                      ),
-                      Text(
-                        'Max Wholesale Price - ${iteminfo[0].wholeSalePrice}',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15),
-                      ),
-                      Text(
-                        'Selected Variant Price-- ${selectedUnitName}',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15),
-                      ),
-                      Text(
-                        'Product Which Company - ${iteminfo[0].whichcompany}',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15),
-                      ),
-                      Text(
-                        'WAC Cost -  ${iteminfo[0].wacCost}',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15),
-                      ),
-                      Text(
-                        'Management COST ${iteminfo[0].wacCost}',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15),
-                      ),
-                      Text(
-                        'Cutoff COST ${iteminfo[0].wacCost}',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15),
-                      ),
-                      Text(
-                        'Salesman Which Company -  ${widget.userInfo[0].employeeCompany}',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15),
-                      ),
-                      Text(
-                        'Packing Qty -  $packing',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15),
-                      ),
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Max Retail Price - ${iteminfo[0].maxretailprice}',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                            Text(
+                              'Max Wholesale Price - ${iteminfo[0].wholeSalePrice}',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                            Text(
+                              'Selected Variant Price-- ${selectedUnitName}',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                            Text(
+                              'Product Which Company - ${iteminfo[0].whichcompany}',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                            Text(
+                              'WAC Cost -  ${iteminfo[0].wacCost}',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                            Text(
+                              'Management COST $managementCost',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                            Text(
+                              'Cutoff COST $calculatedCost',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                            Text(
+                              'MOH Price ${iteminfo[0].mohprice}',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                            Text(
+                              'Salesman Which Company -  ${widget.userInfo[0].employeeCompany}',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                            Text(
+                              'Packing Qty -  $packing',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                          ]),
                       Container(
                           margin: EdgeInsets.only(left: 5),
                           alignment: Alignment.centerLeft,
@@ -1090,6 +1219,34 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Salesmandetailpage> iteminfo = snapshot.data;
+                  print("========");
+                  print(iteminfo[0].mohprice);
+                  if (iteminfo[0].mohprice == "1") {
+                    getPriceSettingPhp("MOH", iteminfo[0].whichcompany);
+                    getPriceSettingPhpCutOff("MOH", iteminfo[0].whichcompany);
+                  } else {
+                    getPriceSettingPhp("NONMOH", iteminfo[0].whichcompany);
+                    getPriceSettingPhpCutOff(
+                        "NONMOH", iteminfo[0].whichcompany);
+                  }
+
+                  Future.delayed(Duration(seconds: 1), () {
+                    managementCost = (double.parse(iteminfo[0].wacCost) /
+                        (1 - double.parse(priceSetting[0].margin)));
+                    print("object");
+                    print(priceSettingCutoff[0].realmargincost);
+
+                    double a =
+                        (double.parse(priceSettingCutoff[0].realmargincost)) /
+                            100;
+                    print(a);
+                    double x = 1 - a;
+                    print(managementCost);
+                    print(x);
+
+                    calculatedCost = (managementCost / x).roundToDouble();
+                    print(calculatedCost);
+                  });
                   return SingleChildScrollView(
                       child: Column(
                     children: [
@@ -1192,7 +1349,11 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   child: Container(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      "\QR $selectedUnitName",
+                                      calculatedCost >=
+                                              double.parse(
+                                                  iteminfo[0].wholeSalePrice)
+                                          ? "\QR $selectedUnitName"
+                                          : "\QR ${iteminfo[0].wholeSalePrice}",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 17,
@@ -1575,23 +1736,53 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(snackBar);
                                         } else {
-                                          addToCart(
-                                              context,
-                                              customerBranchId,
-                                              widget.itemDetails.itemid,
-                                              iteminfo[0].minretailprice,
-                                              quantityController.text,
-                                              focController.text,
-                                              extraFocController.text,
-                                              "0",
-                                              branchId,
-                                              1000,
-                                              1000.00,
-                                              "Bundle",
-                                              1000.00,
-                                              1000.00,
-                                              1000.00,
-                                              "FMEAPP");
+                                          (employeeWhichCompany
+                                                          .trim()
+                                                          .toLowerCase() ==
+                                                      "fme" &&
+                                                  iteminfo[0]
+                                                          .whichcompany
+                                                          .trim()
+                                                          .toLowerCase() ==
+                                                      "fme" &&
+                                                  customerType.toLowerCase() ==
+                                                      "wholesale")
+                                              ? addToCart(
+                                                  context,
+                                                  customerBranchId,
+                                                  widget.itemDetails.itemid,
+                                                  iteminfo[0].wholeSalePrice,
+                                                  quantityController.text,
+                                                  focController.text,
+                                                  extraFocController.text,
+                                                  "0",
+                                                  branchId,
+                                                  int.parse(packing),
+                                                  double.parse(
+                                                      iteminfo[0].wacCost),
+                                                  packingunit,
+                                                  managementCost,
+                                                  calculatedCost,
+                                                  1000.00,
+                                                  iteminfo[0].whichcompany)
+                                              : addToCart(
+                                                  context,
+                                                  customerBranchId,
+                                                  widget.itemDetails.itemid,
+                                                  iteminfo[0].minretailprice,
+                                                  quantityController.text,
+                                                  focController.text,
+                                                  extraFocController.text,
+                                                  "0",
+                                                  branchId,
+                                                  int.parse(packing),
+                                                  double.parse(
+                                                      iteminfo[0].wacCost),
+                                                  packingunit,
+                                                  managementCost,
+                                                  calculatedCost,
+                                                  1000.00,
+                                                  iteminfo[0].whichcompany);
                                           Future.delayed(Duration(seconds: 5),
                                               () {
                                             print(
@@ -1729,7 +1920,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                             fontSize: 15),
                       ),
                       Text(
-                        'Management COST ${iteminfo[0].wacCost}',
+                        'Management COST $managementCost',
                         textAlign: TextAlign.start,
                         style: TextStyle(
                             color: Colors.black,
@@ -1737,7 +1928,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                             fontSize: 15),
                       ),
                       Text(
-                        'Cutoff COST ${iteminfo[0].wacCost}',
+                        'Cutoff COST $calculatedCost',
                         textAlign: TextAlign.start,
                         style: TextStyle(
                             color: Colors.black,
@@ -1856,6 +2047,42 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Salesmandetailpage> iteminfo = snapshot.data;
+                  print("========");
+                  print(iteminfo[0].mohprice);
+                  if (iteminfo[0].mohprice == "1") {
+                    getPriceSettingPhp("MOH", iteminfo[0].whichcompany);
+                    getPriceSettingPhpCutOff("MOH", iteminfo[0].whichcompany);
+                  } else {
+                    getPriceSettingPhp("NONMOH", iteminfo[0].whichcompany);
+                    getPriceSettingPhpCutOff(
+                        "NONMOH", iteminfo[0].whichcompany);
+                  }
+
+                  Future.delayed(Duration(seconds: 1), () {
+                    String temp = (double.parse(iteminfo[0].wacCost) /
+                            (1 - double.parse(priceSetting[0].margin) / 100))
+                        .toStringAsFixed(2);
+                    managementCost = double.parse(temp);
+                    print("object");
+                    print(double.parse(iteminfo[0].wacCost));
+                    print(priceSettingCutoff[0].realmargincost);
+
+                    double a =
+                        (double.parse(priceSettingCutoff[0].realmargincost)) /
+                            100;
+                    print(a);
+                    double x = 1 - a;
+                    print(managementCost);
+                    print(x);
+                    String temp2 = (managementCost / x).toStringAsFixed(2);
+                    calculatedCost = double.parse(temp2);
+                    print(calculatedCost);
+                    // ((double.parse(iteminfo[0].wholeSalePrice) -
+                    //             double.parse(iteminfo[0].wacCost)) *
+                    //         double.parse(
+                    //             priceSettingCutoff[0].bonuspercentage) /
+                    //         100)
+                  });
                   return SingleChildScrollView(
                       child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -1930,7 +2157,11 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   child: Container(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      "\QR $selectedUnitName",
+                                      calculatedCost >=
+                                              double.parse(
+                                                  iteminfo[0].wholeSalePrice)
+                                          ? "\QR $selectedUnitName"
+                                          : "\QR ${iteminfo[0].wholeSalePrice}",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 17,
@@ -2291,23 +2522,53 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(snackBar);
                                     } else {
-                                      addToCart(
-                                          context,
-                                          customerBranchId,
-                                          widget.itemDetails.itemid,
-                                          iteminfo[0].minretailprice,
-                                          quantityController.text,
-                                          focController.text,
-                                          extraFocController.text,
-                                          "0",
-                                          branchId,
-                                          1000,
-                                          1000.00,
-                                          "Bundle",
-                                          1000.00,
-                                          1000.00,
-                                          1000.00,
-                                          "FMEAPP");
+                                      print(calculatedCost);
+                                      print("her");
+                                      (employeeWhichCompany
+                                                      .trim()
+                                                      .toLowerCase() ==
+                                                  "fme" &&
+                                              iteminfo[0]
+                                                      .whichcompany
+                                                      .trim()
+                                                      .toLowerCase() ==
+                                                  "fme" &&
+                                              customerType.toLowerCase() ==
+                                                  "wholesale")
+                                          ? addToCart(
+                                              context,
+                                              customerBranchId,
+                                              widget.itemDetails.itemid,
+                                              iteminfo[0].wholeSalePrice,
+                                              quantityController.text,
+                                              focController.text,
+                                              extraFocController.text,
+                                              "0",
+                                              branchId,
+                                              int.parse(packing),
+                                              double.parse(iteminfo[0].wacCost),
+                                              packingunit,
+                                              managementCost,
+                                              calculatedCost,
+                                              1000.00,
+                                              iteminfo[0].whichcompany)
+                                          : addToCart(
+                                              context,
+                                              customerBranchId,
+                                              widget.itemDetails.itemid,
+                                              iteminfo[0].minretailprice,
+                                              quantityController.text,
+                                              focController.text,
+                                              extraFocController.text,
+                                              "0",
+                                              branchId,
+                                              int.parse(packing),
+                                              double.parse(iteminfo[0].wacCost),
+                                              packingunit,
+                                              managementCost,
+                                              calculatedCost,
+                                              1000.00,
+                                              iteminfo[0].whichcompany);
                                       Future.delayed(Duration(seconds: 5), () {
                                         fetchCrtCOunt();
                                       });
@@ -2373,11 +2634,92 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                 ? Container(
                                     // margin: EdgeInsets.only(left: 30),
                                     alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      "Item Code - ${widget.itemDetails.itemid} \nItem name - ${widget.itemDetails.itemproductgrouptitle} \nType of Packing - ''\nQty Per packing - 1\nSelected Variant -$selectedVariantName",
-                                      style: TextStyle(fontSize: 15),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Item Code - ${widget.itemDetails.itemid} \nItem name - ${widget.itemDetails.itemproductgrouptitle} \nType of Packing - ''\nQty Per packing - 1\nSelected Variant -$selectedVariantName",
+                                          style: TextStyle(fontSize: 15),
+                                        ),
+                                        Text(
+                                          'Max Retail Price - ${iteminfo[0].maxretailprice}',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          'Max Wholesale Price - ${iteminfo[0].wholeSalePrice}',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          'Selected Variant Price-- $selectedUnitName',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          'Product Which Company - ${iteminfo[0].whichcompany}',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          'WAC Cost -  ${iteminfo[0].wacCost}',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          'Management COST $managementCost',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          'Cutoff COST $calculatedCost',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          'Salesman Which Company -  ${widget.userInfo[0].employeeCompany}',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          'Packing Qty -  $packing',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                      ],
                                     ))
                                 : Container(
+
                                     // margin: EdgeInsets.only(left: 10),
                                     alignment: Alignment.centerLeft,
                                     child: Column(
@@ -2431,7 +2773,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                               fontSize: 15),
                                         ),
                                         Text(
-                                          'Management COST ${iteminfo[0].wacCost}',
+                                          'Management COST $managementCost',
                                           textAlign: TextAlign.start,
                                           style: TextStyle(
                                               color: Colors.black,
@@ -2439,7 +2781,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                               fontSize: 15),
                                         ),
                                         Text(
-                                          'Cutoff COST ${iteminfo[0].wacCost}',
+                                          'Cutoff COST $calculatedCost',
                                           textAlign: TextAlign.start,
                                           style: TextStyle(
                                               color: Colors.black,

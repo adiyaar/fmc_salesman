@@ -103,12 +103,12 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                             TextInputType.emailAddress,
                                         validator: (val) {
                                           if (val.isEmpty) {
-                                            return 'Enter your QATAR ID!';
+                                            return 'Enter your Username';
                                           }
                                           return null;
                                         },
                                         decoration: InputDecoration(
-                                            hintText: "Qatar Id",
+                                            hintText: "Username",
                                             border: InputBorder.none,
                                             fillColor: Color(0xfff3f3f4),
                                             filled: true),
@@ -311,12 +311,12 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                             TextInputType.emailAddress,
                                         validator: (val) {
                                           if (val.isEmpty) {
-                                            return 'Enter a valid QATAR ID!';
+                                            return 'Enter a valid Username!';
                                           }
                                           return null;
                                         },
                                         decoration: InputDecoration(
-                                            hintText: "Qatar Id",
+                                            hintText: "Username",
                                             border: InputBorder.none,
                                             fillColor: Color(0xfff3f3f4),
                                             filled: true),
@@ -539,12 +539,12 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                             TextInputType.emailAddress,
                                         validator: (val) {
                                           if (val.isEmpty) {
-                                            return 'Enter a your QATAR ID!';
+                                            return 'Enter a your Username!';
                                           }
                                           return null;
                                         },
                                         decoration: InputDecoration(
-                                            hintText: "Qatar Id",
+                                            hintText: "Username",
                                             border: InputBorder.none,
                                             fillColor: Color(0xfff3f3f4),
                                             filled: true),

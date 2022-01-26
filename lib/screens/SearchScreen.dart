@@ -59,7 +59,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Future<void> _showSearch() async {
     await showSearch(
       context: context,
-      delegate: TheSearch(data: allList),
+      delegate: TheSearch(data: allList, userInfo: widget.userInfo),
       query: pharmacyname,
     );
   }
@@ -111,8 +111,12 @@ class _SearchScreenState extends State<SearchScreen> {
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  Navigator.push(context,
-                      CupertinoPageRoute(builder: (context) => FilterScreen()));
+                  Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                          builder: (context) => FilterScreen(
+                                userInfo: widget.userInfo,
+                              )));
                 },
               ),
             ]),
@@ -171,7 +175,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   ? CachedNetworkImage(
                                       imageUrl:
                                           'https://onlinefamilypharmacy.com/images/noimage.jpg',
-                                      height: 100,
+                                      height: 130,
                                       width: 100,
                                       fit: BoxFit.fill,
                                       progressIndicatorBuilder:
@@ -194,7 +198,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   : CachedNetworkImage(
                                       imageUrl:
                                           'https://onlinefamilypharmacy.com/images/item/${data[index].img}',
-                                      height: 100,
+                                      height: 130,
                                       width: 100,
                                       fit: BoxFit.fill,
                                       progressIndicatorBuilder:
@@ -216,7 +220,9 @@ class _SearchScreenState extends State<SearchScreen> {
                                     ),
 
                               title: Text(
-                                data[index].itemproductgrouptitle,
+                                data[index].itemid +
+                                    ' - ' +
+                                    data[index].itemproductgrouptitle,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 15),
                               ),
@@ -292,7 +298,8 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 }
 
-SearchListD(context, data) {
+// ignore: non_constant_identifier_names
+SearchListD(context, data, userInfo) {
   return ListView.separated(
     separatorBuilder: (context, index) {
       return Divider();
@@ -307,6 +314,7 @@ SearchListD(context, data) {
               context,
               CupertinoPageRoute(
                   builder: (context) => DetailPageScreen(
+                        userInfo: userInfo,
                         itemDetails: data[index],
                       )));
         },
@@ -359,7 +367,8 @@ SearchListD(context, data) {
                       },
                     ),
           title: Text(
-            data[index].itemproductgrouptitle,
+          data[index].itemid +
+                                    ' - ' +  data[index].itemproductgrouptitle,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           subtitle: Column(
@@ -398,8 +407,12 @@ SearchListD(context, data) {
 }
 
 class TheSearch extends SearchDelegate<String> {
-  TheSearch({this.contextPage, this.controller, @required this.data});
-
+  TheSearch(
+      {this.contextPage,
+      this.controller,
+      @required this.data,
+      @required this.userInfo});
+  List userInfo;
   List<SearchList> data;
   BuildContext contextPage;
   WebViewController controller;
@@ -448,7 +461,8 @@ class TheSearch extends SearchDelegate<String> {
             .where((element) => element.itemproductgrouptitle
                 .toLowerCase()
                 .contains(query.toLowerCase()))
-            .toList());
+            .toList(),
+        userInfo);
   }
 
   @override
@@ -460,6 +474,7 @@ class TheSearch extends SearchDelegate<String> {
             .where((element) => element.itemproductgrouptitle
                 .toLowerCase()
                 .contains(query.toLowerCase()))
-            .toList());
+            .toList(),
+        userInfo);
   }
 }

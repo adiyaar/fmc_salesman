@@ -31,6 +31,10 @@ class _CartPageState extends State<CartPage>
   List<int> focList = [];
   List<int> exFocList = [];
   List<double> price = [];
+  List<double> wacCost = [];
+  List<double> managementCost = [];
+  List<double> calculatedCost = [];
+  List<String> subtotalofItem = [];
 
   Future resultGetData;
 
@@ -54,6 +58,7 @@ class _CartPageState extends State<CartPage>
     totalCheckout = 0.0;
     itemCodes = [];
     itemName = [];
+    subtotalofItem = [];
     quantity = [];
     focList = [];
     packagingname = [];
@@ -61,6 +66,9 @@ class _CartPageState extends State<CartPage>
     exFocList = [];
     price = [];
     common = [];
+    calculatedCost = [];
+    managementCost = [];
+    wacCost = [];
   }
 
   @override
@@ -108,6 +116,17 @@ class _CartPageState extends State<CartPage>
                   packagingname
                       .addAll(cartItems.map((e) => int.parse(e.packing)));
                   packaginunit.addAll(cartItems.map((e) => e.units));
+                  wacCost.addAll(cartItems.map((e) => double.parse(e.itemWac)));
+                  managementCost
+                      .addAll(cartItems.map((e) => double.parse(e.itemMgmt)));
+                  calculatedCost
+                      .addAll(cartItems.map((e) => double.parse(e.cutoFF)));
+
+                  subtotalofItem.addAll(cartItems.map((e) =>
+                      (double.parse(e.finalprice) * double.parse(e.quantity))
+                          .toStringAsFixed(2)));
+                  print('subtotalofItem');
+                  print(subtotalofItem);
 
                   price.addAll(cartItems.map((e) =>
                       (double.parse(e.finalprice).roundToDouble() *
@@ -158,6 +177,7 @@ class _CartPageState extends State<CartPage>
                                 DataColumn(label: Text('Ex FOC')),
                                 DataColumn(label: Text('Discount')),
                                 DataColumn(label: Text('SubTotal')),
+
                                 DataColumn(label: Text('')),
                               ],
                               rows: cartItems
@@ -338,6 +358,7 @@ class _CartPageState extends State<CartPage>
                   context,
                   MaterialPageRoute(
                       builder: (context) => CheckoutScreen(
+                        itemSubtotal: subtotalofItem,
                             userInfo: widget.useriNfo,
                             packagingunit: packaginunit,
                             packingqty: packagingname,
@@ -349,7 +370,10 @@ class _CartPageState extends State<CartPage>
                             itemName: itemName,
                             price: price,
                             quantity: quantity,
-                            common: common,
+                            wacCost: wacCost,
+                            calcCOst: calculatedCost,
+                            mgmtCost: managementCost,
+
                           )));
             },
             icon: Icon(

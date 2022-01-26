@@ -9,7 +9,8 @@ import 'package:testing/models/SearchScreenModel.dart';
 import 'DetailPageScreen.dart';
 
 class FilterScreen extends StatefulWidget {
-  FilterScreen({Key key}) : super(key: key);
+  List userInfo;
+  FilterScreen({Key key, @required this.userInfo}) : super(key: key);
 
   @override
   _FilterScreenState createState() => _FilterScreenState();
@@ -76,6 +77,7 @@ class _FilterScreenState extends State<FilterScreen> {
                     context,
                     CupertinoPageRoute(
                         builder: (context) => FilteredScreen(
+                              userInfo: widget.userInfo,
                               manufacture: true,
                               id: mnfid.first,
                             )))
@@ -83,6 +85,7 @@ class _FilterScreenState extends State<FilterScreen> {
                     context,
                     CupertinoPageRoute(
                         builder: (context) => FilteredScreen(
+                              userInfo: widget.userInfo,
                               manufacture: false,
                               id: imgid.first,
                             )));
@@ -202,9 +205,14 @@ class _FilterScreenState extends State<FilterScreen> {
 }
 
 class FilteredScreen extends StatefulWidget {
+  List userInfo;
   final String id;
   bool manufacture;
-  FilteredScreen({Key key, @required this.id, @required this.manufacture})
+  FilteredScreen(
+      {Key key,
+      @required this.id,
+      @required this.manufacture,
+      @required this.userInfo})
       : super(key: key);
 
   @override
@@ -223,11 +231,11 @@ class _FilteredScreenState extends State<FilteredScreen> {
       a = mf == true
           ? jsonResponse
               .map((e) => new SearchList.fromJson(e))
-              .where((element) => element.manufactureid == id)
+              .where((element) => element.manufactureid.trim().contains(id))
               .toList()
           : jsonResponse
               .map((e) => new SearchList.fromJson(e))
-              .where((element) => element.itemmaingroupid == id)
+              .where((element) => element.itemmaingroupid.trim().contains(id))
               .toList();
       return a;
     } else {
@@ -252,7 +260,11 @@ class _FilteredScreenState extends State<FilteredScreen> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<SearchList> data = snapshot.data;
-                      return ListView.builder(
+                      return ListView.separated(
+                          itemCount: data.length,
+                          separatorBuilder: (context, index) {
+                            return Divider();
+                          },
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
                             return GestureDetector(
@@ -261,6 +273,7 @@ class _FilteredScreenState extends State<FilteredScreen> {
                                     context,
                                     CupertinoPageRoute(
                                         builder: (context) => DetailPageScreen(
+                                              userInfo: widget.userInfo,
                                               itemDetails: data[index],
                                               customerType: 'Wholesale',
                                             )));
@@ -319,14 +332,16 @@ class _FilteredScreenState extends State<FilteredScreen> {
                                                 );
                                               },
                                             ),
-                                  title:
-                                      Text(data[index].itemproductgrouptitle),
-                                  subtitle: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
+                                  title: Text(data[index].itemid +
+                                      ' - ' +
+                                      data[index].itemproductgrouptitle),
+                                  subtitle:
+                                      Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
                                         Text(
                                           data[index].itemmaingrouptitle,
                                           style: TextStyle(

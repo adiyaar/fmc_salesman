@@ -7,6 +7,8 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:responsify/responsify_files/responsify_enum.dart';
 import 'package:responsify/responsify_files/responsify_ui_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:testing/Common/ItemGroupLoader.dart';
+import 'package:testing/Common/ItemTabletLoader.dart';
 import 'package:testing/models/ItemSubGroupModel.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -15,10 +17,15 @@ import 'ItemGroupList.dart';
 import 'ItemSubGroupList.dart';
 
 class ItemSub extends StatefulWidget {
+  final List userInfo;
   final itemsubid;
   final itemetitle;
 
-  ItemSub({Key key, @required this.itemsubid, @required this.itemetitle})
+  ItemSub(
+      {Key key,
+      @required this.itemsubid,
+      @required this.itemetitle,
+      @required this.userInfo})
       : super(key: key);
   @override
   _ItemSubState createState() => _ItemSubState();
@@ -76,7 +83,7 @@ class _ItemSubState extends State<ItemSub> {
   Future<void> _showSearch() async {
     await showSearch(
       context: context,
-      delegate: TheSearch(data: data),
+      delegate: TheSearch(data: data, userInfo: widget.userInfo),
       query: pharmacyname,
     );
   }
@@ -98,7 +105,7 @@ class _ItemSubState extends State<ItemSub> {
                 _showSearch();
               },
               icon: Icon(Icons.search)),
-                Stack(
+          Stack(
             children: [
               IconButton(
                 icon: Icon(Icons.shopping_cart_outlined),
@@ -140,6 +147,7 @@ class _ItemSubState extends State<ItemSub> {
                       List<ItemSubGroupModel> data = snapshot.data;
                       if (snapshot.data.length == 0) {
                         return ListItems(
+                          userInfo: widget.userInfo,
                           itemnull: widget.itemsubid,
                         );
                       }
@@ -160,6 +168,7 @@ class _ItemSubState extends State<ItemSub> {
                                     context,
                                     new MaterialPageRoute(
                                         builder: (context) => SubList_Items(
+                                            userInfo: widget.userInfo,
                                             sublist: data[index].id,
                                             title: data[index].title)));
                               },
@@ -224,25 +233,7 @@ class _ItemSubState extends State<ItemSub> {
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
                     }
-                    return Center(
-                      child: CircularPercentIndicator(
-                        radius: 100.0,
-                        lineWidth: 10.0,
-                        percent: 1.0,
-                        animationDuration: 5000,
-                        restartAnimation: true,
-                        animation: true,
-                        footer: Text("Fetching Data Securely!"),
-                        center: new Icon(
-                          Icons.lock,
-                          size: 50.0,
-                          color: Colors.black,
-                        ),
-                        backgroundColor: Colors.white,
-                        circularStrokeCap: CircularStrokeCap.round,
-                        progressColor: Colors.black,
-                      ),
-                    );
+                    return Horizonatal();
                   },
                 ),
               ),
@@ -260,6 +251,7 @@ class _ItemSubState extends State<ItemSub> {
                       List<ItemSubGroupModel> data = snapshot.data;
                       if (snapshot.data.length == 0) {
                         return ListItems(
+                          userInfo: widget.userInfo,
                           itemnull: widget.itemsubid,
                         );
                       }
@@ -276,6 +268,7 @@ class _ItemSubState extends State<ItemSub> {
                                     context,
                                     new MaterialPageRoute(
                                         builder: (context) => SubList_Items(
+                                            userInfo: widget.userInfo,
                                             sublist: data[index].id,
                                             title: data[index].title)));
                               },
@@ -333,25 +326,7 @@ class _ItemSubState extends State<ItemSub> {
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
                     }
-                    return Center(
-                      child: CircularPercentIndicator(
-                        radius: 100.0,
-                        lineWidth: 10.0,
-                        percent: 1.0,
-                        animationDuration: 5000,
-                        restartAnimation: true,
-                        animation: true,
-                        footer: Text("Fetching Data Securely!"),
-                        center: new Icon(
-                          Icons.lock,
-                          size: 50.0,
-                          color: Colors.black,
-                        ),
-                        backgroundColor: Colors.white,
-                        circularStrokeCap: CircularStrokeCap.round,
-                        progressColor: Colors.black,
-                      ),
-                    );
+                    return ItemmTablet();
                   },
                 ),
               ),
@@ -367,6 +342,7 @@ class _ItemSubState extends State<ItemSub> {
                     if (snapshot.hasData) {
                       if (snapshot.data.length == 0) {
                         return ListItems(
+                          userInfo: widget.userInfo,
                           itemnull: widget.itemsubid,
                         );
                       }
@@ -387,6 +363,7 @@ class _ItemSubState extends State<ItemSub> {
                                     context,
                                     new MaterialPageRoute(
                                         builder: (context) => SubList_Items(
+                                            userInfo: widget.userInfo,
                                             sublist: data[index].id,
                                             title: data[index].title)));
                               },
@@ -458,25 +435,7 @@ class _ItemSubState extends State<ItemSub> {
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
                     }
-                    return Center(
-                      child: CircularPercentIndicator(
-                        radius: 100.0,
-                        lineWidth: 10.0,
-                        percent: 1.0,
-                        animationDuration: 5000,
-                        restartAnimation: true,
-                        animation: true,
-                        footer: Text("Fetching Data Securely!"),
-                        center: new Icon(
-                          Icons.lock,
-                          size: 50.0,
-                          color: Colors.black,
-                        ),
-                        backgroundColor: Colors.white,
-                        circularStrokeCap: CircularStrokeCap.round,
-                        progressColor: Colors.black,
-                      ),
-                    );
+                    return ItemGroupLoaderMobile();
                   },
                 ),
               ),
@@ -489,7 +448,7 @@ class _ItemSubState extends State<ItemSub> {
   }
 }
 
-Grid(context, data) {
+Grid(context, data, userInfo) {
   final width = MediaQuery.of(context).size.width;
   final height = MediaQuery.of(context).size.height;
   final containerh = height / 2;
@@ -509,7 +468,9 @@ Grid(context, data) {
                   context,
                   new MaterialPageRoute(
                       builder: (context) => SubList_Items(
-                          sublist: data[index].id, title: data[index].title)));
+                          userInfo: userInfo,
+                          sublist: data[index].id,
+                          title: data[index].title)));
               // );
             },
             child: Padding(
@@ -569,7 +530,9 @@ Grid(context, data) {
                   context,
                   new MaterialPageRoute(
                       builder: (context) => SubList_Items(
-                          sublist: data[index].id, title: data[index].title)));
+                          userInfo: userInfo,
+                          sublist: data[index].id,
+                          title: data[index].title)));
             },
             child: Padding(
               padding: const EdgeInsets.all(5.0),
@@ -630,7 +593,9 @@ Grid(context, data) {
                   context,
                   new MaterialPageRoute(
                       builder: (context) => SubList_Items(
-                          sublist: data[index].id, title: data[index].title)));
+                          userInfo: userInfo,
+                          sublist: data[index].id,
+                          title: data[index].title)));
             },
             child: Padding(
               padding: const EdgeInsets.all(5.0),
@@ -691,7 +656,9 @@ Grid(context, data) {
                   context,
                   new MaterialPageRoute(
                       builder: (context) => SubList_Items(
-                          sublist: data[index].id, title: data[index].title)));
+                          userInfo: userInfo,
+                          sublist: data[index].id,
+                          title: data[index].title)));
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -740,7 +707,12 @@ Grid(context, data) {
 }
 
 class TheSearch extends SearchDelegate<String> {
-  TheSearch({this.contextPage, this.controller, @required this.data});
+  List userInfo;
+  TheSearch(
+      {this.contextPage,
+      this.controller,
+      @required this.data,
+      @required this.userInfo});
 
   List<ItemSubGroupModel> data;
   BuildContext contextPage;
@@ -789,7 +761,8 @@ class TheSearch extends SearchDelegate<String> {
         data
             .where((element) =>
                 element.title.toLowerCase().contains(query.toLowerCase()))
-            .toList());
+            .toList(),
+        userInfo);
   }
 
   @override
@@ -799,6 +772,7 @@ class TheSearch extends SearchDelegate<String> {
         data
             .where((element) =>
                 element.title.toLowerCase().contains(query.toLowerCase()))
-            .toList());
+            .toList(),
+        userInfo);
   }
 }

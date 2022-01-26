@@ -7,9 +7,11 @@ import 'package:testing/Common/Shimmer.dart';
 import 'package:testing/screens/DetailPageScreen.dart';
 
 class ListItems extends StatefulWidget {
+  List userInfo;
   final itemnull;
 
-  ListItems({Key key, @required this.itemnull}) : super(key: key);
+  ListItems({Key key, @required this.itemnull, @required this.userInfo})
+      : super(key: key);
   @override
   _ListItemsState createState() => _ListItemsState();
 }
@@ -143,7 +145,7 @@ class _ListItemsState extends State<ListItems> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<ItemGrpData> data = snapshot.data;
-            return Grid(context, data);
+            return Grid(context, data, widget.userInfo);
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return SearchShimmer();
           }
@@ -168,7 +170,7 @@ class _ListItemsState extends State<ListItems> {
   }
 }
 
-Grid(context, data) {
+Grid(context, data, userInfo) {
   return ListView.builder(
     scrollDirection: Axis.vertical,
     itemCount: data.length,
@@ -179,8 +181,8 @@ Grid(context, data) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        DetailPageScreen(itemDetails: data[index])));
+                    builder: (context) => DetailPageScreen(
+                        userInfo: userInfo, itemDetails: data[index])));
           },
           // var finalprice = data[index].price;
           child: Padding(

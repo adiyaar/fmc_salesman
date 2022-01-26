@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:responsify/responsify.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:testing/Common/ItemGroupLoader.dart';
+import 'package:testing/Common/ItemTabletLoader.dart';
 import 'package:testing/models/ItemMainGroupModel.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
@@ -14,7 +16,8 @@ import 'CartPage.dart';
 import 'ItemGroup.dart';
 
 class ItemMainGroup extends StatefulWidget {
-  ItemMainGroup({Key key}) : super(key: key);
+  List userInfo;
+  ItemMainGroup({Key key, @required this.userInfo}) : super(key: key);
 
   @override
   _ItemMainGroupState createState() => _ItemMainGroupState();
@@ -27,7 +30,7 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
   Future<void> _showSearch() async {
     await showSearch(
       context: context,
-      delegate: TheSearch(data: data),
+      delegate: TheSearch(data: data, userInfo: widget.userInfo),
       query: pharmacyname,
     );
   }
@@ -153,6 +156,7 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
                                     context,
                                     new MaterialPageRoute(
                                         builder: (context) => ItemGroup(
+                                            userInfo: widget.userInfo,
                                             itemid: data[index].id,
                                             itemtitle: data[index].title)));
                               },
@@ -215,25 +219,7 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
                     }
-                    return Center(
-                      child: CircularPercentIndicator(
-                        radius: 100.0,
-                        lineWidth: 10.0,
-                        percent: 1.0,
-                        animationDuration: 5000,
-                        restartAnimation: true,
-                        animation: true,
-                        footer: Text("Fetching Data Securely!"),
-                        center: new Icon(
-                          Icons.lock,
-                          size: 50.0,
-                          color: Colors.black,
-                        ),
-                        backgroundColor: Colors.white,
-                        circularStrokeCap: CircularStrokeCap.round,
-                        progressColor: Colors.black,
-                      ),
-                    );
+                    return Horizonatal();
                   },
                 ),
               ),
@@ -262,6 +248,7 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
                                     context,
                                     new MaterialPageRoute(
                                         builder: (context) => ItemGroup(
+                                            userInfo: widget.userInfo,
                                             itemid: data[index].id,
                                             itemtitle: data[index].title)));
                               },
@@ -319,25 +306,7 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
                     }
-                    return Center(
-                      child: CircularPercentIndicator(
-                        radius: 100.0,
-                        lineWidth: 10.0,
-                        percent: 1.0,
-                        animationDuration: 5000,
-                        restartAnimation: true,
-                        animation: true,
-                        footer: Text("Fetching Data Securely!"),
-                        center: new Icon(
-                          Icons.lock,
-                          size: 50.0,
-                          color: Colors.black,
-                        ),
-                        backgroundColor: Colors.white,
-                        circularStrokeCap: CircularStrokeCap.round,
-                        progressColor: Colors.black,
-                      ),
-                    );
+                    return ItemmTablet();
                   },
                 ),
               ),
@@ -369,6 +338,7 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
                                     context,
                                     new MaterialPageRoute(
                                         builder: (context) => ItemGroup(
+                                            userInfo: widget.userInfo,
                                             itemid: data[index].id,
                                             itemtitle: data[index].title)));
                               },
@@ -440,25 +410,7 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
                     }
-                    return Center(
-                      child: CircularPercentIndicator(
-                        radius: 100.0,
-                        lineWidth: 10.0,
-                        percent: 1.0,
-                        animationDuration: 5000,
-                        restartAnimation: true,
-                        animation: true,
-                        footer: Text("Fetching Data Securely!"),
-                        center: new Icon(
-                          Icons.lock,
-                          size: 50.0,
-                          color: Colors.black,
-                        ),
-                        backgroundColor: Colors.white,
-                        circularStrokeCap: CircularStrokeCap.round,
-                        progressColor: Colors.black,
-                      ),
-                    );
+                    return ItemGroupLoaderMobile();
                   },
                 ),
               ),
@@ -472,7 +424,7 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
 }
 
 // ignore: non_constant_identifier_names
-GridViewer(context, data) {
+GridViewer(context, data, userInfo) {
   final width = MediaQuery.of(context).size.width;
   final height = MediaQuery.of(context).size.height;
   final containerh = height / 2;
@@ -492,6 +444,7 @@ GridViewer(context, data) {
                   context,
                   new MaterialPageRoute(
                       builder: (context) => ItemGroup(
+                          userInfo: userInfo,
                           itemid: data[index].id,
                           itemtitle: data[index].title)));
             },
@@ -552,6 +505,7 @@ GridViewer(context, data) {
                   context,
                   new MaterialPageRoute(
                       builder: (context) => ItemGroup(
+                          userInfo: userInfo,
                           itemid: data[index].id,
                           itemtitle: data[index].title)));
             },
@@ -612,6 +566,7 @@ GridViewer(context, data) {
                   context,
                   new MaterialPageRoute(
                       builder: (context) => ItemGroup(
+                          userInfo: userInfo,
                           itemid: data[index].id,
                           itemtitle: data[index].title)));
             },
@@ -672,6 +627,7 @@ GridViewer(context, data) {
                   context,
                   new MaterialPageRoute(
                       builder: (context) => ItemGroup(
+                          userInfo: userInfo,
                           itemid: data[index].id,
                           itemtitle: data[index].title)));
             },
@@ -720,7 +676,12 @@ GridViewer(context, data) {
 }
 
 class TheSearch extends SearchDelegate<String> {
-  TheSearch({this.contextPage, this.controller, @required this.data});
+  List userInfo;
+  TheSearch(
+      {this.contextPage,
+      this.controller,
+      @required this.data,
+      @required this.userInfo});
 
   List<ItemMainGroupModel> data;
   BuildContext contextPage;
@@ -768,7 +729,8 @@ class TheSearch extends SearchDelegate<String> {
         data
             .where((element) =>
                 element.title.toLowerCase().contains(query.toLowerCase()))
-            .toList());
+            .toList(),
+        userInfo);
   }
 
   @override
@@ -778,6 +740,7 @@ class TheSearch extends SearchDelegate<String> {
         data
             .where((element) =>
                 element.title.toLowerCase().contains(query.toLowerCase()))
-            .toList());
+            .toList(),
+        userInfo);
   }
 }
