@@ -143,11 +143,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   widget.itemSubtotal.toList(),
                 );
 
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) =>
-                //             DoneOrdering(userInfo: widget.userInfo)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            DoneOrdering(userInfo: widget.userInfo)));
               }
             },
             label: Text('Place Order')),

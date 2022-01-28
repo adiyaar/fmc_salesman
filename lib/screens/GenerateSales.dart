@@ -187,7 +187,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                               // printdata);
                               customerSelected = data.id;
                               cust_name = data.customername;
-                              // printcustomerSelected);
+                              print(customerSelected);
                               // addCustomerData();
                             },
                           ),
@@ -223,8 +223,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey[500]),
                           ),
-                          child: DropdownSearch<CustomerBranch>(
-                            showClearButton: true,
+                          child: DropdownSearch(
                             mode: Mode.BOTTOM_SHEET,
                             hint: "Select Branch",
                             dropdownSearchDecoration: InputDecoration(
@@ -246,15 +245,17 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                               return CustomerShimmer();
                             },
                             showSearchBox: true,
+                            itemAsString: (CustomerBranch cb) => cb.branchname,
                             onFind: (String filter) async {
                               var response = await Dio().get(
-                                "https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=customerbranch&custid=1459",
+                                "https://onlinefamilypharmacy.com/mobileapplication/salesmancustomerbranch.php?customerid=$customerSelected",
                                 queryParameters: {"filter": filter},
                               );
-                              // printresponse.data.length);
-                              var models =
-                                  CustomerBranch.fromJsonList(response.data);
+                              var a = json.decode(response.data);
+                              print(a);
+                              var models = CustomerBranch.fromJsonList(a);
 
+                              // printmodels);
                               return models;
                             },
                             onChanged: (CustomerBranch data) {
@@ -794,26 +795,28 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                     ),
                                   );
                                 },
-                                errorBuilder: (context, filter, dynamic) {
-                                  return Scaffold(
-                                    backgroundColor: Colors.white,
-                                    body: Center(
-                                      child: Image.network(
-                                          "https://media.istockphoto.com/photos/pug-dog-with-yellow-constructor-safety-helmet-and-cone-and-404-error-picture-id687810238?b=1&k=20&m=687810238&s=170667a&w=0&h=duenBlKFTSG0Ne4DmI8cBg47YZ6LACuLRiDlFD5doRQ="),
-                                    ),
-                                  );
-                                },
+                                // errorBuilder: (context, filter, dynamic) {
+                                //   return Scaffold(
+                                //     backgroundColor: Colors.white,
+                                //     body: Center(
+                                //       child: Image.network(
+                                //           "https://media.istockphoto.com/photos/pug-dog-with-yellow-constructor-safety-helmet-and-cone-and-404-error-picture-id687810238?b=1&k=20&m=687810238&s=170667a&w=0&h=duenBlKFTSG0Ne4DmI8cBg47YZ6LACuLRiDlFD5doRQ="),
+                                //     ),
+                                //   );
+                                // },
                                 loadingBuilder: (context, filter) {
                                   return CustomerShimmer();
                                 },
+                                itemAsString: (CustomerBranch cb) =>
+                                    cb.branchname,
                                 onFind: (String filter) async {
                                   var response = await Dio().get(
-                                    "https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=customerbranch",
+                                    "https://onlinefamilypharmacy.com/mobileapplication/salesmancustomerbranch.php?customerid=$customerSelected",
                                     queryParameters: {"filter": filter},
                                   );
-                                  // printresponse.data.length);
-                                  var models = CustomerBranch.fromJsonList(
-                                      response.data);
+                                  var a = json.decode(response.data);
+                                  print(a);
+                                  var models = CustomerBranch.fromJsonList(a);
 
                                   // printmodels);
                                   return models;
@@ -1483,12 +1486,12 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                   var models =
                                       CustomerList.fromJsonList(response.data);
 
-                                  // printmodels);
                                   return models;
                                 },
                                 onChanged: (CustomerList data) {
                                   // printdata);
                                   customerSelected = data.id;
+                                  print(customerSelected);
                                   getAllValue();
                                 },
                               ),
@@ -1532,12 +1535,12 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                                 },
                                 onFind: (String filter) async {
                                   var response = await Dio().get(
-                                    "https://onlinefamilypharmacy.com/mobileapplication/e_static.php?action=customerbranch",
+                                    "https://onlinefamilypharmacy.com/mobileapplication/salesmancustomerbranch.php?customerid=$customerSelected",
                                     queryParameters: {"filter": filter},
                                   );
-                                  // printresponse.data.length);
-                                  var models = CustomerBranch.fromJsonList(
-                                      response.data);
+                                  var a = json.decode(response.data);
+                                  print(a);
+                                  var models = CustomerBranch.fromJsonList(a);
 
                                   // printmodels);
                                   return models;
