@@ -93,10 +93,10 @@ Future removeCart(BuildContext context, itemCode) async {
 
   var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
   var message = jsonDecode(response.body);
-  print("I am removed message");
-  print(message);
+  
   if (message == "Item Removed from Cart") {
     GlobalSnackBar.show(context, 'Item Removed from Cart');
+    
   }
 }
 
@@ -130,8 +130,6 @@ Future salesorder(
   String creditLimit = pf.getString('credit_limit');
   String creditDays = pf.getString('credit_days');
 
-  print(mgmgt);
-  print(calcCost);
   var data = {
     'invoiceprice': customerType,
     'customername': int.parse(customerBranchId),
@@ -139,12 +137,12 @@ Future salesorder(
     'customertype': customerType,
     'units': packingunit, // variant // Pc
     'packing': packingqty, // packaging // 1 , 10 ,100
-    'item_whichcompany': "FMC",
+    'item_whichcompany': "FMC", // error
     'item_wac': wacCost,
     'item_mgmtcost': mgmgt,
     'item_cutoffcost': calcCost,
-    'order_item_actual_amount' :itemSubtotal,
-'order_item_final_amount' : itemSubtotal,
+    'order_item_actual_amount': itemSubtotal,
+    'order_item_final_amount': itemSubtotal,
     'calculationtotal': calcCost,
     'order_total': checkOutTotal,
     'itemcode': itemCodes,

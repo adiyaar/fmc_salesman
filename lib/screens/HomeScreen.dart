@@ -73,21 +73,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // fetchCrtCOunt();
+    fetchCrtCOunt();
     final floatingButtons = <UnicornButton>[];
     floatingButtons.add(
       UnicornButton(
         hasLabel: true,
         labelText: "Search",
         currentButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => SearchScreen(
-                          userInfo: widget.userList,
-                        )));
-          },
+          onPressed: () {},
           heroTag: "search",
           backgroundColor: Colors.black,
           mini: true,
@@ -175,6 +168,18 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.black,
+        child: Icon(Icons.search_rounded),
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SearchScreen(
+                        userInfo: widget.userList,
+                      )));
+        },
+      ),
       appBar: AppBar(
         backgroundColor: Colors.black87,
         iconTheme: IconThemeData(color: Colors.white),
@@ -188,8 +193,12 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.star_border),
             tooltip: 'MainGroup',
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ItemMainGroup(userInfo: widget.userList,)));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ItemMainGroup(
+                            userInfo: widget.userList,
+                          )));
             },
           ), //IconButton
           Stack(
@@ -783,8 +792,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          GenerateSalesOrder(userInfo: widget.userList,)),
+                                      builder: (context) => GenerateSalesOrder(
+                                            userInfo: widget.userList,
+                                          )),
                                 ).then((value) {
                                   setState(() {});
                                 });
@@ -1216,12 +1226,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       )),
-      floatingActionButton: UnicornDialer(
-          backgroundColor: Colors.black38,
-          parentButtonBackground: Colors.black,
-          orientation: UnicornOrientation.VERTICAL,
-          parentButton: Icon(Icons.add),
-          childButtons: floatingButtons),
     );
   }
 }

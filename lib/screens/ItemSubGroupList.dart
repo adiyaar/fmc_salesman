@@ -172,7 +172,7 @@ class _SubList_ItemsState extends State<SubList_Items> {
                 tooltip: 'MainGroup',
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => CartPage()));
+                      MaterialPageRoute(builder: (context) => CartPage(useriNfo: widget.userInfo,)));
                 },
               ),
               CircleAvatar(

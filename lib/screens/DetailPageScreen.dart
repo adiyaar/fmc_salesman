@@ -120,7 +120,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     print("!111");
     print(jsondataval);
     priceSetting = jsondataval.map((e) => PriceSetting.fromJson(e)).toList();
-
+    setState(() {});
     return priceSetting;
   }
 
@@ -138,7 +138,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     List jsondataval = json.decode(response.body);
     priceSettingCutoff =
         jsondataval.map((e) => PriceSettingCutoff.fromJson(e)).toList();
-
+    setState(() {});
     return priceSettingCutoff;
   }
 
@@ -172,7 +172,8 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
 
     List jsonResponse = json.decode(response.body);
-    // print(jsonResponse);
+    print('h');
+    print(jsonResponse);
 
     a1 = jsonResponse.length;
     setState(() {});
@@ -249,8 +250,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Salesmandetailpage> iteminfo = snapshot.data;
-                  print("========");
-                  print(iteminfo[0].mohprice);
+
                   if (iteminfo[0].mohprice == "1") {
                     getPriceSettingPhp("MOH", iteminfo[0].whichcompany);
                     getPriceSettingPhpCutOff("MOH", iteminfo[0].whichcompany);
@@ -260,7 +260,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                         "NONMOH", iteminfo[0].whichcompany);
                   }
 
-                  Future.delayed(Duration(seconds: 1), () {
+                  Future.delayed(Duration(milliseconds: 10), () {
                     managementCost = (double.parse(iteminfo[0].wacCost) /
                         (1 - double.parse(priceSetting[0].margin)));
                     print("object");
@@ -269,18 +269,12 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                     double a =
                         (double.parse(priceSettingCutoff[0].realmargincost)) /
                             100;
-                    print(a);
+
                     double x = 1 - a;
-                    print(managementCost);
-                    print(x);
 
                     calculatedCost = (managementCost / x).roundToDouble();
-                    print(calculatedCost);
-                    // ((double.parse(iteminfo[0].wholeSalePrice) -
-                    //             double.parse(iteminfo[0].wacCost)) *
-                    //         double.parse(
-                    //             priceSettingCutoff[0].bonuspercentage) /
-                    //         100)
+
+                    // setState(() {});
                   });
                   return SingleChildScrollView(
                       child: Column(
@@ -1038,7 +1032,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   fontSize: 15),
                             ),
                             Text(
-                              'Selected Variant Price-- ${selectedUnitName}',
+                              'Selected Variant Price-- $selectedUnitName',
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   color: Colors.black,
@@ -1230,7 +1224,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                         "NONMOH", iteminfo[0].whichcompany);
                   }
 
-                  Future.delayed(Duration(seconds: 1), () {
+                  Future.delayed(Duration(milliseconds: 10), () {
                     managementCost = (double.parse(iteminfo[0].wacCost) /
                         (1 - double.parse(priceSetting[0].margin)));
                     print("object");
@@ -1245,7 +1239,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                     print(x);
 
                     calculatedCost = (managementCost / x).roundToDouble();
-                    print(calculatedCost);
+                    // setState(() {});
                   });
                   return SingleChildScrollView(
                       child: Column(
@@ -2058,7 +2052,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                         "NONMOH", iteminfo[0].whichcompany);
                   }
 
-                  Future.delayed(Duration(seconds: 1), () {
+                  Future.delayed(Duration(milliseconds: 10), () {
                     String temp = (double.parse(iteminfo[0].wacCost) /
                             (1 - double.parse(priceSetting[0].margin) / 100))
                         .toStringAsFixed(2);
@@ -2082,6 +2076,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                     //         double.parse(
                     //             priceSettingCutoff[0].bonuspercentage) /
                     //         100)
+                    // setState(() {});
                   });
                   return SingleChildScrollView(
                       child: Column(
@@ -2522,8 +2517,6 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(snackBar);
                                     } else {
-                                      print(calculatedCost);
-                                      print("her");
                                       (employeeWhichCompany
                                                       .trim()
                                                       .toLowerCase() ==

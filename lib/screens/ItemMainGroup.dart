@@ -107,7 +107,7 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
                 tooltip: 'MainGroup',
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => CartPage()));
+                      MaterialPageRoute(builder: (context) => CartPage(useriNfo: widget.userInfo,)));
                 },
               ),
               CircleAvatar(

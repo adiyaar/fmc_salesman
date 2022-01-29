@@ -195,7 +195,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
 
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => HomeScreen(
@@ -403,7 +403,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
 
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => HomeScreen(
@@ -585,8 +585,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                 bool formFilled =
                                     _formKey.currentState.validate();
                                 if (formFilled == true) {
-                                  SharedPreferences pf =
-                                      await SharedPreferences.getInstance();
+                                  
                                   // futureGroup.add(salesmanLogin(
                                   //     emailcontroller.text,
                                   //     passwordcontroller.text));
@@ -606,6 +605,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                       body: json.encode(data));
 
                                   String message = jsonDecode(response.body);
+                                  print(message);
                                   if (message == "Login Matched") {
                                     final String baseUrl1 =
                                         'https://onlinefamilypharmacy.com/mobileapplication/salesmanprofile.php';
@@ -631,7 +631,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
 
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => HomeScreen(

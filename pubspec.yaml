@@ -20,7 +20,7 @@ dependencies:
   dropdown_search:
   flutter_swiper:
   shared_preferences:
-
+  pull_to_refresh: any
   fluttertoast:
   loader_overlay:
   filter_list: any

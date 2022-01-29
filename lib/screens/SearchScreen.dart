@@ -166,12 +166,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             child: ListTile(
                               leading: 'https://onlinefamilypharmacy.com/images/item/${data[index].img}' ==
                                       'https://onlinefamilypharmacy.com/images/item/null'
-                                  // ? Image.network(
-                                  //     'https://onlinefamilypharmacy.com/images/noimage.jpg',
-                                  //     height: 100,
-                                  //     width: 100,
-                                  //     fit: BoxFit.fill,
-                                  //   )
+                                  
                                   ? CachedNetworkImage(
                                       imageUrl:
                                           'https://onlinefamilypharmacy.com/images/noimage.jpg',

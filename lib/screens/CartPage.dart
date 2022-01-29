@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:responsify/responsify.dart';
 import 'package:testing/Apis/CartPage.dart';
 import 'package:testing/models/CartItem.dart';
 import 'package:flutter/foundation.dart';
 import 'package:testing/screens/CheckoutScreen.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class CartPage extends StatefulWidget {
   final List useriNfo;
@@ -125,12 +127,9 @@ class _CartPageState extends State<CartPage>
                   subtotalofItem.addAll(cartItems.map((e) =>
                       (double.parse(e.finalprice) * double.parse(e.quantity))
                           .toStringAsFixed(2)));
-                  print('subtotalofItem');
-                  print(subtotalofItem);
 
                   price.addAll(cartItems.map((e) =>
-                      (double.parse(e.finalprice).roundToDouble() *
-                          double.parse(e.quantity).roundToDouble())));
+                      (double.parse(e.finalprice) * double.parse(e.quantity))));
 
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
@@ -144,53 +143,117 @@ class _CartPageState extends State<CartPage>
                     } else if (snapshot.data.length > 0) {
                       totalItems = snapshot.data.length;
                       for (int i = 0; i < snapshot.data.length; i++) {
-                        totalCheckout =
-                            (double.parse(snapshot.data[i].finalprice)
-                                        .roundToDouble() *
-                                    double.parse(snapshot.data[i].quantity)
-                                        .roundToDouble()) +
-                                totalCheckout;
+                        String temp =
+                            ((double.parse(snapshot.data[i].finalprice) *
+                                    double.parse(snapshot.data[i].quantity))
+                                .toStringAsFixed(2));
+
+                        totalCheckout = double.parse(temp) + totalCheckout;
                       }
                       return SingleChildScrollView(
+                        physics: BouncingScrollPhysics(),
                         child: Container(
                           margin: EdgeInsets.only(left: 05, right: 05),
                           width: double.infinity,
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: DataTable(
+                              showBottomBorder: true,
                               headingRowHeight: 50,
-                              dataRowHeight: 100,
+                              dataRowHeight: 80,
 
-                              columnSpacing: 110,
+                              // columnSpacing: 80,
                               headingRowColor:
                                   MaterialStateProperty.all(Colors.white),
                               headingTextStyle: TextStyle(color: Colors.black),
-                              // dataRowColor:
-                              //     MaterialStateProperty.all(Colors.grey),
+
                               columns: [
                                 DataColumn(
                                     label: Text(
                                         'Product Info')), // image , name of product , itemcode
-                                DataColumn(label: Text('Quantity')),
+
+                                DataColumn(label: Text('Units')),
                                 DataColumn(label: Text('Price')),
+                                DataColumn(label: Text('Quantity')),
                                 DataColumn(label: Text('FOC')),
                                 DataColumn(label: Text('Ex FOC')),
                                 DataColumn(label: Text('Discount')),
                                 DataColumn(label: Text('SubTotal')),
-
                                 DataColumn(label: Text('')),
                               ],
                               rows: cartItems
                                   .map((data) => DataRow(cells: [
                                         DataCell(ListTile(
                                           leading: Container(
-                                            height: 50,
+                                            height: 100,
                                             width: 50,
-                                            child: Image.network(
-                                                'https://onlinefamilypharmacy.com/images/noimage.jpg'),
+                                            child: 'https://onlinefamilypharmacy.com/images/item/${data.image}' ==
+                                                    'https://onlinefamilypharmacy.com/images/item/null'
+                                                ? CachedNetworkImage(
+                                                    imageUrl:
+                                                        'https://onlinefamilypharmacy.com/images/noimage.jpg',
+                                                    height: 130,
+                                                    width: 100,
+                                                    fit: BoxFit.fill,
+                                                    progressIndicatorBuilder:
+                                                        (_, url, download) {
+                                                      if (download.progress !=
+                                                          null) {
+                                                        return Center(
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                            value: download
+                                                                .progress,
+                                                            color: Colors.black,
+                                                          ),
+                                                        );
+                                                      }
+                                                      return Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                          color: Colors.black,
+                                                        ),
+                                                      );
+                                                    },
+                                                  )
+                                                : CachedNetworkImage(
+                                                    imageUrl:
+                                                        'https://onlinefamilypharmacy.com/images/item/${data.image}',
+                                                    height: 130,
+                                                    width: 100,
+                                                    fit: BoxFit.fill,
+                                                    progressIndicatorBuilder:
+                                                        (_, url, download) {
+                                                      if (download.progress !=
+                                                          null) {
+                                                        return Center(
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                            value: download
+                                                                .progress,
+                                                            color: Colors.black,
+                                                          ),
+                                                        );
+                                                      }
+                                                      return Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                          color: Colors.black,
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
                                           ),
                                           title: Text(data.itemName),
                                           subtitle: Text(data.itemCode),
+                                        )),
+                                        DataCell(Text(
+                                          data.units + ' - ' + data.packing,
+                                          style: TextStyle(fontSize: 13),
+                                        )),
+                                        DataCell(Text(
+                                          data.finalprice,
+                                          style: TextStyle(fontSize: 13),
                                         )),
                                         DataCell(Row(
                                           mainAxisAlignment:
@@ -210,6 +273,8 @@ class _CartPageState extends State<CartPage>
                                               width: 100,
                                               child: TextFormField(
                                                 initialValue: data.quantity,
+                                                keyboardType:
+                                                    TextInputType.number,
                                                 decoration: InputDecoration(
                                                     filled: true,
                                                     fillColor: Colors.grey[300],
@@ -218,7 +283,7 @@ class _CartPageState extends State<CartPage>
                                                   setState(() {
                                                     data.quantity = string;
                                                   });
-
+                                                  print(data.quantity);
                                                   updateCart(
                                                       context,
                                                       data.itemCode,
@@ -244,10 +309,6 @@ class _CartPageState extends State<CartPage>
                                             // ),
                                           ],
                                         )),
-                                        DataCell(Text(
-                                          data.finalprice,
-                                          style: TextStyle(fontSize: 13),
-                                        )),
                                         DataCell(Row(
                                           children: [
                                             Container(
@@ -255,6 +316,8 @@ class _CartPageState extends State<CartPage>
                                               width: 100,
                                               child: TextFormField(
                                                 initialValue: data.foc,
+                                                keyboardType:
+                                                    TextInputType.number,
                                                 decoration: InputDecoration(
                                                     filled: true,
                                                     fillColor: Colors.grey[300],
@@ -284,6 +347,8 @@ class _CartPageState extends State<CartPage>
                                               width: 100,
                                               child: TextFormField(
                                                 initialValue: data.exFoc,
+                                                keyboardType:
+                                                    TextInputType.number,
                                                 decoration: InputDecoration(
                                                     filled: true,
                                                     fillColor: Colors.grey[300],
@@ -311,7 +376,7 @@ class _CartPageState extends State<CartPage>
                                           style: TextStyle(fontSize: 13),
                                         )),
                                         DataCell(Text(
-                                            '${double.parse(data.finalprice).roundToDouble() * double.parse(data.quantity).roundToDouble()} QR')),
+                                            '${(double.parse(data.finalprice) * double.parse(data.quantity)).toStringAsFixed(2)} QR')),
                                         DataCell(Row(
                                           children: [
                                             InkWell(
@@ -322,7 +387,15 @@ class _CartPageState extends State<CartPage>
                                               onTap: () {
                                                 removeCart(
                                                     context, data.itemCode);
-                                                // setState(() {});
+                                                Future.delayed(
+                                                    Duration(seconds: 1), () {
+                                                  Navigator.pushReplacement(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              super.widget));
+                                                });
                                               },
                                             ),
                                           ],
@@ -358,12 +431,13 @@ class _CartPageState extends State<CartPage>
                   context,
                   MaterialPageRoute(
                       builder: (context) => CheckoutScreen(
-                        itemSubtotal: subtotalofItem,
+                            itemSubtotal: subtotalofItem,
                             userInfo: widget.useriNfo,
                             packagingunit: packaginunit,
                             packingqty: packagingname,
                             totalItems: totalItems,
-                            checkoutTotal: totalCheckout,
+                            checkoutTotal:
+                                double.parse(totalCheckout.toStringAsFixed(2)),
                             exFoc: exFocList,
                             foc: focList,
                             itemCodes: itemCodes,
@@ -373,7 +447,6 @@ class _CartPageState extends State<CartPage>
                             wacCost: wacCost,
                             calcCOst: calculatedCost,
                             mgmtCost: managementCost,
-
                           )));
             },
             icon: Icon(

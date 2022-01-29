@@ -66,7 +66,10 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => HomeScreen(userList: widget.userInfo,)),
+                    MaterialPageRoute(
+                        builder: (context) => HomeScreen(
+                              userList: widget.userInfo,
+                            )),
                   );
                 }),
             Divider(
@@ -97,7 +100,8 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => GenerateSalesOrder(userInfo: widget.userInfo)));
+                          builder: (context) =>
+                              GenerateSalesOrder(userInfo: widget.userInfo)));
                 }),
 
             // ListTile(
@@ -248,21 +252,11 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
             ListTile(
                 title: new Text("Contact"),
                 leading: new Icon(Icons.contact_phone),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Contact_Us()),
-                  );
-                }),
+                onTap: () {}),
             ListTile(
                 title: new Text("Setting"),
                 leading: new Icon(Icons.contact_phone),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()),
-                  );
-                }),
+                onTap: () {}),
             ListTile(
                 title: new Text("Log Out"),
                 leading: new Icon(Icons.lock),

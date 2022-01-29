@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:responsify/responsify_files/responsify_enum.dart';
 import 'package:responsify/responsify_files/responsify_ui_widget.dart';
@@ -252,6 +253,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       border: Border.all(
                                           color:
                                               Colors.black.withOpacity(0.4))),
+
                                   padding: EdgeInsets.only(left: 8),
                                   // child: TextFormField(
                                   //   controller: typeOfLead,
@@ -264,7 +266,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   child: DropdownButton(
                                     underline: SizedBox(),
                                     value: selectedLead,
-                                    hint: Text("Select Variants"),
+                                    hint: Text("Select Type of Lead"),
                                     items: typeOfLeadDropdown.map(
                                       (list) {
                                         return DropdownMenuItem(
@@ -481,6 +483,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       )),
                                 ],
                               ),
+                              SizedBox(height: 20),
                               FutureBuilder(
                                   future: getCart,
                                   builder: (context, snapshot) {
@@ -510,21 +513,88 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                               itemBuilder: (context, index) {
                                                 CartItem cart =
                                                     snapshot.data[index];
-
+                                                String tempindi =
+                                                    ((double.parse(cart
+                                                                .finalprice) *
+                                                            double.parse(
+                                                                cart.quantity))
+                                                        .toStringAsFixed(2));
                                                 return Row(
                                                   children: [
                                                     Container(
                                                       height: 100,
                                                       width: 100,
-                                                      child: Image.network(
-                                                          'https://onlinefamilypharmacy.com/images/noimage.jpg'),
+                                                      child: 'https://onlinefamilypharmacy.com/images/item/${cart.image}' ==
+                                                              'https://onlinefamilypharmacy.com/images/item/null'
+                                                          ? CachedNetworkImage(
+                                                              imageUrl:
+                                                                  'https://onlinefamilypharmacy.com/images/noimage.jpg',
+                                                              height: 130,
+                                                              width: 100,
+                                                              fit: BoxFit.fill,
+                                                              progressIndicatorBuilder:
+                                                                  (_, url,
+                                                                      download) {
+                                                                if (download
+                                                                        .progress !=
+                                                                    null) {
+                                                                  return Center(
+                                                                    child:
+                                                                        CircularProgressIndicator(
+                                                                      value: download
+                                                                          .progress,
+                                                                      color: Colors
+                                                                          .black,
+                                                                    ),
+                                                                  );
+                                                                }
+                                                                return Center(
+                                                                  child:
+                                                                      CircularProgressIndicator(
+                                                                    color: Colors
+                                                                        .black,
+                                                                  ),
+                                                                );
+                                                              },
+                                                            )
+                                                          : CachedNetworkImage(
+                                                              imageUrl:
+                                                                  'https://onlinefamilypharmacy.com/images/item/${cart.image}',
+                                                              height: 130,
+                                                              width: 100,
+                                                              fit: BoxFit.fill,
+                                                              progressIndicatorBuilder:
+                                                                  (_, url,
+                                                                      download) {
+                                                                if (download
+                                                                        .progress !=
+                                                                    null) {
+                                                                  return Center(
+                                                                    child:
+                                                                        CircularProgressIndicator(
+                                                                      value: download
+                                                                          .progress,
+                                                                      color: Colors
+                                                                          .black,
+                                                                    ),
+                                                                  );
+                                                                }
+                                                                return Center(
+                                                                  child:
+                                                                      CircularProgressIndicator(
+                                                                    color: Colors
+                                                                        .black,
+                                                                  ),
+                                                                );
+                                                              },
+                                                            ),
                                                     ),
                                                     SizedBox(
                                                       width: 10,
                                                     ),
                                                     Container(
                                                       child: Text(
-                                                          "Item Code - ${cart.itemCode} \nItem Name - ${cart.itemName}\nPrice - ${double.parse(cart.finalprice).roundToDouble() * double.parse(cart.quantity).roundToDouble()} QR"),
+                                                          "Item Code - ${cart.itemCode} \nItem Name - ${cart.itemName}\nPrice - ${cart.finalprice} QR\nUnits - ${cart.units} - ${cart.packing}\nQuantity -${cart.quantity}\nTotal - ${cart.finalprice} x ${cart.quantity} = ${tempindi}"),
                                                     ),
                                                   ],
                                                 );
@@ -607,10 +677,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   ),
                                 ],
                               ),
+                              SizedBox(height: 20),
                               Divider(
                                 thickness: 10.0,
                                 color: Colors.grey[300],
                               ),
+                              SizedBox(height: 20),
                               Container(
                                 margin: EdgeInsets.only(left: 8),
                                 alignment: Alignment.centerLeft,
@@ -690,9 +762,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     children: [
                       Container(
                         height: MediaQuery.of(context).size.height,
-                        width: MediaQuery.of(context).size.width / 1.5,
+                        width: MediaQuery.of(context).size.width / 1.7,
                         // color: Colors.grey[300],
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
                               height: 20,
@@ -709,89 +783,102 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             SizedBox(
                               height: 15,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(left: 20),
-                                  child: Text(
-                                    "SO Reference Number",
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(right: 250),
-                                  child: Text("Type of Lead"),
-                                )
-                              ],
+                            Container(
+                              margin: EdgeInsets.only(left: 20),
+                              child: Text(
+                                "SO Reference Number",
+                              ),
                             ),
                             SizedBox(
                               height: 10,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  height: 50,
-                                  width: 200,
-                                  margin: EdgeInsets.only(left: 20),
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.number,
-                                    controller: soReferenceNumber,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
+                            Container(
+                              height: 50,
+                              width: MediaQuery.of(context).size.width / 1.9,
+                              margin: EdgeInsets.only(left: 20),
+                              child: TextFormField(
+                                keyboardType: TextInputType.number,
+                                controller: soReferenceNumber,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
                                 ),
-                                Container(
-                                  height: 50,
-                                  width: 200,
-                                  margin: EdgeInsets.only(right: 130),
-                                  child: TextFormField(
-                                    controller: typeOfLead,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                             SizedBox(
-                              height: 20,
+                              height: 10,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            Container(
+                              margin: EdgeInsets.only(left: 20),
+                              child: Text("Type of Lead"),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              height: 50,
+                              width: MediaQuery.of(context).size.width / 1.9,
+                              margin: EdgeInsets.only(left: 20),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                      color: Colors.black.withOpacity(0.4))),
+                              padding: EdgeInsets.only(left: 8),
+                              child: DropdownButton(
+                                underline: SizedBox(),
+                                value: selectedLead,
+                                hint: Text("Select Type of Lead"),
+                                items: typeOfLeadDropdown.map(
+                                  (list) {
+                                    return DropdownMenuItem(
+                                        child: SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              2.2,
+                                          child: Text(
+                                            list['title'] == ''
+                                                ? 'No Lead'
+                                                : list['title'],
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w800),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        ),
+                                        value: list['title']);
+                                  },
+                                ).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedLead = value;
+                                  });
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
+                                  alignment: Alignment.centerLeft,
                                   margin: EdgeInsets.only(left: 20),
                                   child: Text(
                                     "Order Placed By",
                                   ),
                                 ),
-                                Container(
-                                  margin: EdgeInsets.only(right: 20),
-                                  child: Text(
-                                    "Email Id",
-                                  ),
+                                SizedBox(
+                                  height: 10,
                                 ),
-                                Container(
-                                  margin: EdgeInsets.only(right: 145),
-                                  child: Text("Contact Number"),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
                                 Container(
                                   height: 50,
-                                  width: 140,
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.9,
                                   margin: EdgeInsets.only(left: 20),
                                   child: TextFormField(
                                     controller: orderPlacedBy,
@@ -802,10 +889,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     ),
                                   ),
                                 ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  margin: EdgeInsets.only(left: 20),
+                                  child: Text(
+                                    "Email Id",
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
                                 Container(
                                   height: 50,
-                                  width: 140,
-                                  margin: EdgeInsets.only(right: 30),
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.9,
+                                  margin: EdgeInsets.only(left: 20),
                                   child: TextFormField(
                                     controller: emailId,
                                     decoration: InputDecoration(
@@ -815,10 +916,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     ),
                                   ),
                                 ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  margin: EdgeInsets.only(left: 20),
+                                  child: Text("Contact Number"),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
                                 Container(
                                   height: 50,
-                                  width: 140,
-                                  margin: EdgeInsets.only(right: 100),
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.9,
+                                  margin: EdgeInsets.only(left: 20),
                                   child: TextFormField(
                                     keyboardType: TextInputType.number,
                                     controller: contactNumber,
@@ -832,7 +945,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               ],
                             ),
                             SizedBox(
-                              height: 20,
+                              height: 10,
                             ),
                             Container(
                               alignment: Alignment.centerLeft,
@@ -841,14 +954,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 "Notes",
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
-                            ),
+                            // SizedBox(
+                            //   height: 10,
+                            // ),
                             Container(
                               alignment: Alignment.centerLeft,
                               height: 200,
-                              width: MediaQuery.of(context).size.width / 1.7,
-                              margin: EdgeInsets.only(right: 60),
+                              width: MediaQuery.of(context).size.width / 1.9,
+                              margin: EdgeInsets.only(left: 20),
                               child: TextFormField(
                                 controller: notes,
                                 keyboardType: TextInputType.multiline,
@@ -876,8 +989,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             Container(
                               alignment: Alignment.centerLeft,
                               height: 150,
-                              width: MediaQuery.of(context).size.width / 1.7,
-                              margin: EdgeInsets.only(right: 60),
+                              width: MediaQuery.of(context).size.width / 1.9,
+                              margin: EdgeInsets.only(left: 20),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12)),
                               child: Signature(
@@ -894,7 +1007,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 _controller.clear();
                               },
                               child: Container(
-                                  margin: EdgeInsets.only(right: 15),
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.only(left: 20),
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.9,
                                   padding: EdgeInsets.all(8),
                                   decoration: BoxDecoration(
                                       color: Colors.yellow,
@@ -912,7 +1028,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Container(
                           height: MediaQuery.of(context).size.height,
                           width: MediaQuery.of(context).size.width -
-                              MediaQuery.of(context).size.width / 1.5,
+                              MediaQuery.of(context).size.width / 1.7,
                           child: Column(
                             children: [
                               SizedBox(
@@ -944,6 +1060,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       )),
                                 ],
                               ),
+                              SizedBox(height: 20),
                               FutureBuilder(
                                   future: getCart,
                                   builder: (context, snapshot) {
@@ -974,36 +1091,95 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 CartItem cart =
                                                     snapshot.data[index];
 
+                                                String tempindi =
+                                                    ((double.parse(cart
+                                                                .finalprice) *
+                                                            double.parse(
+                                                                cart.quantity))
+                                                        .toStringAsFixed(2));
+
                                                 return Row(
                                                   children: [
                                                     Container(
                                                       height: 100,
-                                                      width: 100,
-                                                      child: Image.network(
-                                                          'https://onlinefamilypharmacy.com/images/noimage.jpg'),
+                                                      width: 80,
+                                                      child: 'https://onlinefamilypharmacy.com/images/item/${cart.image}' ==
+                                                              'https://onlinefamilypharmacy.com/images/item/null'
+                                                          ? CachedNetworkImage(
+                                                              imageUrl:
+                                                                  'https://onlinefamilypharmacy.com/images/noimage.jpg',
+                                                              height: 130,
+                                                              width: 100,
+                                                              fit: BoxFit.fill,
+                                                              progressIndicatorBuilder:
+                                                                  (_, url,
+                                                                      download) {
+                                                                if (download
+                                                                        .progress !=
+                                                                    null) {
+                                                                  return Center(
+                                                                    child:
+                                                                        CircularProgressIndicator(
+                                                                      value: download
+                                                                          .progress,
+                                                                      color: Colors
+                                                                          .black,
+                                                                    ),
+                                                                  );
+                                                                }
+                                                                return Center(
+                                                                  child:
+                                                                      CircularProgressIndicator(
+                                                                    color: Colors
+                                                                        .black,
+                                                                  ),
+                                                                );
+                                                              },
+                                                            )
+                                                          : CachedNetworkImage(
+                                                              imageUrl:
+                                                                  'https://onlinefamilypharmacy.com/images/item/${cart.image}',
+                                                              height: 130,
+                                                              width: 100,
+                                                              fit: BoxFit.fill,
+                                                              progressIndicatorBuilder:
+                                                                  (_, url,
+                                                                      download) {
+                                                                if (download
+                                                                        .progress !=
+                                                                    null) {
+                                                                  return Center(
+                                                                    child:
+                                                                        CircularProgressIndicator(
+                                                                      value: download
+                                                                          .progress,
+                                                                      color: Colors
+                                                                          .black,
+                                                                    ),
+                                                                  );
+                                                                }
+                                                                return Center(
+                                                                  child:
+                                                                      CircularProgressIndicator(
+                                                                    color: Colors
+                                                                        .black,
+                                                                  ),
+                                                                );
+                                                              },
+                                                            ),
                                                     ),
                                                     SizedBox(
-                                                      width: 10,
+                                                      width: 5,
                                                     ),
-                                                    Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          'Item Code - ${cart.itemCode}',
-                                                          textAlign:
-                                                              TextAlign.left,
-                                                        ),
-                                                        Text(
-                                                          '${cart.itemName}',
+
+                                                    Flexible(
+                                                      child: Container(
+                                                        child: Text(
+                                                          "Item Code - ${cart.itemCode} \nItem Name - ${cart.itemName}\nPrice - ${cart.finalprice} QR\nUnits - ${cart.units} - ${cart.packing}\nQuantity -${cart.quantity}\nTotal - ${cart.finalprice} x ${cart.quantity} = ${tempindi}",
                                                           overflow: TextOverflow
                                                               .ellipsis,
-                                                          maxLines: 2,
                                                         ),
-                                                        Text(
-                                                            'Price - ${double.parse(cart.finalprice).roundToDouble() * double.parse(cart.quantity).roundToDouble()} QR')
-                                                      ],
+                                                      ),
                                                     ),
                                                     // Container(
                                                     //   child: Text(
@@ -1096,10 +1272,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   ),
                                 ],
                               ),
+                              SizedBox(height: 20),
                               Divider(
                                 thickness: 10.0,
                                 color: Colors.grey[300],
                               ),
+                              SizedBox(height: 20),
                               Container(
                                 margin: EdgeInsets.only(left: 8),
                                 alignment: Alignment.centerLeft,
@@ -1172,6 +1350,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   DeviceTypeInformation.MOBILE) {
                 return SingleChildScrollView(
                     child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       child: Column(
@@ -1191,55 +1371,78 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           SizedBox(
                             height: 15,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(left: 20),
-                                child: Text(
-                                  "SO Reference Number",
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(right: 70),
-                                child: Text("Type of Lead"),
-                              )
-                            ],
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            margin: EdgeInsets.only(left: 20),
+                            child: Text(
+                              "SO Reference Number",
+                            ),
                           ),
                           SizedBox(
                             height: 10,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                height: 40,
-                                width: 140,
-                                margin: EdgeInsets.only(right: 20, left: 20),
-                                child: TextFormField(
-                                  keyboardType: TextInputType.number,
-                                  controller: soReferenceNumber,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
+                          Container(
+                            height: 40,
+                            width: MediaQuery.of(context).size.width / 1.1,
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              controller: soReferenceNumber,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              Container(
-                                height: 40,
-                                width: 140,
-                                margin: EdgeInsets.only(right: 20),
-                                child: TextFormField(
-                                  controller: typeOfLead,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            margin: EdgeInsets.only(left: 20),
+                            child: Text("Type of Lead"),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            height: 40,
+                            width: MediaQuery.of(context).size.width / 1.1,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                    color: Colors.black.withOpacity(0.4))),
+                            padding: EdgeInsets.only(left: 8),
+                            child: DropdownButton(
+                              underline: SizedBox(),
+                              value: selectedLead,
+                              hint: Text("Select Type of Lead"),
+                              items: typeOfLeadDropdown.map(
+                                (list) {
+                                  return DropdownMenuItem(
+                                      child: SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                1.3,
+                                        child: Text(
+                                          list['title'] == ''
+                                              ? 'No Lead'
+                                              : list['title'],
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w800),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ),
+                                      value: list['title']);
+                                },
+                              ).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedLead = value;
+                                });
+                              },
+                            ),
                           ),
                           SizedBox(
                             height: 20,
@@ -1425,6 +1628,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 )),
                           ],
                         ),
+                        SizedBox(height: 20),
                         FutureBuilder(
                             future: getCart,
                             builder: (context, snapshot) {
@@ -1474,8 +1678,68 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                               Container(
                                                 height: 100,
                                                 width: 100,
-                                                child: Image.network(
-                                                    'https://onlinefamilypharmacy.com/images/noimage.jpg'),
+                                                child: 'https://onlinefamilypharmacy.com/images/item/${cart.image}' ==
+                                                        'https://onlinefamilypharmacy.com/images/item/null'
+                                                    ? CachedNetworkImage(
+                                                        imageUrl:
+                                                            'https://onlinefamilypharmacy.com/images/noimage.jpg',
+                                                        height: 130,
+                                                        width: 100,
+                                                        fit: BoxFit.fill,
+                                                        progressIndicatorBuilder:
+                                                            (_, url, download) {
+                                                          if (download
+                                                                  .progress !=
+                                                              null) {
+                                                            return Center(
+                                                              child:
+                                                                  CircularProgressIndicator(
+                                                                value: download
+                                                                    .progress,
+                                                                color: Colors
+                                                                    .black,
+                                                              ),
+                                                            );
+                                                          }
+                                                          return Center(
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          );
+                                                        },
+                                                      )
+                                                    : CachedNetworkImage(
+                                                        imageUrl:
+                                                            'https://onlinefamilypharmacy.com/images/item/${cart.image}',
+                                                        height: 130,
+                                                        width: 100,
+                                                        fit: BoxFit.fill,
+                                                        progressIndicatorBuilder:
+                                                            (_, url, download) {
+                                                          if (download
+                                                                  .progress !=
+                                                              null) {
+                                                            return Center(
+                                                              child:
+                                                                  CircularProgressIndicator(
+                                                                value: download
+                                                                    .progress,
+                                                                color: Colors
+                                                                    .black,
+                                                              ),
+                                                            );
+                                                          }
+                                                          return Center(
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
                                               ),
                                               SizedBox(
                                                 width: 10,
@@ -1589,10 +1853,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                           ],
                         ),
+                        SizedBox(height: 20),
                         Divider(
                           thickness: 10.0,
                           color: Colors.grey[300],
                         ),
+                        SizedBox(height: 20),
                         Container(
                           margin: EdgeInsets.only(left: 8),
                           alignment: Alignment.centerLeft,
