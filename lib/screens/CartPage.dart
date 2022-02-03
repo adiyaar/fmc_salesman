@@ -5,7 +5,6 @@ import 'package:testing/Apis/CartPage.dart';
 import 'package:testing/models/CartItem.dart';
 import 'package:flutter/foundation.dart';
 import 'package:testing/screens/CheckoutScreen.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class CartPage extends StatefulWidget {
   final List useriNfo;

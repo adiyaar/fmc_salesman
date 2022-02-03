@@ -1,19 +1,20 @@
 import 'dart:convert';
 
+import 'package:api_cache_manager/models/cache_db_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:filter_list/filter_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/percent_indicator.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/Common/Shimmer.dart';
 import 'package:testing/models/SearchScreenModel.dart';
 import 'package:testing/screens/DetailPageScreen.dart';
 import 'package:testing/screens/FilterScreen.dart';
-
-import 'package:testing/widget/NavigationDrawer.dart';
 import 'package:http/http.dart' as http;
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:api_cache_manager/api_cache_manager.dart';
+
 
 class SearchScreen extends StatefulWidget {
   final List userInfo;
@@ -35,25 +36,98 @@ class _SearchScreenState extends State<SearchScreen> {
   List<ItemMainGroup> mainGroupOptions = [];
   List<Manufactures> manufactureOptions = [];
   bool manuFacturer = false;
-  List<SearchList> medicineList = [];
+
   List<SearchList> allList = [];
 
-  Future<List<SearchList>> fetchAllItem() async {
-    final baseUrl =
-        'https://onlinefamilypharmacy.com/mobileapplication/salesmansearchallproducts.php';
-    final response = await http.get(Uri.parse(baseUrl));
+  List hiveList = [];
 
-    if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
-      allList
-          .addAll(jsonResponse.map((e) => new SearchList.fromJson(e)).toList());
-      medicineList.addAll(
-          allList.where((element) => element.itemmaingroupid == "2").toList());
-      return allList;
-    } else {
-      throw Exception('Failed to load jobs from API');
+  Box searchBox;
+
+  // ofline data caching using Hive
+// create a local storage
+//   Future openBox() async {
+//     var directory = await getApplicationDocumentsDirectory();
+//     Hive.init(directory.path);
+//     searchBox = await Hive.openBox('SearchBox');
+//     return;
+//   }
+
+  // Future<bool> getAllData() async {
+  //   await openBox();
+  //   final baseUrl =
+  //       'https://onlinefamilypharmacy.com/mobileapplication/salesmansearchallproducts.php';
+  //
+  //   try {
+  //     var response = await http.get(Uri.parse(baseUrl));
+  //     if (response.statusCode == 200) {
+  //       List jsonResponse = json.decode(response.body);
+  //
+  //       await putData(jsonResponse);
+  //       // allList.addAll(
+  //       //     jsonResponse.map((e) => new SearchList.fromJson(e)).toList());
+  //     }
+  //   } catch (SocketException) {
+  //     print('No Internet');
+  //   }
+  //
+  //   var myList = searchBox.toMap().values.toList();
+  //   if (myList.isEmpty) {
+  //     hiveList.add('empty');
+  //   } else {
+  //     print('addeding');
+  //     hiveList = myList;
+  //   }
+  //
+  //   return Future.value(true);
+  // }
+
+  // Future putData(data) async {
+  //   await searchBox.clear();
+  //
+  //   for (var d in data) {
+  //     print('Add');
+  //     searchBox.add(d);
+  //   }
+  // }
+
+  Future getAllData() async {
+
+      final baseUrl =
+          'https://onlinefamilypharmacy.com/mobileapplication/salesmansearchallproducts.php';
+
+
+
+      var cacheExists = await APICacheManager().isAPICacheKeyExist('SearchFinal');
+
+      if(!cacheExists){
+
+        print('Api hit');
+        var response = await http.get(Uri.parse(baseUrl));
+        if (response.statusCode == 200) {
+
+
+          List jsonResponse = json.decode(response.body);
+
+          APICacheDBModel cacheDBModel = new APICacheDBModel(key: 'SearchFinal', syncData: response.body);
+
+          await APICacheManager().addCacheData(cacheDBModel);
+          return
+              jsonResponse.map((e) => new SearchList.fromJson(e)).toList();
+        }
+
+
+      }
+      else{
+        print('CACHE HIT');
+        var cacheData = await APICacheManager().getCacheData('SearchFinal');
+
+        List jsoncached = json.decode(cacheData.syncData);
+
+        return
+            jsoncached.map((e) => new SearchList.fromJson(e)).toList();
+      }
+
     }
-  }
 
   String pharmacyname = "";
   Future<void> _showSearch() async {
@@ -65,17 +139,8 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _fetchdata() async {
-    allList = await fetchAllItem();
-    medicineList
-        .addAll(allList.where((element) => element.itemid == "2").toList());
+    allList = await getAllData();
 
-    print(allList.length);
-    print(medicineList.length);
-    setState(() {});
-  }
-
-  void categorlIst() async {
-    medicineList = await fetchAllItem();
     setState(() {});
   }
 
@@ -84,15 +149,14 @@ class _SearchScreenState extends State<SearchScreen> {
     super.initState();
     getCustomerInfo();
     _fetchdata();
-    categorlIst();
 
-    fetchAllItem();
+    getAllData();
     // fetchItemMainGroupList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
         // drawer: NavigationDrawer(),
@@ -136,154 +200,141 @@ class _SearchScreenState extends State<SearchScreen> {
               Container(
                 height: height / 1.1,
                 child: FutureBuilder(
-                  future: fetchAllItem(),
+                  future: getAllData(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<SearchList> data = snapshot.data;
+                      print('Data Length');
+                      print(data.length);
+                        return ListView.separated(
+                          shrinkWrap: true,
+                          separatorBuilder: (context, index) {
+                            return Divider();
+                          },
+                          scrollDirection: Axis.vertical,
+                          itemCount: data.length,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () {
 
-                      return ListView.separated(
-                        primary: true,
-                        separatorBuilder: (context, index) {
-                          return Divider();
-                        },
-                        scrollDirection: Axis.vertical,
-                        itemCount: medicineList.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              print(data[index].itemid);
-                              print(data[index].itemmaingrouptitle);
 
-                              Navigator.push(
-                                  context,
-                                  CupertinoPageRoute(
-                                      builder: (context) => DetailPageScreen(
-                                            userInfo: widget.userInfo,
-                                            itemDetails: data[index],
-                                            customerType: customerType,
-                                          )));
-                            },
-                            child: ListTile(
-                              leading: 'https://onlinefamilypharmacy.com/images/item/${data[index].img}' ==
-                                      'https://onlinefamilypharmacy.com/images/item/null'
-                                  
-                                  ? CachedNetworkImage(
-                                      imageUrl:
-                                          'https://onlinefamilypharmacy.com/images/noimage.jpg',
-                                      height: 130,
-                                      width: 100,
-                                      fit: BoxFit.fill,
-                                      progressIndicatorBuilder:
-                                          (_, url, download) {
-                                        if (download.progress != null) {
-                                          return Center(
-                                            child: CircularProgressIndicator(
-                                              value: download.progress,
-                                              color: Colors.black,
-                                            ),
-                                          );
-                                        }
-                                        return Center(
-                                          child: CircularProgressIndicator(
-                                            color: Colors.black,
+                                Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                        builder: (context) => DetailPageScreen(
+                                              userInfo: widget.userInfo,
+                                              itemDetails: data[index],
+                                              customerType: customerType,
+                                            )));
+                              },
+                              child: ListTile(
+                                leading:
+                                    'https://onlinefamilypharmacy.com/images/item/${data[index].img}' ==
+                                            'https://onlinefamilypharmacy.com/images/item/null'
+                                        ? CachedNetworkImage(
+                                            imageUrl:
+                                                'https://onlinefamilypharmacy.com/images/noimage.jpg',
+                                            height: 130,
+                                            width: 100,
+                                            fit: BoxFit.fill,
+                                            progressIndicatorBuilder:
+                                                (_, url, download) {
+                                              if (download.progress != null) {
+                                                return Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    value: download.progress,
+                                                    color: Colors.black,
+                                                  ),
+                                                );
+                                              }
+                                              return Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: Colors.black,
+                                                ),
+                                              );
+                                            },
+                                          )
+                                        : CachedNetworkImage(
+                                            imageUrl:
+                                                'https://onlinefamilypharmacy.com/images/item/${data[index].img}',
+                                            height: 130,
+                                            width: 100,
+                                            fit: BoxFit.fill,
+                                            progressIndicatorBuilder:
+                                                (_, url, download) {
+                                              if (download.progress != null) {
+                                                return Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    value: download.progress,
+                                                    color: Colors.black,
+                                                  ),
+                                                );
+                                              }
+                                              return Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: Colors.black,
+                                                ),
+                                              );
+                                            },
                                           ),
-                                        );
-                                      },
-                                    )
-                                  : CachedNetworkImage(
-                                      imageUrl:
-                                          'https://onlinefamilypharmacy.com/images/item/${data[index].img}',
-                                      height: 130,
-                                      width: 100,
-                                      fit: BoxFit.fill,
-                                      progressIndicatorBuilder:
-                                          (_, url, download) {
-                                        if (download.progress != null) {
-                                          return Center(
-                                            child: CircularProgressIndicator(
-                                              value: download.progress,
-                                              color: Colors.black,
-                                            ),
-                                          );
-                                        }
-                                        return Center(
-                                          child: CircularProgressIndicator(
-                                            color: Colors.black,
-                                          ),
-                                        );
-                                      },
+
+                                title: Text(
+                                  data[index].itemid +
+                                      ' - ' +
+                                      data[index].itemproductgrouptitle,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15),
+                                ),
+                                subtitle: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                data[index].itemmaingrouptitle,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal),
                                     ),
+                                    SizedBox(
+                                      height: 2,
+                                    ),
+                                    customerType == 'Wholesale'
+                                        ? Text(
+                                            "\QR ${data[index].minwholesaleprice}" +
+                                                " - " +
+                                                "\QR ${data[index].maxwholesaleprice}",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold),
+                                          )
+                                        : Text(
+                                            "\QR ${data[index].minretailprice}" +
+                                                " - " +
+                                                "\QR ${data[index].maxretailprice}",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                  ],
+                                ),
+                                // isThreeLine: true,
+                              ),
+                            );
+                          },
+                        );
 
-                              title: Text(
-                                data[index].itemid +
-                                    ' - ' +
-                                    data[index].itemproductgrouptitle,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 15),
-                              ),
-                              subtitle: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    data[index].itemmaingrouptitle,
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.normal),
-                                  ),
-                                  SizedBox(
-                                    height: 2,
-                                  ),
-                                  customerType == 'Wholesale'
-                                      ? Text(
-                                          "\QR ${data[index].minwholesaleprice}" +
-                                              " - " +
-                                              "\QR ${data[index].maxwholesaleprice}",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold),
-                                        )
-                                      : Text(
-                                          "\QR ${data[index].minretailprice}" +
-                                              " - " +
-                                              "\QR ${data[index].maxretailprice}",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                ],
-                              ),
-                              // isThreeLine: true,
-                            ),
-                          );
-                        },
-                      );
                     } else if (snapshot.connectionState ==
                         ConnectionState.waiting) {
                       return SearchShimmer();
                     }
                     return SearchShimmer();
-                    // return Center(
-                    //   child: CircularPercentIndicator(
-                    //     radius: 100.0,
-                    //     lineWidth: 10.0,
-                    //     percent: 1.0,
-                    //     animationDuration: 8000,
-                    //     restartAnimation: true,
-                    //     animation: true,
-                    //     footer: Text("Fetching Data Securely!"),
-                    //     center: new Icon(
-                    //       Icons.lock,
-                    //       size: 50.0,
-                    //       color: Colors.black,
-                    //     ),
-                    //     backgroundColor: Colors.white,
-                    //     circularStrokeCap: CircularStrokeCap.round,
-                    //     progressColor: Colors.black,
-                    //   ),
-                    // );
                   },
                 ),
               )
@@ -362,8 +413,7 @@ SearchListD(context, data, userInfo) {
                       },
                     ),
           title: Text(
-          data[index].itemid +
-                                    ' - ' +  data[index].itemproductgrouptitle,
+            data[index].itemid + ' - ' + data[index].itemproductgrouptitle,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           subtitle: Column(

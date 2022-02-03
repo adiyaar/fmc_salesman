@@ -1,3 +1,5 @@
+import 'package:api_cache_manager/models/cache_db_model.dart';
+import 'package:api_cache_manager/utils/cache_manager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -25,7 +27,7 @@ class ItemMainGroup extends StatefulWidget {
 
 class _ItemMainGroupState extends State<ItemMainGroup> {
   List<ItemMainGroupModel> data;
-
+  
   String pharmacyname = "";
   Future<void> _showSearch() async {
     await showSearch(
@@ -45,15 +47,32 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
         'https://onlinefamilypharmacy.com/mobileapplication/categories/itemmaingroup.php?action=itemmaingroup';
     final response = await http.get(Uri.parse(baseUrl));
 
-    if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
+    var cacheExists = await APICacheManager().isAPICacheKeyExist('ItemMainGroup');
 
-      return jsonResponse
+    if(!cacheExists){
+      print('APi');
+      if (response.statusCode == 200) {
+        List jsonResponse = json.decode(response.body);
+        APICacheDBModel cacheDBModel = new APICacheDBModel(key: 'ItemMainGroup', syncData: response.body);
+
+        await APICacheManager().addCacheData(cacheDBModel);
+        return jsonResponse
+            .map((job) => new ItemMainGroupModel.fromJson(job))
+            .toList();
+      } else {
+        throw Exception('Failed to load jobs from API');
+      }
+    }
+    else {
+      print('Cache');
+      var cacheData = await APICacheManager().getCacheData('ItemMainGroup');
+
+      List jsoncached = json.decode(cacheData.syncData);
+      return jsoncached
           .map((job) => new ItemMainGroupModel.fromJson(job))
           .toList();
-    } else {
-      throw Exception('Failed to load jobs from API');
     }
+
   }
 
   int a;
@@ -71,7 +90,7 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
 
     List jsonResponse = json.decode(response.body);
     // print(jsonResponse);
-    print(jsonResponse.length);
+
     a = jsonResponse.length;
     setState(() {});
     return a;
@@ -80,7 +99,7 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
   @override
   void initState() {
     super.initState();
-    fetchItemData();
+
     _fetchdata();
     fetchCrtCOunt();
   }
@@ -106,8 +125,12 @@ class _ItemMainGroupState extends State<ItemMainGroup> {
                 icon: Icon(Icons.shopping_cart_outlined),
                 tooltip: 'MainGroup',
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => CartPage(useriNfo: widget.userInfo,)));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CartPage(
+                                useriNfo: widget.userInfo,
+                              )));
                 },
               ),
               CircleAvatar(
