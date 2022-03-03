@@ -19,11 +19,12 @@ class LoginScreenPage extends StatefulWidget {
 }
 
 class _LoginScreenPageState extends State<LoginScreenPage> {
-  final futureGroup = FutureGroup();
+
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
 
   var _formKey = GlobalKey<FormState>();
+
 
   @override
   void initState() {
@@ -165,6 +166,11 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                     'password': passwordcontroller.text
                                   };
 
+                                  pf.setString(
+                                      'loginEmail', emailcontroller.text);
+                                  pf.setString(
+                                      'loginPassword', passwordcontroller.text);
+
                                   var response = await http.post(
                                       Uri.parse(baseUrl),
                                       body: json.encode(data));
@@ -195,6 +201,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
 
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {
+                                          pf.setBool('loggedIn', true);
                                       Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
@@ -373,6 +380,11 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                     'password': passwordcontroller.text
                                   };
 
+                                  pf.setString(
+                                      'loginEmail', emailcontroller.text);
+                                  pf.setString(
+                                      'loginPassword', passwordcontroller.text);
+
                                   var response = await http.post(
                                       Uri.parse(baseUrl),
                                       body: json.encode(data));
@@ -403,6 +415,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
 
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {
+                                          pf.setBool('loggedIn', true);
                                       Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
@@ -585,13 +598,8 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                 bool formFilled =
                                     _formKey.currentState.validate();
                                 if (formFilled == true) {
-                                  
-                                  // futureGroup.add(salesmanLogin(
-                                  //     emailcontroller.text,
-                                  //     passwordcontroller.text));
-                                  // futureGroup
-                                  //     .add(salesmanId(emailcontroller.text));
-
+                                  SharedPreferences pf =
+                                  await SharedPreferences.getInstance();
                                   final String baseUrl =
                                       'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/login_salesman.php';
 
@@ -599,6 +607,12 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                     'email': emailcontroller.text,
                                     'password': passwordcontroller.text
                                   };
+
+                                  print(passwordcontroller.text);
+                                  pf.setString(
+                                      'loginEmail', emailcontroller.text);
+                                  pf.setString(
+                                      'loginPassword', passwordcontroller.text);
 
                                   var response = await http.post(
                                       Uri.parse(baseUrl),
@@ -626,11 +640,9 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                             new UserInfoModel.fromJson(e))
                                         .toList();
 
-                                    print('Here');
-                                    print(userInfo.length);
-
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {
+                                      pf.setBool('loggedIn', true);
                                       Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(

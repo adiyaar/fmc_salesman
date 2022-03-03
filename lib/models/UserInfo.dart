@@ -10,19 +10,24 @@ class UserInfoModel {
   String employeeCompany;
   String mobileno;
   String emailid;
+  String latitude;
+  String longitude;
 
-  UserInfoModel(
-      {this.id,
-      this.employeecode,
-      this.employeename,
-      this.qidno,
-      this.familyid,
-      this.employeeCompany,
-      this.username,
-      this.uRolecode,
-      this.workingin,
-      this.mobileno,
-      this.emailid});
+  UserInfoModel({
+    this.id,
+    this.employeecode,
+    this.employeename,
+    this.qidno,
+    this.familyid,
+    this.employeeCompany,
+    this.username,
+    this.uRolecode,
+    this.workingin,
+    this.mobileno,
+    this.emailid,
+    this.latitude,
+    this.longitude,
+  });
 
   UserInfoModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -36,6 +41,8 @@ class UserInfoModel {
     employeeCompany = json['employeewhichcompany'];
     mobileno = json['mobileno'];
     emailid = json['emailid'];
+    latitude = json['locationlatitude'];
+    longitude = json['locationlongitude'];
   }
 
   Map<String, dynamic> toJson() {
@@ -51,6 +58,8 @@ class UserInfoModel {
     data['workingin'] = this.workingin;
     data['mobileno'] = this.mobileno;
     data['emailid'] = this.emailid;
+    data['locationlatitude'] = this.latitude;
+    data['locationlongitude'] = this.longitude;
     return data;
   }
 }

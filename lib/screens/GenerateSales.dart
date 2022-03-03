@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:responsify/responsify.dart';
@@ -11,6 +14,7 @@ import 'package:testing/Common/CustomerListLoader.dart';
 import 'package:testing/models/GenerateBranch.dart';
 import 'package:http/http.dart' as http;
 import 'package:testing/models/GenerateCustomerList.dart';
+import 'package:testing/widget/GlobalSnackbar.dart';
 
 import 'HomeScreen.dart';
 
@@ -35,7 +39,11 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
       invoicetype,
       cust_name;
   String customerSelected, branchSelected;
+
   TextEditingController customerEmailId = TextEditingController();
+
+  String latitude;
+  String longitude;
 
   addCustomerData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -86,9 +94,75 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
     return jsondataval;
   }
 
+  List activity = ['Visit', 'Customer Visit', 'No Order', 'Order'];
+  String activitySelected;
+
+  sendUpdatetoServer() async {
+    final String url =
+        'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/employee_order_tracking.php';
+    var data = {
+      'employee_id': int.parse(widget.userInfo[0].id),
+      'employee_latitude': latitude,
+      'employee_longitude': longitude,
+      'customer_id': int.parse(customerSelected),
+      'branch_id': branchSelected,
+      'activity': activitySelected,
+    };
+
+    print(data);
+
+    var response = await http.post(Uri.parse(url), body: json.encode(data));
+
+    print(response.body);
+  }
+
+  Position currentposition;
+
+  // ignore: missing_return
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      GlobalSnackBar.show(context, 'Please enable Your Location Service');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        GlobalSnackBar.show(context, 'Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      GlobalSnackBar.show(context,
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+
+      Placemark place = placemarks[0];
+
+      setState(() {
+        latitude = position.latitude.toString();
+        longitude = position.longitude.toString();
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _determinePosition();
   }
 
   @override
@@ -542,6 +616,44 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                       Container(
                           margin: EdgeInsets.only(left: 10.0),
                           child: Text(
+                            "Type of Visit",
+                            style: TextStyle(fontSize: 17),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                      height: 50,
+                      width: MediaQuery.of(context).size.width / 1.1,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey[400])),
+                      padding: EdgeInsets.symmetric(horizontal: 12.0),
+                      child: DropdownButton(
+                        underline: SizedBox(),
+                        value: activitySelected,
+                        hint: Text("Select Type of Activity"),
+                        items: activity
+                            .map((e) => DropdownMenuItem(
+                                  child: Text(e),
+                                  value: e,
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            activitySelected = value;
+                          });
+                        },
+                      )),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.only(left: 10.0),
+                          child: Text(
                             "Attachment",
                             style: TextStyle(fontSize: 17),
                           )),
@@ -625,6 +737,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         } else {
                           addCustomerData();
+                          sendUpdatetoServer();
                           Future.delayed(Duration(seconds: 1), () {
                             Navigator.pushReplacement(
                               context,
@@ -1357,6 +1470,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         } else {
                           addCustomerData();
+                          sendUpdatetoServer();
                           Future.delayed(Duration(seconds: 1), () {
                             Navigator.pushReplacement(
                               context,
@@ -2068,6 +2182,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         } else {
                           addCustomerData();
+                          sendUpdatetoServer();
                           Future.delayed(Duration(seconds: 1), () {
                             Navigator.pushReplacement(
                               context,
@@ -2127,3 +2242,15 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
 
 //   return [];
 // }
+
+enum _PositionItemType {
+  log,
+  position,
+}
+
+class _PositionItem {
+  _PositionItem(this.type, this.displayValue);
+
+  final _PositionItemType type;
+  final String displayValue;
+}

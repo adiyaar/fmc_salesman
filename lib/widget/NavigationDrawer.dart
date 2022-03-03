@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/dynamic/All_branch.dart';
 import 'package:testing/dynamic/Contact_Us.dart';
 import 'package:testing/dynamic/itemmaster.dart';
+import 'package:testing/screens/AttendanceScreen.dart';
 
 import 'package:testing/screens/GenerateSales.dart';
 import 'package:testing/screens/HomeScreen.dart';
@@ -70,6 +71,21 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                         builder: (context) => HomeScreen(
                               userList: widget.userInfo,
                             )),
+                  );
+                }),
+
+            ListTile(
+                title: new Text("Attendance"),
+                contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                trailing: Icon(Icons.keyboard_arrow_right),
+                leading: new Icon(Icons.calendar_today_sharp),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AttendanceScreen(
+                          userInfo: widget.userInfo,
+                        )),
                   );
                 }),
             Divider(

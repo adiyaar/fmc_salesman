@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/dynamic/All_branch.dart';
 import 'package:testing/dynamic/All_branch_add.dart';
@@ -24,6 +26,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+
   String customerName,
       branchname,
       creditDays,
@@ -63,6 +67,10 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {});
     return a;
   }
+
+
+
+
 
   @override
   void initState() {
@@ -1228,4 +1236,10 @@ class _HomeScreenState extends State<HomeScreen> {
       )),
     );
   }
+
+}
+enum _SupportState {
+  unknown,
+  supported,
+  unsupported,
 }

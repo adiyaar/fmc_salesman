@@ -439,11 +439,24 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   child: Container(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      calculatedCost >=
-                                              double.parse(
-                                                  iteminfo[0].wholeSalePrice)
-                                          ? "\QR $selectedUnitName"
-                                          : "\QR ${iteminfo[0].wholeSalePrice}",
+                                      // calculatedCost >=
+                                      //         double.parse(
+                                      //             iteminfo[0].wholeSalePrice)
+                                      //     ? "\QR $selectedUnitName"
+                                      //     : "\QR ${iteminfo[0].wholeSalePrice}",
+                                      employeeWhichCompany
+                                                      .trim()
+                                                      .toLowerCase() ==
+                                                  "fme" &&
+                                              iteminfo[0]
+                                                      .whichcompany
+                                                      .trim()
+                                                      .toLowerCase() ==
+                                                  "fme" &&
+                                              customerType.toLowerCase() ==
+                                                  "wholesale"
+                                          ? "\QR ${iteminfo[0].wholeSalePrice}"
+                                          : "\QR ${iteminfo[0].maxretailprice}",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 17,
@@ -1343,11 +1356,22 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   child: Container(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      calculatedCost >=
-                                              double.parse(
-                                                  iteminfo[0].wholeSalePrice)
-                                          ? "\QR $selectedUnitName"
-                                          : "\QR ${iteminfo[0].wholeSalePrice}",
+                                      // calculatedCost >=
+                                      //         double.parse(
+                                      //             iteminfo[0].wholeSalePrice)
+                                      employeeWhichCompany
+                                                      .trim()
+                                                      .toLowerCase() ==
+                                                  "fme" &&
+                                              iteminfo[0]
+                                                      .whichcompany
+                                                      .trim()
+                                                      .toLowerCase() ==
+                                                  "fme" &&
+                                              customerType.toLowerCase() ==
+                                                  "wholesale"
+                                          ? "\QR ${iteminfo[0].wholeSalePrice}"
+                                          : "\QR ${iteminfo[0].maxretailprice}",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 17,
@@ -2152,11 +2176,24 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   child: Container(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      calculatedCost >=
-                                              double.parse(
-                                                  iteminfo[0].wholeSalePrice)
-                                          ? "\QR $selectedUnitName"
-                                          : "\QR ${iteminfo[0].wholeSalePrice}",
+                                      // calculatedCost >=
+                                      //         double.parse(
+                                      //             iteminfo[0].wholeSalePrice)
+                                      //     ? "\QR $selectedUnitName"
+                                      //     : "\QR ${iteminfo[0].wholeSalePrice}",
+                                      employeeWhichCompany
+                                                      .trim()
+                                                      .toLowerCase() ==
+                                                  "fme" &&
+                                              iteminfo[0]
+                                                      .whichcompany
+                                                      .trim()
+                                                      .toLowerCase() ==
+                                                  "fme" &&
+                                              customerType.toLowerCase() ==
+                                                  "wholesale"
+                                          ? "\QR ${iteminfo[0].wholeSalePrice}"
+                                          : "\QR ${iteminfo[0].maxretailprice}",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 17,
