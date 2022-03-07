@@ -278,6 +278,8 @@ class _CartPageState extends State<CartPage>
                                                     filled: true,
                                                     fillColor: Colors.grey[300],
                                                     border: InputBorder.none),
+
+                                                    
                                                 onFieldSubmitted: (string) {
                                                   setState(() {
                                                     data.quantity = string;

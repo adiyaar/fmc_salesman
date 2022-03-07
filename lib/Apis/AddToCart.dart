@@ -45,7 +45,11 @@ Future addToCart(
 
   print(data);
 
+  print("==========================");
+
   var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
+
+  print(response.body);
 
   if (response.body.toString().contains("Added to Cart")) {
     return {GlobalSnackBar.show(context, 'Added to Cart')};

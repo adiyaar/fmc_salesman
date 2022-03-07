@@ -69,7 +69,6 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
         'https://onlinefamilypharmacy.com/mobileapplication/salesmandetailpage.php';
     var data = {'itemproductgroupid': widget.itemDetails.itemproductgroupid};
 
-    print(data);
     final response =
         await http.post(Uri.parse(baseUrl), body: jsonEncode(data));
 
@@ -111,14 +110,13 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
       'company': itemCompany,
       'type': type,
     };
-    print(data);
+
     String baseUrl =
         'https://onlinefamilypharmacy.com/mobileapplication/pages/pricesetting.php';
 
     var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
     List jsondataval = json.decode(response.body);
-    print("!111");
-    print(jsondataval);
+
     priceSetting = jsondataval.map((e) => PriceSetting.fromJson(e)).toList();
     setState(() {});
     return priceSetting;
@@ -188,6 +186,12 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     employeeWhichCompany = widget.userInfo[0].employeeCompany;
     fetchCrtCOunt();
     customerInfo();
+  }
+
+  @override
+  void dispose() {
+    
+    super.dispose();
   }
 
   @override
@@ -263,8 +267,8 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                   Future.delayed(Duration(milliseconds: 10), () {
                     managementCost = (double.parse(iteminfo[0].wacCost) /
                         (1 - double.parse(priceSetting[0].margin)));
-                    print("object");
-                    print(priceSettingCutoff[0].realmargincost);
+                    // print("object");
+                    // print(priceSettingCutoff[0].realmargincost);
 
                     double a =
                         (double.parse(priceSettingCutoff[0].realmargincost)) /
@@ -1226,8 +1230,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Salesmandetailpage> iteminfo = snapshot.data;
-                  print("========");
-                  print(iteminfo[0].mohprice);
+
                   if (iteminfo[0].mohprice == "1") {
                     getPriceSettingPhp("MOH", iteminfo[0].whichcompany);
                     getPriceSettingPhpCutOff("MOH", iteminfo[0].whichcompany);
@@ -1240,16 +1243,12 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                   Future.delayed(Duration(milliseconds: 10), () {
                     managementCost = (double.parse(iteminfo[0].wacCost) /
                         (1 - double.parse(priceSetting[0].margin)));
-                    print("object");
-                    print(priceSettingCutoff[0].realmargincost);
 
                     double a =
                         (double.parse(priceSettingCutoff[0].realmargincost)) /
                             100;
-                    print(a);
+
                     double x = 1 - a;
-                    print(managementCost);
-                    print(x);
 
                     calculatedCost = (managementCost / x).roundToDouble();
                     // setState(() {});
@@ -2065,8 +2064,8 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Salesmandetailpage> iteminfo = snapshot.data;
-                  print("========");
-                  print(iteminfo[0].mohprice);
+                  // print("========");
+                  // print(iteminfo[0].mohprice);
                   if (iteminfo[0].mohprice == "1") {
                     getPriceSettingPhp("MOH", iteminfo[0].whichcompany);
                     getPriceSettingPhpCutOff("MOH", iteminfo[0].whichcompany);
@@ -2081,20 +2080,20 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                             (1 - double.parse(priceSetting[0].margin) / 100))
                         .toStringAsFixed(2);
                     managementCost = double.parse(temp);
-                    print("object");
-                    print(double.parse(iteminfo[0].wacCost));
-                    print(priceSettingCutoff[0].realmargincost);
+                    // print("object");
+                    // print(double.parse(iteminfo[0].wacCost));
+                    // print(priceSettingCutoff[0].realmargincost);
 
                     double a =
                         (double.parse(priceSettingCutoff[0].realmargincost)) /
                             100;
-                    print(a);
+                    // print(a);
                     double x = 1 - a;
-                    print(managementCost);
-                    print(x);
+                    // print(managementCost);
+                    // print(x);
                     String temp2 = (managementCost / x).toStringAsFixed(2);
                     calculatedCost = double.parse(temp2);
-                    print(calculatedCost);
+                    // print(calculatedCost);
                     // ((double.parse(iteminfo[0].wholeSalePrice) -
                     //             double.parse(iteminfo[0].wacCost)) *
                     //         double.parse(

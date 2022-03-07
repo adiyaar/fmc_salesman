@@ -51,7 +51,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
     prefs.setString('customerId', customerSelected);
 
     if (branchSelected == null) {
-      prefs.setString('branchId', "null");
+      prefs.setString('branchId', "0");
     } else {
       prefs.setString('branchId', branchSelected);
     }
@@ -74,7 +74,7 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
     );
     prefs.setString('customerName', cust_name);
     if (branch_name == null) {
-      prefs.setString('customerBranch', "No Branch");
+      prefs.setString('customerBranch', "0");
     } else {
       prefs.setString('customerBranch', branch_name);
     }
