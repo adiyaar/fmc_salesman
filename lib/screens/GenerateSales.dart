@@ -1245,138 +1245,44 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                   SizedBox(
                     height: 20,
                   ),
-                  // Row(
-                  //   children: [
-                  //     Container(
-                  //       alignment: Alignment.centerLeft,
-                  //       width: MediaQuery.of(context).size.width / 1.6,
-                  //       child: Row(
-                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //         children: [
-                  //           Container(
-                  //               margin: EdgeInsets.only(left: 10.0),
-                  //               child: Text(
-                  //                 "Credit Limit *",
-                  //                 style: TextStyle(fontSize: 17),
-                  //               )),
-                  //           Container(
-                  //               alignment: Alignment.centerLeft,
-                  //               margin: EdgeInsets.only(right: 170.0),
-                  //               child: Text(
-                  //                 "Credit Days *",
-                  //                 style: TextStyle(fontSize: 17),
-                  //               )),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // SizedBox(
-                  //   height: 20,
-                  // ),
-                  // Row(
-                  //   children: [
-                  //     Container(
-                  //         height: 50,
-                  //         margin: EdgeInsets.only(left: 10.0),
-                  //         decoration: BoxDecoration(
-                  //             border: Border.all(color: Colors.black)),
-                  //         width: MediaQuery.of(context).size.width / 4.5,
-                  //         child: FutureBuilder(
-                  //           future: getAllValue(),
-                  //           builder: (context, snapshot) {
-                  //             if (snapshot.hasData) {
-                  //               if (snapshot.data.length == 0) {
-                  //                 return Container(
-                  //                   child: Text(
-                  //                     "",
-                  //                     style: TextStyle(
-                  //                         color: Colors.black, fontSize: 20),
-                  //                     textAlign: TextAlign.center,
-                  //                   ),
-                  //                 );
-                  //               }
-                  //               return ListView.builder(
-                  //                   itemBuilder: (context, index) {
-                  //                 var list = snapshot.data[index];
-
-                  //                 credit_limit = list['creditlimits'];
-
-                  //                 return TextFormField(
-                  //                   enabled: false,
-                  //                   initialValue: list['creditlimits'],
-                  //                   keyboardType: TextInputType.number,
-                  //                   decoration: InputDecoration(
-                  //                       border: InputBorder.none,
-                  //                       fillColor: Color(0xfff3f3f4),
-                  //                       filled: true),
-                  //                 );
-                  //               });
-                  //             }
-                  //             return Container(
-                  //               child: Text(
-                  //                 "Fetching Info",
-                  //                 style: TextStyle(
-                  //                     color: Colors.black, fontSize: 20),
-                  //                 textAlign: TextAlign.center,
-                  //               ),
-                  //             );
-                  //           },
-                  //         )),
-                  //     SizedBox(
-                  //       width: MediaQuery.of(context).size.width / 6,
-                  //     ),
-                  //     Container(
-                  //         height: 50,
-                  //         margin: EdgeInsets.only(left: 10.0),
-                  //         width: MediaQuery.of(context).size.width / 4.5,
-                  //         decoration: BoxDecoration(
-                  //             border: Border.all(color: Colors.black)),
-                  //         child: FutureBuilder(
-                  //           future: getAllValue(),
-                  //           builder: (context, snapshot) {
-                  //             if (snapshot.hasData) {
-                  //               if (snapshot.data.length == 0) {
-                  //                 return Container(
-                  //                   child: Text(
-                  //                     "",
-                  //                     style: TextStyle(
-                  //                         color: Colors.black, fontSize: 20),
-                  //                     textAlign: TextAlign.center,
-                  //                   ),
-                  //                 );
-                  //               }
-                  //               return ListView.builder(
-                  //                   itemBuilder: (context, index) {
-                  //                 var list = snapshot.data[index];
-
-                  //                 credit_days = list['creditdays'];
-
-                  //                 addCustomerData();
-
-                  //                 return TextFormField(
-                  //                   enabled: false,
-                  //                   initialValue: list['creditdays'],
-                  //                   keyboardType: TextInputType.number,
-                  //                   decoration: InputDecoration(
-                  //                       border: InputBorder.none,
-                  //                       fillColor: Color(0xfff3f3f4),
-                  //                       filled: true),
-                  //                 );
-                  //               });
-                  //             }
-                  //             return Container(
-                  //               child: Text(
-                  //                 "Fetching Info",
-                  //                 style: TextStyle(
-                  //                     color: Colors.black, fontSize: 20),
-                  //                 textAlign: TextAlign.center,
-                  //               ),
-                  //             );
-                  //           },
-                  //         )),
-                  //   ],
-                  // ),
+                  Container(
+                      margin: EdgeInsets.only(left: 10.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Activity*",
+                        style: TextStyle(fontSize: 17),
+                      )),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          alignment: Alignment.centerLeft,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[300])),
+                          width: MediaQuery.of(context).size.width / 1.52,
+                          padding: EdgeInsets.symmetric(horizontal: 12.0),
+                          child: DropdownButton(
+                            underline: SizedBox(),
+                            value: activitySelected,
+                            hint: Text("Select Type of Activity"),
+                            items: activity
+                                .map((e) => DropdownMenuItem(
+                                      child: Text(e),
+                                      value: e,
+                                    ))
+                                .toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                activitySelected = value;
+                              });
+                            },
+                          )),
+                    ],
+                  ),
                   SizedBox(
                     height: 20,
                   ),
@@ -1950,138 +1856,46 @@ class _GenerateSalesOrderState extends State<GenerateSalesOrder> {
                   SizedBox(
                     height: 20,
                   ),
-                  // Row(
-                  //   children: [
-                  //     Container(
-                  //       alignment: Alignment.centerLeft,
-                  //       width: MediaQuery.of(context).size.width / 1.6,
-                  //       child: Row(
-                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //         children: [
-                  //           Container(
-                  //               margin: EdgeInsets.only(left: 10.0),
-                  //               child: Text(
-                  //                 "Credit Limit *",
-                  //                 style: TextStyle(fontSize: 17),
-                  //               )),
-                  //           Container(
-                  //               alignment: Alignment.centerLeft,
-                  //               margin: EdgeInsets.only(right: 170.0),
-                  //               child: Text(
-                  //                 "Credit Days *",
-                  //                 style: TextStyle(fontSize: 17),
-                  //               )),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // SizedBox(
-                  //   height: 20,
-                  // ),
-                  // Row(
-                  //   children: [
-                  //     Container(
-                  //         height: 50,
-                  //         margin: EdgeInsets.only(left: 10.0),
-                  //         decoration: BoxDecoration(
-                  //             border: Border.all(color: Colors.black)),
-                  //         width: MediaQuery.of(context).size.width / 4.5,
-                  //         child: FutureBuilder(
-                  //           future: getAllValue(),
-                  //           builder: (context, snapshot) {
-                  //             if (snapshot.hasData) {
-                  //               if (snapshot.data.length == 0) {
-                  //                 return Container(
-                  //                   child: Text(
-                  //                     "",
-                  //                     style: TextStyle(
-                  //                         color: Colors.black, fontSize: 20),
-                  //                     textAlign: TextAlign.center,
-                  //                   ),
-                  //                 );
-                  //               }
-                  //               return ListView.builder(
-                  //                   itemBuilder: (context, index) {
-                  //                 var list = snapshot.data[index];
-
-                  //                 credit_limit = list['creditlimits'];
-
-                  //                 return TextFormField(
-                  //                   enabled: false,
-                  //                   initialValue: list['creditlimits'],
-                  //                   keyboardType: TextInputType.number,
-                  //                   decoration: InputDecoration(
-                  //                       border: InputBorder.none,
-                  //                       fillColor: Color(0xfff3f3f4),
-                  //                       filled: true),
-                  //                 );
-                  //               });
-                  //             }
-                  //             return Container(
-                  //               child: Text(
-                  //                 "Fetching Info",
-                  //                 style: TextStyle(
-                  //                     color: Colors.black, fontSize: 20),
-                  //                 textAlign: TextAlign.center,
-                  //               ),
-                  //             );
-                  //           },
-                  //         )),
-                  //     SizedBox(
-                  //       width: MediaQuery.of(context).size.width / 6,
-                  //     ),
-                  //     Container(
-                  //         height: 50,
-                  //         margin: EdgeInsets.only(left: 10.0),
-                  //         width: MediaQuery.of(context).size.width / 4.5,
-                  //         decoration: BoxDecoration(
-                  //             border: Border.all(color: Colors.black)),
-                  //         child: FutureBuilder(
-                  //           future: getAllValue(),
-                  //           builder: (context, snapshot) {
-                  //             if (snapshot.hasData) {
-                  //               if (snapshot.data.length == 0) {
-                  //                 return Container(
-                  //                   child: Text(
-                  //                     "",
-                  //                     style: TextStyle(
-                  //                         color: Colors.black, fontSize: 20),
-                  //                     textAlign: TextAlign.center,
-                  //                   ),
-                  //                 );
-                  //               }
-                  //               return ListView.builder(
-                  //                   itemBuilder: (context, index) {
-                  //                 var list = snapshot.data[index];
-
-                  //                 credit_days = list['creditdays'];
-
-                  //                 addCustomerData();
-
-                  //                 return TextFormField(
-                  //                   enabled: false,
-                  //                   initialValue: list['creditdays'],
-                  //                   keyboardType: TextInputType.number,
-                  //                   decoration: InputDecoration(
-                  //                       border: InputBorder.none,
-                  //                       fillColor: Color(0xfff3f3f4),
-                  //                       filled: true),
-                  //                 );
-                  //               });
-                  //             }
-                  //             return Container(
-                  //               child: Text(
-                  //                 "Fetching Info",
-                  //                 style: TextStyle(
-                  //                     color: Colors.black, fontSize: 20),
-                  //                 textAlign: TextAlign.center,
-                  //               ),
-                  //             );
-                  //           },
-                  //         )),
-                  //   ],
-                  // ),
+                  Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.only(left: 10.0),
+                          child: Text(
+                            "Activity",
+                            style: TextStyle(fontSize: 17),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 10.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[300])),
+                          width: MediaQuery.of(context).size.width / 1.1,
+                          padding: EdgeInsets.symmetric(horizontal: 12.0),
+                          child: DropdownButton(
+                            underline: SizedBox(),
+                            value: activitySelected,
+                            hint: Text("Select Type of Activity"),
+                            items: activity
+                                .map((e) => DropdownMenuItem(
+                                      child: Text(e),
+                                      value: e,
+                                    ))
+                                .toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                activitySelected = value;
+                              });
+                            },
+                          )),
+                    ],
+                  ),
                   SizedBox(
                     height: 20,
                   ),

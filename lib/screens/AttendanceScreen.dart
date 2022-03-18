@@ -5,6 +5,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:responsify/responsify.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/widget/GlobalSnackbar.dart';
 import 'package:http/http.dart' as http;
 import 'package:testing/widget/GlobalSnackbar.dart';
@@ -20,11 +21,13 @@ class AttendanceScreen extends StatefulWidget {
 class _AttendanceScreenState extends State<AttendanceScreen> {
   bool checkedIn = false;
   bool checkedOut = false;
-  String latitude = '';
-  String longitude = '';
+  double latitude = 0.0;
+  double longitude = 0.0;
   double distanceBetween;
   String checkInTimeDone;
   String checkoutTimeDone;
+  SharedPreferences pf;
+  String storedCheckIN;
 
   // ignore: missing_return
   Future<Position> _determinePosition() async {
@@ -57,19 +60,25 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           await placemarkFromCoordinates(position.latitude, position.longitude);
 
       setState(() {
-        latitude = position.latitude.toString();
-        longitude = position.longitude.toString();
+        latitude = position.latitude;
+        longitude = position.longitude;
       });
     } catch (e) {
       print(e);
     }
   }
 
+  gettime() async {
+    SharedPreferences pf = await SharedPreferences.getInstance();
+    storedCheckIN = pf.getString('checkin');
+  }
+
   allowCheckin() async {
+    SharedPreferences pf = await SharedPreferences.getInstance();
     // comes in meters
     distanceBetween = GeolocatorPlatform.instance.distanceBetween(
-        double.parse(latitude),
-        double.parse(longitude),
+        latitude,
+        longitude,
         double.parse(widget.userInfo[0].latitude),
         double.parse(widget.userInfo[0].longitude));
 
@@ -137,9 +146,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                           TimeOfDay.now().minute.toString() +
                                           ':' +
                                           DateTime.now().second.toString();
+
+                                  pf.setString('checkin', checkInTimeDone);
+                                  pf.setBool('boolcheckin', true);
+
+                                  storedCheckIN = checkInTimeDone;
                                 });
                                 Navigator.pop(context);
                                 sendtoServer();
+
                                 final snackBar = SnackBar(
                                   content: const Text('Successfully Done'),
                                 );
@@ -209,10 +224,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   allowCheckout() async {
+    SharedPreferences pf = await SharedPreferences.getInstance();
     // comes in meters
     distanceBetween = GeolocatorPlatform.instance.distanceBetween(
-        double.parse(latitude),
-        double.parse(longitude),
+        latitude,
+        longitude,
         double.parse(widget.userInfo[0].latitude),
         double.parse(widget.userInfo[0].longitude));
 
@@ -283,6 +299,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                 });
                                 Navigator.pop(context);
                                 sendtoServer();
+                                pf.remove('checkin');
                                 final snackBar = SnackBar(
                                   content: const Text('Successfully Done'),
                                 );
@@ -380,6 +397,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
   void initState() {
     _determinePosition();
+    gettime();
     super.initState();
   }
 
@@ -474,9 +492,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       rows: [
                         DataRow(cells: [
                           // ignore: unnecessary_brace_in_string_interps
-                          DataCell(checkInTimeDone == null
+                          DataCell(storedCheckIN == null
                               ? Text('Not Checked In')
-                              : Text('${checkInTimeDone}')),
+                              : Text('${storedCheckIN}')),
                           DataCell(checkoutTimeDone == null
                               ? Text('Not Checked Out')
                               : Text('${checkoutTimeDone}')),
@@ -495,7 +513,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           ),
                           DataCell(ElevatedButton(
                               onPressed: () {
-                                if (checkedIn == true) {
+                                if (storedCheckIN.contains(':')) {
                                   allowCheckout();
                                 } else {
                                   final snackBar = SnackBar(
@@ -593,9 +611,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     rows: [
                       DataRow(cells: [
                         // ignore: unnecessary_brace_in_string_interps
-                        DataCell(checkInTimeDone == null
+                        DataCell(storedCheckIN == null
                             ? Text('Not Checked In')
-                            : Text('${checkInTimeDone}')),
+                            : Text('${storedCheckIN}')),
                         DataCell(checkoutTimeDone == null
                             ? Text('Not Checked Out')
                             : Text('${checkoutTimeDone}')),
@@ -614,7 +632,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         ),
                         DataCell(ElevatedButton(
                             onPressed: () {
-                              if (checkedIn == true) {
+                              if (storedCheckIN.contains(':')) {
                                 allowCheckout();
                               } else {
                                 final snackBar = SnackBar(
@@ -679,9 +697,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     rows: [
                       DataRow(cells: [
                         // ignore: unnecessary_brace_in_string_interps
-                        DataCell(checkInTimeDone == null
+                        DataCell(storedCheckIN == null
                             ? Text('Not Checked In')
-                            : Text('   ${checkInTimeDone}   ')),
+                            : Text('   ${storedCheckIN}   ')),
                         DataCell(checkoutTimeDone == null
                             ? Text('Not Checked Out')
                             : Text('              ${checkoutTimeDone}')),
@@ -701,7 +719,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                   MaterialStateProperty.all(Colors.black))),
                       ElevatedButton(
                           onPressed: () {
-                            if (checkedIn == true) {
+                            if (storedCheckIN.contains(':')) {
                               allowCheckout();
                             } else {
                               final snackBar = SnackBar(
