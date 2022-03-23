@@ -13,7 +13,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'CartPage.dart';
 
-bool isGridView = true;
+bool isGridView = false;
 String invoiceprice;
 getStringValues() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();

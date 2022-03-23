@@ -45,7 +45,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Box searchBox;
 
-  bool isGridView = true;
+  bool isGridView = false;
 
   Future getAllData() async {
     final baseUrl =

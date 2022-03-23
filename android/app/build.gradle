@@ -41,9 +41,9 @@ android {
         applicationId "trices.testing"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 6
-        versionName "6.0"
-         multiDexEnabled = true
+        versionCode 7
+        versionName "7.0"
+        multiDexEnabled = true
         
     }
 

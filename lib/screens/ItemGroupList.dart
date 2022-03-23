@@ -10,7 +10,7 @@ import 'package:testing/Common/Shimmer.dart';
 import 'package:testing/screens/DetailPageScreen.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-bool isGridView = true;
+bool isGridView = false;
 
 class ListItems extends StatefulWidget {
   List userInfo;
