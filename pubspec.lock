@@ -14,14 +14,14 @@ packages:
       name: archive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.11"
+    version: "2.0.13"
   args:
     dependency: transitive
     description:
       name: args
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.0"
+    version: "1.6.0"
   async:
     dependency: "direct main"
     description:
@@ -42,21 +42,7 @@ packages:
       name: cached_network_image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.0"
-  cached_network_image_platform_interface:
-    dependency: transitive
-    description:
-      name: cached_network_image_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
-  cached_network_image_web:
-    dependency: transitive
-    description:
-      name: cached_network_image_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
+    version: "2.5.1"
   characters:
     dependency: transitive
     description:
@@ -113,55 +99,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  connectivity_plus:
+  convert:
     dependency: transitive
     description:
-      name: connectivity_plus
+      name: convert
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
-  connectivity_plus_linux:
-    dependency: transitive
-    description:
-      name: connectivity_plus_linux
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.0"
-  connectivity_plus_macos:
-    dependency: transitive
-    description:
-      name: connectivity_plus_macos
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.2.1"
-  connectivity_plus_platform_interface:
-    dependency: transitive
-    description:
-      name: connectivity_plus_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.0"
-  connectivity_plus_web:
-    dependency: transitive
-    description:
-      name: connectivity_plus_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.0+1"
-  connectivity_plus_windows:
-    dependency: transitive
-    description:
-      name: connectivity_plus_windows
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.2.0"
+    version: "2.1.1"
   crypto:
     dependency: transitive
     description:
       name: crypto
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "2.1.5"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -183,13 +134,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
-  dbus:
-    dependency: transitive
-    description:
-      name: dbus
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.5.6"
   dio:
     dependency: "direct main"
     description:
@@ -243,21 +187,21 @@ packages:
       name: flutter_blurhash
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.0"
+    version: "0.5.0"
   flutter_cache_manager:
     dependency: transitive
     description:
       name: flutter_cache_manager
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.0"
+    version: "2.1.2"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
       name: flutter_launcher_icons
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.2"
+    version: "0.8.1"
   flutter_page_indicator:
     dependency: transitive
     description:
@@ -379,7 +323,7 @@ packages:
       name: hive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.5"
+    version: "1.4.4+1"
   http:
     dependency: "direct main"
     description:
@@ -400,7 +344,7 @@ packages:
       name: image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.1"
+    version: "2.1.19"
   intl:
     dependency: "direct main"
     description:
@@ -422,13 +366,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.7"
+  logging:
+    dependency: transitive
+    description:
+      name: logging
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.11.4"
   lottie:
     dependency: "direct main"
     description:
       name: lottie
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.1"
+    version: "0.7.0+1"
   matcher:
     dependency: transitive
     description:
@@ -456,21 +407,14 @@ packages:
       name: nb_utils
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.4.10"
-  nm:
-    dependency: transitive
-    description:
-      name: nm
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.0"
+    version: "4.4.7"
   octo_image:
     dependency: transitive
     description:
       name: octo_image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "0.3.0"
   path:
     dependency: transitive
     description:
@@ -533,7 +477,7 @@ packages:
       name: petitparser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0"
+    version: "3.1.0"
   platform:
     dependency: transitive
     description:
@@ -562,13 +506,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0+5"
+  responsive_table:
+    dependency: "direct main"
+    description:
+      name: responsive_table
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   rxdart:
     dependency: transitive
     description:
       name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.27.3"
+    version: "0.25.0"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -624,7 +575,7 @@ packages:
       name: signature
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.0"
+    version: "3.2.1"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -720,7 +671,7 @@ packages:
       name: uuid
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.5"
+    version: "2.2.2"
   vector_math:
     dependency: transitive
     description:
@@ -755,14 +706,14 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.2"
+    version: "4.5.1"
   yaml:
     dependency: transitive
     description:
       name: yaml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.0"
+    version: "2.2.1"
 sdks:
   dart: ">=2.13.0 <3.0.0"
   flutter: ">=2.0.0"

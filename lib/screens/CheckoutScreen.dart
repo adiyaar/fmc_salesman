@@ -86,8 +86,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final SignatureController _controller = SignatureController(
     penStrokeWidth: 5,
     penColor: Colors.black,
-    onDrawStart: () => print('onDrawStart called!'),
-    onDrawEnd: () => print('onDrawEnd called!'),
+    // onDrawStart: () => print('onDrawStart called!'),
+    // onDrawEnd: () => print('onDrawEnd called!'),
     exportBackgroundColor: Colors.white,
   );
 

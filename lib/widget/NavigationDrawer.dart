@@ -8,8 +8,10 @@ import 'package:testing/screens/AttendanceScreen.dart';
 
 import 'package:testing/screens/GenerateSales.dart';
 import 'package:testing/screens/HomeScreen.dart';
+import 'package:testing/screens/LeadsScreen.dart';
 
 import 'package:testing/screens/LoginScreen.dart';
+import 'package:testing/screens/SalesQuotations.dart';
 import 'package:testing/settings.dart';
 
 class NavigationDrawer extends StatefulWidget {
@@ -41,22 +43,26 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
               decoration: BoxDecoration(
                 color: Colors.black87,
               ),
-              accountName: Text(
-                widget.userInfo[0].employeename,
-                style: TextStyle(
-                    fontSize: 19,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
-              ),
+              accountName: widget.userInfo.isEmpty
+                  ? Text('Guest')
+                  : Text(
+                      widget.userInfo[0].employeename,
+                      style: TextStyle(
+                          fontSize: 19,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.black,
-                child: Text(
-                  widget.userInfo[0].workingin,
-                  style: TextStyle(
-                      fontSize: 22,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
+                child: widget.userInfo.isEmpty
+                    ? Text('NA')
+                    : Text(
+                        widget.userInfo[0].workingin,
+                        style: TextStyle(
+                            fontSize: 22,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                      ),
               ),
             ),
             ListTile(
@@ -65,13 +71,46 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                 trailing: Icon(Icons.keyboard_arrow_right),
                 leading: new Icon(Icons.home),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => HomeScreen(
-                              userList: widget.userInfo,
-                            )),
-                  );
+                  widget.userInfo == null
+                      ? Navigator.pop(context)
+                      : Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomeScreen(
+                                    userList: widget.userInfo,
+                                  )),
+                        );
+                }),
+
+            ListTile(
+                title: new Text("Leads"),
+                contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                trailing: Icon(Icons.keyboard_arrow_right),
+                leading: new Icon(Icons.home),
+                onTap: () {
+                  widget.userInfo == null
+                      ? Navigator.pop(context)
+                      : Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LeadScreen()),
+                        );
+                }),
+
+            ListTile(
+                title: new Text("Sales Order"),
+                contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                trailing: Icon(Icons.keyboard_arrow_right),
+                leading: new Icon(Icons.home),
+                onTap: () {
+                  widget.userInfo == null
+                      ? Navigator.pop(context)
+                      : Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SalesQuotation(
+                                    user: widget.userInfo,
+                                  )),
+                        );
                 }),
 
             ListTile(
@@ -80,13 +119,15 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                 trailing: Icon(Icons.keyboard_arrow_right),
                 leading: new Icon(Icons.calendar_today_sharp),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AttendanceScreen(
-                          userInfo: widget.userInfo,
-                        )),
-                  );
+                  widget.userInfo == null
+                      ? Navigator.pop(context)
+                      : Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AttendanceScreen(
+                                    userInfo: widget.userInfo,
+                                  )),
+                        );
                 }),
             Divider(
               height: 0.1,
@@ -113,11 +154,13 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                 trailing: Icon(Icons.keyboard_arrow_right),
                 leading: new Icon(Icons.account_balance),
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              GenerateSalesOrder(userInfo: widget.userInfo)));
+                  widget.userInfo == null
+                      ? Navigator.pop(context)
+                      : Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => GenerateSalesOrder(
+                                  userInfo: widget.userInfo)));
                 }),
 
             // ListTile(

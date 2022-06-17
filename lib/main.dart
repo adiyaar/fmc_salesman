@@ -1,13 +1,15 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testing/screens/HomeScreen.dart';
 import 'package:testing/screens/LoginScreen.dart';
 import 'package:http/http.dart' as http;
+import 'package:testing/screens/ViewDetailSalesQuotation.dart';
 
 import 'models/UserInfo.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,8 +17,10 @@ Future<void> main() async {
 
   // if (isAuthenticated == true) {
   runApp(MaterialApp(
+    navigatorKey: navigatorKey,
     debugShowCheckedModeBanner: false,
     home: MyApp(),
+    routes: {'/viewSales': (context) => ViewSaleQuotation()},
   ));
   // }
 }
@@ -75,13 +79,11 @@ class _MyAppState extends State<MyApp> {
 
       var response1 =
           await http.post(Uri.parse(baseUrl1), body: jsonEncode(data1));
-      
+
       var jsonReponse = json.decode(response1.body);
 
       userInfo = jsonReponse.map((e) => new UserInfoModel.fromJson(e)).toList();
       setState(() {});
-
-
 
       return userInfo;
     }

@@ -20,8 +20,12 @@ dependencies:
   dropdown_search:
   flutter_swiper:
   hive: any
-  
+  responsive_table: 
   shared_preferences:
+  
+  
+  
+
 
   filter_list: any
   font_awesome_flutter:
@@ -48,9 +52,6 @@ dependencies:
   geolocator: any
   geocoding:
 
-  # snapshot_carousel: ^0.0.3
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
   api_cache_manager: ^1.0.2
 

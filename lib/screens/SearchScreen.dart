@@ -54,7 +54,7 @@ class _SearchScreenState extends State<SearchScreen> {
     var cacheExists = await APICacheManager().isAPICacheKeyExist('SearchFinal');
 
     if (!cacheExists) {
-      print('Api hit');
+     
       var response = await http.get(Uri.parse(baseUrl));
       if (response.statusCode == 200) {
         List jsonResponse = json.decode(response.body);

@@ -19,12 +19,10 @@ class LoginScreenPage extends StatefulWidget {
 }
 
 class _LoginScreenPageState extends State<LoginScreenPage> {
-
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
 
   var _formKey = GlobalKey<FormState>();
-
 
   @override
   void initState() {
@@ -201,7 +199,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
 
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {
-                                          pf.setBool('loggedIn', true);
+                                      pf.setBool('loggedIn', true);
                                       Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
@@ -415,7 +413,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
 
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {
-                                          pf.setBool('loggedIn', true);
+                                      pf.setBool('loggedIn', true);
                                       Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
@@ -599,7 +597,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                     _formKey.currentState.validate();
                                 if (formFilled == true) {
                                   SharedPreferences pf =
-                                  await SharedPreferences.getInstance();
+                                      await SharedPreferences.getInstance();
                                   final String baseUrl =
                                       'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/login_salesman.php';
 
@@ -608,7 +606,6 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                     'password': passwordcontroller.text
                                   };
 
-                                  print(passwordcontroller.text);
                                   pf.setString(
                                       'loginEmail', emailcontroller.text);
                                   pf.setString(
@@ -617,6 +614,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                   var response = await http.post(
                                       Uri.parse(baseUrl),
                                       body: json.encode(data));
+                                  print('1');
 
                                   String message = jsonDecode(response.body);
                                   print(message);
