@@ -11,36 +11,26 @@ dependencies:
   flutter:
     sdk: flutter
 
-  get_it:
+  #network Package
   http:
-
-  responsify:
   data_connection_checker:
-  flutter_speed_dial: ^3.0.5
-  dropdown_search:
-  flutter_swiper:
-  hive: any
-  responsive_table: 
-  shared_preferences:
-  flutter_markdown:
-  
-  
-
-
-  filter_list: any
-  font_awesome_flutter:
-  # expansion_card:
-  # cell_calendar:
-  async:
-  
-  percent_indicator:
-  intl:
-  date_format:
-  shimmer: 
-  nb_utils:
-  connectivity:
   dio:
+  nb_utils:
+
+  #UI
+  responsify:
+  dropdown_search:
+  font_awesome_flutter:
+  percent_indicator:
+  filter_list: 
+
+  #Local Storage
+  shared_preferences:
+  hive: any
+  intl:
+  shimmer:  
   webview_flutter:
+
   unicorndial:
   flutter_range_slider:
   modal_bottom_sheet:
@@ -48,12 +38,12 @@ dependencies:
   lottie:
   signature:
   path_provider:
-  local_auth: any
-  geolocator: any
+  local_auth: 
+  geolocator: 
   geocoding:
 
-  cupertino_icons: ^1.0.0
-  api_cache_manager: ^1.0.2
+  cupertino_icons: 
+  api_cache_manager:
 
 dev_dependencies:
   flutter_test:

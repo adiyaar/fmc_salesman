@@ -467,13 +467,13 @@ class TheSearch extends SearchDelegate<String> {
   List userInfo;
   TheSearch(
       {this.contextPage,
-      this.controller,
+      
       @required this.data,
       @required this.userInfo});
 
   List<ItemGrpData> data;
   BuildContext contextPage;
-  WebViewController controller;
+  
   final suggestions1 = [];
 
   @override

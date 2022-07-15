@@ -20,7 +20,7 @@ Future<void> main() async {
     navigatorKey: navigatorKey,
     debugShowCheckedModeBanner: false,
     home: MyApp(),
-    routes: {'/viewSales': (context) => ViewSaleQuotation()},
+    
   ));
   // }
 }
