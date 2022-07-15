@@ -22,7 +22,7 @@ dependencies:
   hive: any
   responsive_table: 
   shared_preferences:
-  
+  flutter_markdown:
   
   
 

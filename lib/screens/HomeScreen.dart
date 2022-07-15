@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:testing/Apis/LeadsScreenApi.dart';
 import 'package:testing/dynamic/All_branch.dart';
 import 'package:testing/dynamic/All_branch_add.dart';
 import 'package:testing/dynamic/itemmaster.dart';
@@ -12,6 +13,7 @@ import 'package:testing/models/UserInfo.dart';
 import 'package:testing/screens/CartPage.dart';
 import 'package:testing/screens/GenerateSales.dart';
 import 'package:testing/screens/LoginScreen.dart';
+import 'package:testing/widget/GlobalSnackbar.dart';
 import 'package:testing/widget/NavigationDrawer.dart';
 import 'package:unicorndial/unicorndial.dart';
 import 'ItemMainGroup.dart';
@@ -26,8 +28,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-
   String customerName,
       branchname,
       creditDays,
@@ -50,32 +50,36 @@ class _HomeScreenState extends State<HomeScreen> {
   int a;
   Future fetchCrtCOunt() async {
     SharedPreferences pf = await SharedPreferences.getInstance();
+
     String customerId = pf.getString('customerId');
     String branchId = pf.get('branchId');
-    Map<String, dynamic> data = {
-      'userid': customerId,
-      'selectedcustbranch': branchId
-    };
-    String baseUrl =
-        'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesman_cart.php';
-    var response = await http.post(Uri.parse(baseUrl), body: json.encode(data));
+    if (customerId != null || branchId != null) {
+      Map<String, dynamic> data = {
+        'userid': customerId,
+        'selectedcustbranch': branchId
+      };
+      String baseUrl =
+          'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/salesman_cart.php';
+      var response =
+          await http.post(Uri.parse(baseUrl), body: json.encode(data));
 
-    List jsonResponse = json.decode(response.body);
-    // print(jsonResponse);
-    print(jsonResponse.length);
-    a = jsonResponse.length;
-    setState(() {});
-    return a;
+      List jsonResponse = json.decode(response.body);
+      // print(jsonResponse);
+      print(jsonResponse.length);
+      a = jsonResponse.length;
+      setState(() {});
+      return a;
+    } else {
+      a = 0;
+      return a;
+    }
   }
-
-
-
-
 
   @override
   void initState() {
     super.initState();
     fetchAllCustomerData();
+
     fetchCrtCOunt();
   }
 
@@ -215,12 +219,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: Icon(Icons.shopping_cart_outlined),
                 tooltip: 'MainGroup',
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CartPage(
-                                useriNfo: widget.userList,
-                              )));
+                  if (customerName != null) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CartPage(
+                                  useriNfo: widget.userList,
+                                )));
+                  } else {
+                    final snackBar = SnackBar(
+                      content: const Text('Please Select a Customer First'),
+                    );
+
+                    // Find the ScaffoldMessenger in the widget tree
+                    // and use it to show a SnackBar.
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
                 },
               ),
               CircleAvatar(
@@ -1236,8 +1250,8 @@ class _HomeScreenState extends State<HomeScreen> {
       )),
     );
   }
-
 }
+
 enum _SupportState {
   unknown,
   supported,

@@ -11,7 +11,7 @@ class EmailView extends StatefulWidget {
     this.favoriteChanged,
   });
 
-  final EmailItem item;
+  final LeadList item;
   final VoidCallback favoriteChanged;
 
   @override
@@ -52,13 +52,13 @@ class _EmailViewState extends State<EmailView> {
             children: <Widget>[
               Expanded(
                 child: Text(
-                  widget.item?.title ?? "",
+                  widget.item?.whichbranch ?? "",
                   maxLines: 2,
                   style: Theme.of(context).textTheme.title,
                 ),
               ),
               IconButton(
-                icon: (widget.item?.favorite ?? false)
+                icon: (widget.item?.status ?? false)
                     ? Icon(Icons.star, color: Colors.amber)
                     : Icon(Icons.star_border),
                 onPressed: widget.favoriteChanged,
