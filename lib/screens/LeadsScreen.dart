@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:responsify/responsify.dart';
-import 'package:testing/Apis/LeadsScreenApi.dart';
 import 'package:testing/Common/common.dart';
 import 'package:http/http.dart' as http;
 import 'package:testing/models/LeadModel.dart';
@@ -15,7 +14,12 @@ class LeadScreen extends StatefulWidget {
 
 class _LeadScreenState extends State<LeadScreen> {
   List<LeadList> leadList = [];
+  List<LeadList> searchResultList = [];
+  bool isSearching = false;
+  String searchText = '';
   bool isLoading = true;
+
+  final TextEditingController searchController = new TextEditingController();
 
   Future getListofLeads() async {
     String url =
@@ -40,11 +44,62 @@ class _LeadScreenState extends State<LeadScreen> {
   bool isLeadClicked = false;
   LeadList selectedLead;
 
+  _LeadScreenState() {
+    searchController.addListener(() {
+      if (searchController.text.isEmpty) {
+        setState(() {
+          isSearching = false;
+          searchText = "";
+        });
+      } else {
+        setState(() {
+          isSearching = true;
+          searchText = searchController.text;
+        });
+      }
+    });
+  }
+
   @override
   void initState() {
     getListofLeads();
     super.initState();
   }
+
+  void searchOperation(String searchText) {
+    searchResultList.clear();
+    if (isSearching != null) {
+      for (int i = 0; i < leadList.length; i++) {
+        LeadList data = leadList[i];
+        if (data.id.toLowerCase().contains(searchText.toLowerCase())) {
+          searchResultList.add(data);
+        }
+      }
+    }
+  }
+
+  void _handleSearchStart() {
+    setState(() {
+      isSearching = true;
+    });
+  }
+
+  void _handleSearchEnd() {
+    setState(() {
+      isSearching = false;
+      searchController.clear();
+    });
+  }
+  //  void searchOperation(String searchText) {
+  //   searchResultList.clear();
+  //   if (isSearching != null) {
+  //     for (int i = 0; i < leadList.length; i++) {
+  //       LeadList data = leadList[i];
+  //       if (data.id.toLowerCase().contains(searchText.toLowerCase())) {
+  //         searchResultList.add(data);
+  //       }
+  //     }
+  //   }
 
   @override
   Widget build(BuildContext context) {
@@ -70,27 +125,97 @@ class _LeadScreenState extends State<LeadScreen> {
                     width: MediaQuery.of(context).size.width,
                     child: Row(
                       children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width / 3,
-                          alignment: Alignment.topCenter,
-                          child: ListView.separated(
-                              separatorBuilder: (context, index) => Divider(
-                                    color: Colors.grey,
-                                  ),
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              itemCount: leadList.length,
-                              itemBuilder: (context, index) {
-                                return InkWell(
-                                    onTap: () {
+                        SingleChildScrollView(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 3,
+                            alignment: Alignment.topCenter,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  child: TextField(
+                                    textAlign: TextAlign.left,
+                                    controller: searchController,
+                                    onChanged: (value) {
                                       setState(() {
-                                        isLeadClicked = true;
-                                        selectedLead = leadList[index];
+                                        searchOperation(searchController.text);
                                       });
+                                      // isSearching
+                                      //     ? _handleSearchEnd()
+                                      //     : _handleSearchStart();
                                     },
-                                    child:
-                                        EmailListTile(item: leadList[index]));
-                              }),
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                      hintText: 'Enter Lead Id',
+                                      hintStyle: TextStyle(fontSize: 16),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide(
+                                          width: 0,
+                                          style: BorderStyle.none,
+                                        ),
+                                      ),
+                                      filled: true,
+                                      contentPadding:
+                                          EdgeInsets.symmetric(horizontal: 15),
+                                      fillColor: Colors.grey.shade300,
+                                    ),
+                                  ),
+                                ),
+                                searchResultList.length != 0 ||
+                                        searchController.text.isNotEmpty
+                                    ? ListView.separated(
+                                        separatorBuilder: (context, index) =>
+                                            Divider(
+                                              color: Colors.grey,
+                                            ),
+                                        shrinkWrap: true,
+                                        physics: BouncingScrollPhysics(),
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: searchResultList.length,
+                                        itemBuilder: (context, index) {
+                                          return InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  isLeadClicked = true;
+                                                  selectedLead =
+                                                      searchResultList[index];
+                                                });
+                                              },
+                                              child: EmailListTile(
+                                                  item:
+                                                      searchResultList[index]));
+                                        })
+                                    : ListView.separated(
+                                        separatorBuilder: (context, index) =>
+                                            Divider(
+                                              color: Colors.grey,
+                                            ),
+                                        shrinkWrap: true,
+                                        physics: BouncingScrollPhysics(),
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: leadList.length,
+                                        itemBuilder: (context, index) {
+                                          return InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  isLeadClicked = true;
+                                                  selectedLead =
+                                                      leadList[index];
+                                                });
+                                              },
+                                              child: EmailListTile(
+                                                  item: leadList[index]));
+                                        }),
+                              ],
+                            ),
+                          ),
                         ),
                         Container(
                             width: MediaQuery.of(context).size.width -
@@ -124,24 +249,96 @@ class _LeadScreenState extends State<LeadScreen> {
                     backgroundColor: Colors.black,
                     elevation: 0.0,
                   ),
-                  body: ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: leadList.length,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) =>
-                                          LeadDetailViewMobileScreen(
-                                            customerInfo: leadList[index],
-                                            isTablet: false,
-                                          )));
+                  body: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: TextField(
+                            textAlign: TextAlign.left,
+                            controller: searchController,
+                            onChanged: (value) {
+                              setState(() {
+                                searchOperation(searchController.text);
+                              });
+                              // isSearching
+                              //     ? _handleSearchEnd()
+                              //     : _handleSearchStart();
                             },
-                            child: EmailListTile(item: leadList[index]));
-                      }),
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              hintText: 'Enter Lead Id',
+                              hintStyle: TextStyle(fontSize: 16),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  width: 0,
+                                  style: BorderStyle.none,
+                                ),
+                              ),
+                              filled: true,
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 15),
+                              fillColor: Colors.grey.shade300,
+                            ),
+                          ),
+                        ),
+                        searchResultList.length != 0 ||
+                                searchController.text.isNotEmpty
+                            ? ListView.separated(
+                                separatorBuilder: (context, index) => Divider(
+                                      color: Colors.grey,
+                                    ),
+                                shrinkWrap: true,
+                                physics: BouncingScrollPhysics(),
+                                scrollDirection: Axis.vertical,
+                                itemCount: searchResultList.length,
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    LeadDetailViewMobileScreen(
+                                                      customerInfo:
+                                                          searchResultList[
+                                                              index],
+                                                      isTablet: false,
+                                                    )));
+                                      },
+                                      child: EmailListTile(
+                                          item: searchResultList[index]));
+                                })
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.vertical,
+                                physics: BouncingScrollPhysics(),
+                                itemCount: leadList.length,
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    LeadDetailViewMobileScreen(
+                                                      customerInfo:
+                                                          leadList[index],
+                                                      isTablet: false,
+                                                    )));
+                                      },
+                                      child:
+                                          EmailListTile(item: leadList[index]));
+                                }),
+                      ],
+                    ),
+                  ),
                 );
               }
             },
@@ -149,49 +346,3 @@ class _LeadScreenState extends State<LeadScreen> {
   }
 }
 
-class AppDrawer extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: Container(),
-    );
-  }
-}
-
-class AppSideMenu extends StatelessWidget {
-  const AppSideMenu({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.menu),
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.inbox),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(Icons.people_outline),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(Icons.star_border),
-                onPressed: () {},
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}

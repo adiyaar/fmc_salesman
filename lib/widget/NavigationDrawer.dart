@@ -11,7 +11,11 @@ import 'package:testing/screens/HomeScreen.dart';
 import 'package:testing/screens/LeadsScreen.dart';
 
 import 'package:testing/screens/LoginScreen.dart';
+import 'package:testing/screens/PickListScreen.dart';
+import 'package:testing/screens/SalesInvoiceScreen.dart';
 import 'package:testing/screens/SalesQuotations.dart';
+import 'package:testing/screens/orderViewScreen.dart';
+import 'package:testing/screens/quotationScreenView.dart';
 import 'package:testing/settings.dart';
 
 class NavigationDrawer extends StatefulWidget {
@@ -95,7 +99,20 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                           MaterialPageRoute(builder: (context) => LeadScreen()),
                         );
                 }),
-
+            ListTile(
+                title: new Text("Sales Quotation"),
+                contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                trailing: Icon(Icons.keyboard_arrow_right),
+                leading: new Icon(Icons.home),
+                onTap: () {
+                  widget.userInfo == null
+                      ? Navigator.pop(context)
+                      : Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => QuotationScreen()),
+                        );
+                }),
             ListTile(
                 title: new Text("Sales Order"),
                 contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
@@ -107,11 +124,55 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                       : Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SalesQuotation(
-                                    user: widget.userInfo,
-                                  )),
+                              builder: (context) => OrderScreen()),
                         );
                 }),
+
+            ListTile(
+                title: new Text("PickList"),
+                contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                trailing: Icon(Icons.keyboard_arrow_right),
+                leading: new Icon(Icons.home),
+                onTap: () {
+                  widget.userInfo == null
+                      ? Navigator.pop(context)
+                      : Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PickListScreen()),
+                        );
+                }),
+            ListTile(
+                title: new Text("Sales Invoice"),
+                contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                trailing: Icon(Icons.keyboard_arrow_right),
+                leading: new Icon(Icons.home),
+                onTap: () {
+                  widget.userInfo == null
+                      ? Navigator.pop(context)
+                      : Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => InvoiceScreen()),
+                        );
+                }),
+
+            // ListTile(
+            //     title: new Text("Sales Order"),
+            //     contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+            //     trailing: Icon(Icons.keyboard_arrow_right),
+            //     leading: new Icon(Icons.home),
+            //     onTap: () {
+            //       widget.userInfo == null
+            //           ? Navigator.pop(context)
+            //           : Navigator.push(
+            //               context,
+            //               MaterialPageRoute(
+            //                   builder: (context) => SalesQuotation(
+            //                         user: widget.userInfo,
+            //                       )),
+            //             );
+            //     }),
 
             ListTile(
                 title: new Text("Attendance"),
