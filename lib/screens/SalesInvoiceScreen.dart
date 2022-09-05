@@ -146,51 +146,50 @@ class _InvoiceMobileState extends State<InvoiceMobile> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                  'Document No - ${widget.customerInfo.whichcompany + "/" + widget.customerInfo.whichbranch + "/" + widget.customerInfo.siorderprifix + "/" + widget.customerInfo.orderId}'),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                  'Customer Name - ${widget.customerInfo.customername}'),
-                            ),
-                            // Padding(
-                            //   padding: const EdgeInsets.only(left: 10.0),
-                            //   child: Text(
-                            //       'Sent By - ${widget.customerInfo.}'),
-                            // ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: Text('Contact Details - Not There'),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                  'Employee - ${widget.customerInfo.employeeid}'),
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                  'QN Prefix - ${widget.customerInfo.siorderprifix}'),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                  'Local PO Number - ${widget.customerInfo.sireferenceno}'),
-                            ),
-                            // Padding(
-                            //   padding: const EdgeInsets.only(left: 10.0),
-                            //   child: Text(
-                            //       'Local PO Date - ${widget.customerInfo.customerlocalpodate}'),
-                            // ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: Text('Attachment of Local PO'),
-                            ),
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                    'Document No - ${widget.customerInfo.whichcompany}/${widget.customerInfo.whichbranch}/${widget.customerInfo.custid}/${widget.customerInfo.orderId} '),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text('Lead Source - '),
+                              ),
+                           
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text('Billing On - '),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text('Invoice Price - '),
+                              ),
+                             
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text('Credit Limit - '),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text('Credit Days '),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text('Customer Allow Foc- }'),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                    'Customer Status - '),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                    'Print Template - '),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text('Request Date '),
+                              ),
                           ],
                         ),
                       ),
@@ -201,62 +200,70 @@ class _InvoiceMobileState extends State<InvoiceMobile> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Padding(
-                              //   padding: const EdgeInsets.only(left: 10.0),
-                              //   child: Text(
-                              //       'Customer Type - ${widget.customerInfo.customertype}'),
-                              // ),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(left: 10.0),
-                              //   child: Text(
-                              //       'Billing On - ${widget.customerInfo.billingon}'),
-                              // ),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(left: 10.0),
-                              //   child: Text(
-                              //       'Invoice Price - ${widget.customerInfo.invoiceprice}'),
-                              // ),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(left: 10.0),
-                              //   child: Text(
-                              //       'Invoice Type ${widget.customerInfo.invoicetype}'),
-                              // ),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(left: 10.0),
-                              //   child: Text(
-                              //       'Credit Limit - ${widget.customerInfo.creditlimits}'),
-                              // ),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(left: 10.0),
-                              //   child: Text(
-                              //       'Credit Days ${widget.customerInfo.creditdays}'),
-                              // ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: Text('Qtn Validity - }'),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: Text('Customer Status - '),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: Text('Lead Source - '),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: Text(
-                                    'Created On - ${widget.customerInfo.orderDate}'),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: Text('RFQ Date - '),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: Text(
-                                    'Last Bid Date - ${widget.customerInfo.orderDatetime}'),
-                              ),
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Lead Id - ${widget.customerInfo.leadid}'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Local PO Number - '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Local PO Date - '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Delivery Before - '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Attachment of Local PO'),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                            'Document No - ${widget.customerInfo.whichcompany}/${widget.customerInfo.whichbranch}/${widget.customerInfo.picklistid}/${widget.customerInfo.orderId} '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Lead Source - '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Billing On - '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Invoice Price - '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Credit Limit - '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Credit Days '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Customer Allow Foc- }'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Customer Status - '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Print Template - '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Request Date '),
+                      ),
                             ],
                           ),
                         ),
@@ -270,93 +277,31 @@ class _InvoiceMobileState extends State<InvoiceMobile> {
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Text(
-                            'Document No - ${widget.customerInfo.whichcompany + "/" + widget.customerInfo.whichbranch + "/" + widget.customerInfo.siorderprifix + "/" + widget.customerInfo.leadid}'),
+                            'Salesman - ${widget.customerInfo.employeeid}  ${widget.customerInfo.employeename}'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Salesman Email Id - '),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Text(
-                            'Customer Name - ${widget.customerInfo.customername}'),
-                      ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(left: 10.0),
-                      //   child:
-                      //       Text('Sent By - ${widget.customerInfo.typeoflead}'),
-                      // ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Contact Details - Not There'),
+                            'Customer - ${widget.customerInfo.customername}'),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
-                        child: Text(
-                            'Employee - ${widget.customerInfo.employeeid}'),
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(left: 10.0),
-                      //   child: Text(
-                      //       'Customer Type - ${widget.customerInfo.customertype}'),
-                      // ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(left: 10.0),
-                      //   child: Text(
-                      //       'Billing On - ${widget.customerInfo.billingon}'),
-                      // ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(left: 10.0),
-                      //   child: Text(
-                      //       'Invoice Price - ${widget.customerInfo.invoiceprice}'),
-                      // ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(left: 10.0),
-                      //   child: Text(
-                      //       'Invoice Type ${widget.customerInfo.invoicetype}'),
-                      // ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(left: 10.0),
-                      //   child: Text(
-                      //       'Credit Limit - ${widget.customerInfo.creditlimits}'),
-                      // ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(left: 10.0),
-                      //   child: Text(
-                      //       'Credit Days ${widget.customerInfo.creditdays}'),
-                      // ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Qtn Validity - }'),
+                        child: Text('Sent By - '),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Customer Status - '),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Lead Source - '),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text(
-                            'Created On - ${widget.customerInfo.orderDate}'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('RFQ Date - '),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text(
-                            'Last Bid Date - ${widget.customerInfo.orderDatetime}'),
+                        child: Text('Contact Details - '),
                       ),
                       SizedBox(
                         height: 30,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
-                        child: Text(
-                            'QN Prefix - ${widget.customerInfo.siorderprifix}'),
+                        child: Text('Lead Id - ${widget.customerInfo.leadid}'),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
@@ -368,7 +313,55 @@ class _InvoiceMobileState extends State<InvoiceMobile> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Delivery Before - '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
                         child: Text('Attachment of Local PO'),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                            'Document No - ${widget.customerInfo.whichcompany}/${widget.customerInfo.whichbranch}/${widget.customerInfo.picklistid}/${widget.customerInfo.orderId} '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Lead Source - '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Billing On - '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Invoice Price - '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Credit Limit - '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Credit Days '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Customer Allow Foc- }'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Customer Status - '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Print Template - '),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text('Request Date '),
                       ),
                     ],
                   ),

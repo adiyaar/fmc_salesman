@@ -770,9 +770,7 @@ class InvoiceTile extends StatelessWidget {
                             "/" +
                             item.whichbranch +
                             "/" +
-                            item.leadid +
-                            "/" +
-                            item.custid ??
+                            item.orderId ??
                         "",
                     style:
                         TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
