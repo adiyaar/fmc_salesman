@@ -5,8 +5,12 @@ import 'package:responsify/responsify_files/responsify_ui_widget.dart';
 import 'package:testing/Apis/LeadsScreenApi.dart';
 import 'package:testing/Common/email_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:testing/models/LogsModel.dart';
 import 'package:testing/models/pickListModel.dart';
 import 'package:http/http.dart' as http;
+import 'package:testing/screens/webViewCostInvoice.dart';
+
+import 'TimelineCustom.dart';
 
 class PickMobile extends StatefulWidget {
   final PickListModel customerInfo;
@@ -21,6 +25,7 @@ class PickMobile extends StatefulWidget {
 class _PickMobileState extends State<PickMobile> {
   List<CustomerContact> customerRowInfo = []; // contact details
   List<PickListDetails> listItems = [];
+  
 
   @override
   void initState() {
@@ -74,6 +79,23 @@ class _PickMobileState extends State<PickMobile> {
       return listItems;
     } else {
       return listItems = [];
+    }
+  }
+List<LogsModel> logs = [];
+  Future getLogs(String leadId) async {
+    final String baseUrl =
+        'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/logs.php';
+    var leadDataId = {'id': leadId, 'pagename': 'PICKLIST'};
+    var response =
+        await http.post(Uri.parse(baseUrl), body: json.encode(leadDataId));
+
+    if (response.statusCode == 200) {
+      List jsonDecoded = json.decode(response.body);
+      logs = jsonDecoded.map((e) => LogsModel.fromJson(e)).toList();
+
+      return logs;
+    } else {
+      return logs = [];
     }
   }
 
@@ -358,6 +380,60 @@ class _PickMobileState extends State<PickMobile> {
             SizedBox(
               height: 50,
             ),
+            Center(
+              child: Text(
+                'Cost Invoice',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16),
+              ),
+            ),
+            Container(
+              height: 400,
+              child: CostInvoice(
+                pagename: 'PICKLIST',
+                id: widget.customerInfo.orderId,
+              ),
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            FutureBuilder(
+                future: getLogs(widget.customerInfo.orderId),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                        child: CircularProgressIndicator.adaptive(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                    ));
+                  } else if (snapshot.hasData &&
+                      snapshot.connectionState == ConnectionState.done) {
+                    return Timeline(
+                      children: logs
+                          .map((e) => ListTile(
+                                title: Text(
+                                  '${e.comment} By ${e.nameofuser} ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Text(e.updateon),
+                              ))
+                          .toList(),
+                      indicators: logs
+                          .map((e) => Icon(
+                                Icons.circle,
+                                color: Colors.blue,
+                              ))
+                          .toList(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('${snapshot.error.toString()}'),
+                    );
+                  }
+                  return CircularProgressIndicator.adaptive(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.black));
+                }),
           ],
         ),
       ),

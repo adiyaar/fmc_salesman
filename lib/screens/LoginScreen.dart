@@ -52,15 +52,6 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                       Container(
                         height: MediaQuery.of(context).size.height,
                         width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                            // image: DecorationImage(
-                            //   colorFilter: new ColorFilter.mode(
-                            //       Colors.black.withOpacity(0.1), BlendMode.dstATop),
-                            //   image: NetworkImage(
-                            //       "https://images.unsplash.com/photo-1467664631004-58beab1ece0d?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8c2FsZXNtYW58ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60"),
-                            //   fit: BoxFit.cover,
-                            // ),
-                            ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
@@ -82,12 +73,6 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    // Text(
-
-                                    //   "Qatar Id",
-                                    //   style: TextStyle(
-                                    //       fontWeight: FontWeight.bold, fontSize: 15),
-                                    // ),
                                     Container(
                                       alignment: Alignment.center,
                                       width: MediaQuery.of(context).size.width /
@@ -112,7 +97,6 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                     SizedBox(
                                       height: 10,
                                     ),
-
                                     Container(
                                       width: MediaQuery.of(context).size.width /
                                           2.5,
@@ -146,11 +130,6 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                 if (formFilled == true) {
                                   SharedPreferences pf =
                                       await SharedPreferences.getInstance();
-                                  // futureGroup.add(salesmanLogin(
-                                  //     emailcontroller.text,
-                                  //     passwordcontroller.text));
-                                  // futureGroup
-                                  //     .add(salesmanId(emailcontroller.text));
 
                                   final String baseUrl =
                                       'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/login_salesman.php';
@@ -160,17 +139,16 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                     'password': passwordcontroller.text
                                   };
 
-                                  pf.setString(
-                                      'loginEmail', emailcontroller.text);
-                                  pf.setString(
-                                      'loginPassword', passwordcontroller.text);
-
                                   var response = await http.post(
                                       Uri.parse(baseUrl),
                                       body: json.encode(data));
 
                                   String message = jsonDecode(response.body);
                                   if (message == "Login Matched") {
+                                    pf.setString(
+                                        'loginEmail', emailcontroller.text);
+                                    pf.setString('loginPassword',
+                                        passwordcontroller.text);
                                     final String baseUrl1 =
                                         'https://onlinefamilypharmacy.com/mobileapplication/salesmanprofile.php';
 
@@ -190,9 +168,6 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                             new UserInfoModel.fromJson(e))
                                         .toList();
 
-                                    print('Here');
-                                    print(userInfo.length);
-
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {
                                       pf.setBool('loggedIn', true);
@@ -208,16 +183,8 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                       backgroundColor: Colors.blue,
                                       content:
                                           const Text('Incorrect Credentials'),
-                                      action: SnackBarAction(
-                                        label: '',
-                                        onPressed: () {
-                                          // Some code to undo the change.
-                                        },
-                                      ),
                                     );
 
-                                    // Find the ScaffoldMessenger in the widget tree
-                                    // and use it to show a SnackBar.
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(snackBar);
                                   }
@@ -374,17 +341,16 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                     'password': passwordcontroller.text
                                   };
 
-                                  pf.setString(
-                                      'loginEmail', emailcontroller.text);
-                                  pf.setString(
-                                      'loginPassword', passwordcontroller.text);
-
                                   var response = await http.post(
                                       Uri.parse(baseUrl),
                                       body: json.encode(data));
 
                                   String message = jsonDecode(response.body);
                                   if (message == "Login Matched") {
+                                    pf.setString(
+                                        'loginEmail', emailcontroller.text);
+                                    pf.setString('loginPassword',
+                                        passwordcontroller.text);
                                     final String baseUrl1 =
                                         'https://onlinefamilypharmacy.com/mobileapplication/salesmanprofile.php';
 
@@ -403,9 +369,6 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                         .map((e) =>
                                             new UserInfoModel.fromJson(e))
                                         .toList();
-
-                                    print('Here');
-                                    print(userInfo.length);
 
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {
@@ -602,19 +565,17 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                     'password': passwordcontroller.text
                                   };
 
-                                  pf.setString(
-                                      'loginEmail', emailcontroller.text);
-                                  pf.setString(
-                                      'loginPassword', passwordcontroller.text);
-
                                   var response = await http.post(
                                       Uri.parse(baseUrl),
                                       body: json.encode(data));
-                                  print('1');
 
                                   String message = jsonDecode(response.body);
-                                  print(message);
+
                                   if (message == "Login Matched") {
+                                    pf.setString(
+                                        'loginEmail', emailcontroller.text);
+                                    pf.setString('loginPassword',
+                                        passwordcontroller.text);
                                     final String baseUrl1 =
                                         'https://onlinefamilypharmacy.com/mobileapplication/salesmanprofile.php';
 
@@ -625,7 +586,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                     var response1 = await http.post(
                                         Uri.parse(baseUrl1),
                                         body: jsonEncode(data1));
-                                    print(response1.body);
+
                                     var jsonReponse =
                                         json.decode(response1.body);
 
@@ -633,7 +594,9 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                         .map((e) =>
                                             new UserInfoModel.fromJson(e))
                                         .toList();
-
+                                    print("CHECKING LOGIN DETAILS");
+                                    print(userInfo);
+                                    print("CHECKING LOGIN DETAILS");
                                     Future.delayed(Duration(milliseconds: 100),
                                         () {
                                       pf.setBool('loggedIn', true);
@@ -649,16 +612,8 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                                       backgroundColor: Colors.blue,
                                       content:
                                           const Text('Incorrect Credentials'),
-                                      action: SnackBarAction(
-                                        label: '',
-                                        onPressed: () {
-                                          // Some code to undo the change.
-                                        },
-                                      ),
                                     );
 
-                                    // Find the ScaffoldMessenger in the widget tree
-                                    // and use it to show a SnackBar.
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(snackBar);
                                   }
@@ -691,7 +646,9 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
                 ),
               );
             }
-            return Text("HI");
+            return Center(
+              child: CircularProgressIndicator.adaptive(),
+            );
           },
         ),
       ),

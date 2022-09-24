@@ -293,90 +293,90 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
               height: 0.1,
               thickness: 1,
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(20.0, 15.0, 0.0, 0.0),
-              //padding: EdgeInsets.all(10.0),
-              // padding: EdgeInsets. symmetric(vertical: 20.0, horizontal: 20.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: Container(
-                  child: Text(
-                    'Purchase',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ),
-            ListTile(
-                title: new Text("Branch Request"),
-                contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                trailing: Icon(Icons.keyboard_arrow_right),
-                leading: new Icon(Icons.assignment_return),
-                onTap: () {}),
-            Divider(
-              height: 0.1,
-              thickness: 1,
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(20.0, 15.0, 0.0, 0.0),
-              //padding: EdgeInsets.all(10.0),
-              // padding: EdgeInsets. symmetric(vertical: 20.0, horizontal: 20.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: Container(
-                  child: Text(
-                    'Sales',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ),
-            ListTile(
-                title: new Text("Leads"),
-                contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                trailing: Icon(Icons.keyboard_arrow_right),
-                leading: new Icon(Icons.chat_bubble),
-                onTap: () {}),
-            ListTile(
-                title: new Text("Sales Quotation"),
-                contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                trailing: Icon(Icons.keyboard_arrow_right),
-                leading: new Icon(Icons.chrome_reader_mode),
-                onTap: () {}),
-            ListTile(
-                title: new Text("Sales Order"),
-                contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                trailing: Icon(Icons.keyboard_arrow_right),
-                leading: new Icon(Icons.collections_bookmark),
-                onTap: () {}),
-            ListTile(
-                title: new Text("Delivery Note"),
-                contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                trailing: Icon(Icons.keyboard_arrow_right),
-                leading: new Icon(Icons.directions_bus),
-                onTap: () {}),
-            ListTile(
-                title: new Text("Delivery Note Return"),
-                contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                trailing: Icon(Icons.keyboard_arrow_right),
-                leading: new Icon(Icons.directions_car),
-                onTap: () {}),
-            ListTile(
-                title: new Text("Sales Invoice"),
-                contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                trailing: Icon(Icons.keyboard_arrow_right),
-                leading: new Icon(Icons.confirmation_number),
-                onTap: () {}),
-            ListTile(
-                title: new Text("Contact"),
-                leading: new Icon(Icons.contact_phone),
-                onTap: () {}),
-            ListTile(
-                title: new Text("Setting"),
-                leading: new Icon(Icons.contact_phone),
-                onTap: () {}),
+            // Padding(
+            //   padding: EdgeInsets.fromLTRB(20.0, 15.0, 0.0, 0.0),
+            //   //padding: EdgeInsets.all(10.0),
+            //   // padding: EdgeInsets. symmetric(vertical: 20.0, horizontal: 20.0),
+            //   child: SizedBox(
+            //     width: double.infinity,
+            //     child: Container(
+            //       child: Text(
+            //         'Purchase',
+            //         textAlign: TextAlign.left,
+            //         style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // ListTile(
+            //     title: new Text("Branch Request"),
+            //     contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+            //     trailing: Icon(Icons.keyboard_arrow_right),
+            //     leading: new Icon(Icons.assignment_return),
+            //     onTap: () {}),
+            // Divider(
+            //   height: 0.1,
+            //   thickness: 1,
+            // ),
+            // Padding(
+            //   padding: EdgeInsets.fromLTRB(20.0, 15.0, 0.0, 0.0),
+            //   //padding: EdgeInsets.all(10.0),
+            //   // padding: EdgeInsets. symmetric(vertical: 20.0, horizontal: 20.0),
+            //   child: SizedBox(
+            //     width: double.infinity,
+            //     child: Container(
+            //       child: Text(
+            //         'Sales',
+            //         textAlign: TextAlign.left,
+            //         style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // ListTile(
+            //     title: new Text("Leads"),
+            //     contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+            //     trailing: Icon(Icons.keyboard_arrow_right),
+            //     leading: new Icon(Icons.chat_bubble),
+            //     onTap: () {}),
+            // ListTile(
+            //     title: new Text("Sales Quotation"),
+            //     contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+            //     trailing: Icon(Icons.keyboard_arrow_right),
+            //     leading: new Icon(Icons.chrome_reader_mode),
+            //     onTap: () {}),
+            // ListTile(
+            //     title: new Text("Sales Order"),
+            //     contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+            //     trailing: Icon(Icons.keyboard_arrow_right),
+            //     leading: new Icon(Icons.collections_bookmark),
+            //     onTap: () {}),
+            // ListTile(
+            //     title: new Text("Delivery Note"),
+            //     contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+            //     trailing: Icon(Icons.keyboard_arrow_right),
+            //     leading: new Icon(Icons.directions_bus),
+            //     onTap: () {}),
+            // ListTile(
+            //     title: new Text("Delivery Note Return"),
+            //     contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+            //     trailing: Icon(Icons.keyboard_arrow_right),
+            //     leading: new Icon(Icons.directions_car),
+            //     onTap: () {}),
+            // ListTile(
+            //     title: new Text("Sales Invoice"),
+            //     contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+            //     trailing: Icon(Icons.keyboard_arrow_right),
+            //     leading: new Icon(Icons.confirmation_number),
+            //     onTap: () {}),
+            // ListTile(
+            //     title: new Text("Contact"),
+            //     leading: new Icon(Icons.contact_phone),
+            //     onTap: () {}),
+            // ListTile(
+            //     title: new Text("Setting"),
+            //     leading: new Icon(Icons.contact_phone),
+            //     onTap: () {}),
             ListTile(
                 title: new Text("Log Out"),
                 leading: new Icon(Icons.lock),

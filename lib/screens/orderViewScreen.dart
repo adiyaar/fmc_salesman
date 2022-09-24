@@ -7,7 +7,11 @@ import 'package:testing/Apis/LeadsScreenApi.dart';
 import 'package:http/http.dart' as http;
 import 'package:responsify/responsify.dart';
 import 'package:testing/Common/common.dart';
+import 'package:testing/models/LogsModel.dart';
 import 'package:testing/models/OrderView.dart';
+import 'package:testing/screens/webViewCostInvoice.dart';
+
+import 'TimelineCustom.dart';
 
 // ignore: must_be_immutable
 class OrderView extends StatefulWidget {
@@ -76,6 +80,24 @@ class _OrderViewState extends State<OrderView> {
       return listItems;
     } else {
       return listItems = [];
+    }
+  }
+
+  List<LogsModel> logs = [];
+  Future getLogs(String leadId) async {
+    final String baseUrl =
+        'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/logs.php';
+    var leadDataId = {'id': leadId, 'pagename': 'SALESORDER'};
+    var response =
+        await http.post(Uri.parse(baseUrl), body: json.encode(leadDataId));
+
+    if (response.statusCode == 200) {
+      List jsonDecoded = json.decode(response.body);
+      logs = jsonDecoded.map((e) => LogsModel.fromJson(e)).toList();
+
+      return logs;
+    } else {
+      return logs = [];
     }
   }
 
@@ -531,6 +553,60 @@ class _OrderViewState extends State<OrderView> {
             SizedBox(
               height: 50,
             ),
+            Center(
+              child: Text(
+                'Cost Invoice',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16),
+              ),
+            ),
+            Container(
+              height: 400,
+              child: CostInvoice(
+                pagename: 'SALESORDER',
+                id: widget.customerInfo.orderId,
+              ),
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            FutureBuilder(
+                future: getLogs(widget.customerInfo.orderId),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                        child: CircularProgressIndicator.adaptive(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                    ));
+                  } else if (snapshot.hasData &&
+                      snapshot.connectionState == ConnectionState.done) {
+                    return Timeline(
+                      children: logs
+                          .map((e) => ListTile(
+                                title: Text(
+                                  '${e.comment} By ${e.nameofuser} ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Text(e.updateon),
+                              ))
+                          .toList(),
+                      indicators: logs
+                          .map((e) => Icon(
+                                Icons.circle,
+                                color: Colors.blue,
+                              ))
+                          .toList(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('${snapshot.error.toString()}'),
+                    );
+                  }
+                  return CircularProgressIndicator.adaptive(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.black));
+                }),
 
             // status = 1 , then hide all the button
             // status = 11 , then show 4 buttons

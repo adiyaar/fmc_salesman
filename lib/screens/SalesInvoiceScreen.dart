@@ -3,9 +3,14 @@ import 'package:responsify/responsify_files/responsify_enum.dart';
 import 'package:responsify/responsify_files/responsify_ui_widget.dart';
 import 'package:testing/Apis/LeadsScreenApi.dart';
 import 'package:testing/Common/email_tile.dart';
+import 'package:testing/models/LogsModel.dart';
 import 'package:testing/models/salesInvoiceModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:testing/screens/webViewCostInvoice.dart';
+
+import 'TimelineCustom.dart';
 
 class InvoiceMobile extends StatefulWidget {
   final SalesInvoice customerInfo;
@@ -74,6 +79,24 @@ class _InvoiceMobileState extends State<InvoiceMobile> {
       return listItems;
     } else {
       return listItems = [];
+    }
+  }
+
+  List<LogsModel> logs = [];
+  Future getLogs(String leadId) async {
+    final String baseUrl =
+        'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/logs.php';
+    var leadDataId = {'id': leadId, 'pagename': 'SALESINVOICE'};
+    var response =
+        await http.post(Uri.parse(baseUrl), body: json.encode(leadDataId));
+
+    if (response.statusCode == 200) {
+      List jsonDecoded = json.decode(response.body);
+      logs = jsonDecoded.map((e) => LogsModel.fromJson(e)).toList();
+
+      return logs;
+    } else {
+      return logs = [];
     }
   }
 
@@ -146,15 +169,89 @@ class _InvoiceMobileState extends State<InvoiceMobile> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Text(
+                                  'Document No - ${widget.customerInfo.whichcompany}/${widget.customerInfo.whichbranch}/${widget.customerInfo.custid}/${widget.customerInfo.orderId} '),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Text('Lead Source - '),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Text('Billing On - '),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Text('Invoice Price - '),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Text('Credit Limit - '),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Text('Credit Days '),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Text('Customer Allow Foc- }'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Text('Customer Status - '),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Text('Print Template - '),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Text('Request Date '),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Visibility(
+                        visible: widget.isTablet,
+                        child: Container(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
                                 padding: const EdgeInsets.only(left: 10.0),
                                 child: Text(
-                                    'Document No - ${widget.customerInfo.whichcompany}/${widget.customerInfo.whichbranch}/${widget.customerInfo.custid}/${widget.customerInfo.orderId} '),
+                                    'Lead Id - ${widget.customerInfo.leadid}'),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text('Local PO Number - '),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text('Local PO Date - '),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text('Delivery Before - '),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text('Attachment of Local PO'),
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                    'Document No - ${widget.customerInfo.whichcompany}/${widget.customerInfo.whichbranch}/${widget.customerInfo.picklistid}/${widget.customerInfo.orderId} '),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 10.0),
                                 child: Text('Lead Source - '),
                               ),
-                           
                               Padding(
                                 padding: const EdgeInsets.only(left: 10.0),
                                 child: Text('Billing On - '),
@@ -163,7 +260,6 @@ class _InvoiceMobileState extends State<InvoiceMobile> {
                                 padding: const EdgeInsets.only(left: 10.0),
                                 child: Text('Invoice Price - '),
                               ),
-                             
                               Padding(
                                 padding: const EdgeInsets.only(left: 10.0),
                                 child: Text('Credit Limit - '),
@@ -178,92 +274,16 @@ class _InvoiceMobileState extends State<InvoiceMobile> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 10.0),
-                                child: Text(
-                                    'Customer Status - '),
+                                child: Text('Customer Status - '),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 10.0),
-                                child: Text(
-                                    'Print Template - '),
+                                child: Text('Print Template - '),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 10.0),
                                 child: Text('Request Date '),
                               ),
-                          ],
-                        ),
-                      ),
-                      Visibility(
-                        visible: widget.isTablet,
-                        child: Container(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Lead Id - ${widget.customerInfo.leadid}'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Local PO Number - '),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Local PO Date - '),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Delivery Before - '),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Attachment of Local PO'),
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text(
-                            'Document No - ${widget.customerInfo.whichcompany}/${widget.customerInfo.whichbranch}/${widget.customerInfo.picklistid}/${widget.customerInfo.orderId} '),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Lead Source - '),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Billing On - '),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Invoice Price - '),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Credit Limit - '),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Credit Days '),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Customer Allow Foc- }'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Customer Status - '),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Print Template - '),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Request Date '),
-                      ),
                             ],
                           ),
                         ),
@@ -483,6 +503,60 @@ class _InvoiceMobileState extends State<InvoiceMobile> {
             SizedBox(
               height: 50,
             ),
+            Center(
+              child: Text(
+                'Cost Invoice',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16),
+              ),
+            ),
+            Container(
+              height: 400,
+              child: CostInvoice(
+                pagename: 'SALESINVOICE',
+                id: widget.customerInfo.orderId,
+              ),
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            FutureBuilder(
+                future: getLogs(widget.customerInfo.orderId),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                        child: CircularProgressIndicator.adaptive(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                    ));
+                  } else if (snapshot.hasData &&
+                      snapshot.connectionState == ConnectionState.done) {
+                    return Timeline(
+                      children: logs
+                          .map((e) => ListTile(
+                                title: Text(
+                                  '${e.comment} By ${e.nameofuser} ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Text(e.updateon),
+                              ))
+                          .toList(),
+                      indicators: logs
+                          .map((e) => Icon(
+                                Icons.circle,
+                                color: Colors.blue,
+                              ))
+                          .toList(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('${snapshot.error.toString()}'),
+                    );
+                  }
+                  return CircularProgressIndicator.adaptive(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.black));
+                }),
           ],
         ),
       ),

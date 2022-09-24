@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:testing/Apis/LeadsScreenApi.dart';
 import 'package:testing/models/LeadModel.dart';
 import 'package:http/http.dart' as http;
+import 'package:testing/models/LogsModel.dart';
+
+import 'TimelineCustom.dart';
 
 // ignore: must_be_immutable
 class LeadDetailViewMobileScreen extends StatefulWidget {
@@ -77,6 +80,24 @@ class _LeadDetailViewMobileScreenState
       return listItems;
     } else {
       return listItems = [];
+    }
+  }
+
+  List<LogsModel> logs = [];
+  Future getLogs(String leadId) async {
+    final String baseUrl =
+        'https://onlinefamilypharmacy.com/mobileapplication/salesmanapp/logs.php';
+    var leadDataId = {'id': leadId, 'pagename': 'LEADS'};
+    var response =
+        await http.post(Uri.parse(baseUrl), body: json.encode(leadDataId));
+
+    if (response.statusCode == 200) {
+      List jsonDecoded = json.decode(response.body);
+      logs = jsonDecoded.map((e) => LogsModel.fromJson(e)).toList();
+
+      return logs;
+    } else {
+      return logs = [];
     }
   }
 
@@ -602,6 +623,41 @@ class _LeadDetailViewMobileScreenState
             SizedBox(
               height: 50,
             ),
+            FutureBuilder(
+                future: getLogs(widget.customerInfo.id),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                        child: CircularProgressIndicator.adaptive(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                    ));
+                  } else if (snapshot.hasData &&
+                      snapshot.connectionState == ConnectionState.done) {
+                    return Timeline(
+                      children: logs
+                          .map((e) => ListTile(
+                                title: Text(
+                                  '${e.comment} By ${e.nameofuser} ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Text(e.updateon),
+                              ))
+                          .toList(),
+                      indicators: logs
+                          .map((e) => Icon(
+                                Icons.circle,
+                                color: Colors.blue,
+                              ))
+                          .toList(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('${snapshot.error.toString()}'),
+                    );
+                  }
+                  return CircularProgressIndicator.adaptive(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.black));
+                }),
 
             // status = 1 , then hide all the button
             // status = 11 , then show 4 buttons
